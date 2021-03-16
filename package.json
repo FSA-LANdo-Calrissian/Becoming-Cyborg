@@ -1,0 +1,27 @@
+{
+  "name": "Wall-E",
+  "version": "1.0.0",
+  "description": "A survival/RPG game based on a small robot in a post-apocalyptic world.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FSA-LANdo-Calrissian/Wall-E.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FSA-LANdo-Calrissian/Wall-E/issues"
+  },
+  "homepage": "https://github.com/FSA-LANdo-Calrissian/Wall-E#readme",
+  "devDependencies": {
+    "webpack": "^5.26.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "phaser": "^3.53.1"
+  }
+}
