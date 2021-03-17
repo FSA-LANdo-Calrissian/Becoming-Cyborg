@@ -4,7 +4,7 @@ import BgScene from './scenes/BgScene';
 import FgScene from './scenes/FgScene';
 import MainScene from './scenes/MainScene';
 
-class Game extends Phaser.Game {
+export default class Game extends Phaser.Game {
   constructor() {
     super(config);
 
