@@ -9,8 +9,8 @@ class Game extends Phaser.Game {
     super(config);
 
     // Import all the scenes and call it here
-    this.scene.add('FgScene', FgScene);
     this.scene.add('BgScene', BgScene);
+    this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
 
     // Then start the game by calling the main scene - or the very first one

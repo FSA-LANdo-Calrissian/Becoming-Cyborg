@@ -16,18 +16,20 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.sprite(20, 400, 'ball');
+    // this.add.sprite(20, 400, 'ball');
     this.player = new Player(this, 20, 400, 'player').setScale(0.25);
 
-    this.ball = new Player(this, 20, 400, 'ball').setScale(10);
+    // this.ball = new Player(this, 20, 400, 'ball');
 
-    // this.input.keyboard.addKeys({
-    //   up: Phaser.Input.Keyboard.KeyCodes.W,
-    //   left: Phaser.Input.Keyboard.KeyCodes.A,
-    //   down: Phaser.Input.Keyboard.KeyCodes.S,
-    //   right: Phaser.Input.Keyboard.KeyCodes.D,
-    // });
+    this.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
   }
 
-  update() {}
+  update(time, delta) {
+    this.player.update(this.cursors);
+  }
 }

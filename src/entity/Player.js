@@ -6,26 +6,29 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    // this.body.setAllowGravity(false);
-    // this.speed = Phaser.Math.GetSpeed(800, 1); // Moving at 800 pixels per ms
-    // this.health = 100;
+    this.body.setAllowGravity(false);
+    this.speed = 80; // Moving at 800 pixels per ms
+    this.health = 100;
 
-    // this.updateMovement = this.updateMovement.bind(this);
+    this.updateMovement = this.updateMovement.bind(this);
   }
 
-  // updateMovement(cursors) {
-  //   if (cursors.left.isDown) {
-  //     this.setVelocityX(-this.speed);
-  //   } else if (cursors.right.isDown) {
-  //     this.setVelocityX(this.speed);
-  //   } else if (cursors.up.isDown) {
-  //     this.setVelocityY(-this.speed);
-  //   } else if (cursors.down.isDown) {
-  //     this.setVelocityY(this.speed);
-  //   }
-  // }
+  updateMovement(cursors) {
+    if (cursors.left.isDown) {
+      this.setVelocityX(-this.speed);
+    } else if (cursors.right.isDown) {
+      this.setVelocityX(this.speed);
+    } else if (cursors.up.isDown) {
+      this.setVelocityY(-this.speed);
+    } else if (cursors.down.isDown) {
+      this.setVelocityY(this.speed);
+    } else {
+      this.setVelocityX(0);
+      this.setVelocityY(0);
+    }
+  }
 
   update(cursors) {
-    // this.updateMovement(cursors);
+    this.updateMovement(cursors);
   }
 }
