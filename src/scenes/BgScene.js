@@ -6,10 +6,11 @@ export default class BgScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('sky', '../../public/assets/backgrounds/sky.png');
     // this.load.image('grid', '../../public/assets/backgrounds/grid.jpg');
   }
 
   create() {
-    // this.add.image(-160, 0, 'grid').setOrigin(0).setScale(0.25);
+    this.add.image(-160, 0, 'sky').setOrigin(0).setScale(0.5);
   }
 }

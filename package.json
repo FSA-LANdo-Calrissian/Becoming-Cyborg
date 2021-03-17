@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build-client": "webpack",
+    "build-watch": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "%homepath%\\Desktop\\FullStack\\Wall-E\\script\\windows-deploy.bat",
-    "encrypt": "node %homepath%\\Desktop\\FullStack\\Wall-E\\script\\encrypt-heroku-windows.js"
+    "encrypt": "node %homepath%\\Desktop\\FullStack\\Wall-E\\script\\encrypt-heroku-windows.js",
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -23,9 +25,11 @@
   "devDependencies": {
     "axios": "^0.21.1",
     "git-url-parse": "^11.4.4",
+    "raw-loader": "^4.0.2",
     "simple-git": "^2.37.0",
     "webpack": "^5.26.2",
     "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2",
     "yaml": "^1.10.2"
   },
   "dependencies": {
