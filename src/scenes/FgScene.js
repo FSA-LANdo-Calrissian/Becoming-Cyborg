@@ -3,7 +3,6 @@ import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import HealthBar from '../hud/HealthBar';
 
-
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
@@ -47,7 +46,7 @@ export default class FgScene extends Phaser.Scene {
       key: 'runUp',
       frames: this.anims.generateFrameNumbers('player', {
         start: 28,
-        end: 31,
+        end: 29,
       }),
       frameRate: 5,
       repeat: -1,
@@ -57,8 +56,8 @@ export default class FgScene extends Phaser.Scene {
     this.anims.create({
       key: 'runDown',
       frames: this.anims.generateFrameNumbers('player', {
-        start: 18,
-        end: 27,
+        start: 19,
+        end: 21,
       }),
       frameRate: 5,
       repeat: -1,
