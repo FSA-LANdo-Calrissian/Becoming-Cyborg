@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
+import HealthBar from '../hud/HealthBar';
+
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -149,8 +151,18 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
+    // Spawning the player
     this.player = new Player(this, 20, 400, 'player').setScale(2);
     this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(2);
+
+    // Adding the minimap
+    this.minimap = this.cameras
+      .add(630, 10, 150, 150)
+      .setZoom(0.2)
+      .setName('minimap');
+    this.minimap.setBackgroundColor(0x000000);
+    this.minimap.startFollow(this.player, true, 1, 1);
+    this.minimap.ignore(this.player.hpBar.bar);
 
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
