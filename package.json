@@ -4,7 +4,7 @@
   "description": "A survival/RPG game based on a small robot in a post-apocalyptic world.",
   "main": "index.js",
   "scripts": {
-    "build-client": "webpack",
+    "build-client": "webpack --mode 'production'",
     "build-watch": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "%homepath%\\Desktop\\FullStack\\Wall-E\\script\\windows-deploy.bat",
