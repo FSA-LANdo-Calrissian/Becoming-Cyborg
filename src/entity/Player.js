@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import HealthBar from '../hud/HealthBar';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -8,7 +9,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = 300; // Moving at 800 pixels per ms
-    this.hp = 100;
+    this.health = 100;
+    this.hpBar = new HealthBar(scene, 0 + 10, 0 + 10, this.health);
     this.facingRight = false;
 
     this.updateMovement = this.updateMovement.bind(this);
@@ -78,13 +80,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       } else {
         this.play('idleLeft');
       }
-    }
-  }
-
-  takeDamage(damage) {
-    this.hp -= damage;
-    if (this.hp <= 0) {
-      console.log('LOL ded noob');
     }
   }
 
