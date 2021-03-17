@@ -1,10 +1,13 @@
 {
-  "name": "Wall-E",
+  "name": "I-Am-Robot",
   "version": "1.0.0",
   "description": "A survival/RPG game based on a small robot in a post-apocalyptic world.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-client": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "%homepath%\\Desktop\\FullStack\\Wall-E\\script\\windows-deploy.bat",
+    "encrypt": "node %homepath%\\Desktop\\FullStack\\Wall-E\\script\\encrypt-heroku-windows.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +21,12 @@
   },
   "homepage": "https://github.com/FSA-LANdo-Calrissian/Wall-E#readme",
   "devDependencies": {
+    "axios": "^0.21.1",
+    "git-url-parse": "^11.4.4",
+    "simple-git": "^2.37.0",
     "webpack": "^5.26.2",
-    "webpack-cli": "^4.5.0"
+    "webpack-cli": "^4.5.0",
+    "yaml": "^1.10.2"
   },
   "dependencies": {
     "phaser": "^3.53.1"
