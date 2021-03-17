@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - 14 # uses version 14
+addons:
+  postgresql: '10' # recent postgres version on Travis
+dist: xenial # uses xenial environment
+notifications:
+  email:
+    on_success: change # default: change (only when going from broken to fixed)
+    on_failure: always # default: always (which is annoying, as it should be)
+install:
+  - npm ci # faster, goes only from package-lock
+
+script:
+  - npm test # test the code
+  - npm run build-client # make the bundle
+before_deploy: # omit node_modules, since we set skip_cleanup below
+  - rm -rf node_modules
+deploy: # see README for details on these keys
+  # prevents travis from deleting the build
+  skip_cleanup: true
+  provider: heroku
+  # app should be your heroku app name; see README
+  app: i-am-robot
+  # the secure key indicates an encrypted value; see README
+  api_key:
+    secure: h2olgyxRvs6N5izoY1RR+K4L33WRfwqOoqDkl3PPJ5aYc5p2WAja0z1/zkQC/ZWL2Cm2jBhOgwS5ztAyt9dRhBwu5ENks712uzAmnjhrYZYZMxY4XrU+TBTuXj0G0fxKEJ68YYw2+8povugCArL7Q7oQTMstmgQl+a87Swot2uuH5+nFSqrl8isuJAZZ3rwV2nUoOLFRFx67ELk6Qfoj4tgk35LEhW0ZfPKbijkvOLk0eadDB/kMf3C6iUiwyu9EYmIaC1niG1p6kyyK9YvI3CbN4ew6gGPLh8P3ylOep/K5bZsefh1+SFEL/bIC3EGvLLmQIrhFJLJe2BBuBgmywJfj/7mVCY6KVfNILWbRDka/+gsPjNxMaWoTpI5WkTRaaRFR/BzNa6twyeYT4LMgrSo8p2+EZ1pySkYPLivpJIfSAjjmRrhGlWExkr/1mQh31/lFCOFe0hxjxA0FsigisXtYIz8dK3ldc7q33EknZHdXsOIfcRRjab9rrZ2O326k4rf/Mp9HKDlFZKY3rki8fobJY3OhVcN4gLDrIOBVD+brNufDUkZ60xnuWuZCPiZE8oi3fcR3G0qVpiQB3nPG2LrVfx/e5AO/iKcL8+PYi3QYVuyJXdBEIQbv5Y4o23stUDuIdsSLGR5Za8y3rP4BH9c2ptZQAB39YWynCNGlSDg=
