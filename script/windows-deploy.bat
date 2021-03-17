@@ -18,7 +18,7 @@ git add -f public/bundle.js public/bundle.js.map || goto :error
 git commit --allow-empty -m 'Deploying...' || goto :error
 
 :: Push our deploy branch to heroku's master branch
-git push --force heroku1 deploy:main || goto :error
+git push --force heroku deploy:main || goto :error
 
 
 :: This is the error case. If something goes wrong in any of the commands above, it will go to this line and run the code from here.
