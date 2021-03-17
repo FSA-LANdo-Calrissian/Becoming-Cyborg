@@ -7,19 +7,80 @@ export default class FgScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet('player', '../../public/assets/sprites/josh.png', {
-      frameWidth: 340,
-      frameHeight: 460,
+    this.load.spritesheet('player', '../../public/assets/sprites/cyborg.png', {
+      frameWidth: 47,
+      frameHeight: 50,
+    });
+  }
+
+  createAnimations() {
+    this.anims.create({
+      key: 'runLeft',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 1,
+        end: 3,
+      }),
+      frameRate: 7,
+      repeat: -1,
+      yoyo: true,
     });
 
-    this.load.image('ball', '../../public/assets/sprites/enemy.png');
+    this.anims.create({
+      key: 'runRight',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 10,
+        end: 12,
+      }),
+      frameRate: 7,
+      repeat: -1,
+      yoyo: true,
+    });
+
+    this.anims.create({
+      key: 'runUp',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 28,
+        end: 31,
+      }),
+      frameRate: 5,
+      repeat: -1,
+      yoyo: true,
+    });
+
+    this.anims.create({
+      key: 'runDown',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 18,
+        end: 27,
+      }),
+      frameRate: 5,
+      repeat: -1,
+      yoyo: true,
+    });
+
+    this.anims.create({
+      key: 'idleRight',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 9,
+        end: 9,
+      }),
+      frameRate: 0,
+      repeat: 0,
+    });
+
+    this.anims.create({
+      key: 'idleLeft',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 0,
+        end: 0,
+      }),
+      frameRate: 0,
+      repeat: 0,
+    });
   }
 
   create() {
-    // this.add.sprite(20, 400, 'ball');
-    this.player = new Player(this, 20, 400, 'player').setScale(0.25);
-
-    // this.ball = new Player(this, 20, 400, 'ball');
+    this.player = new Player(this, 20, 400, 'player').setScale(2);
 
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -27,6 +88,8 @@ export default class FgScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     });
+
+    this.createAnimations();
   }
 
   update(time, delta) {
