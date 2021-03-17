@@ -22,7 +22,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = false;
       this.setVelocityY(-this.speed);
       this.setVelocityX(-this.speed);
-      this.play('runUp');
+      this.play('runUp', true);
     }
 
     // Running up + right
@@ -30,7 +30,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = true;
       this.setVelocityY(-this.speed);
       this.setVelocityX(this.speed);
-      this.play('runUp');
+      this.play('runUp', true);
     }
 
     // Running down + left
@@ -38,7 +38,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = false;
       this.setVelocityY(this.speed);
       this.setVelocityX(-this.speed);
-      this.play('runDown');
+      this.play('runDown', true);
     }
 
     // Running down + right
@@ -46,7 +46,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = true;
       this.setVelocityY(this.speed);
       this.setVelocityX(this.speed);
-      this.play('runDown');
+      this.play('runDown', true);
     }
 
     // Running left
@@ -64,21 +64,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       // Running up
     } else if (cursors.up.isDown) {
       this.setVelocityY(-this.speed);
-      this.play('runUp');
+      this.play('runUp', true);
 
       // Running down
     } else if (cursors.down.isDown) {
       this.setVelocityY(this.speed);
-      this.play('runDown');
+      this.play('runDown', true);
 
       // No movement
     } else {
       this.setVelocityX(0);
       this.setVelocityY(0);
       if (this.facingRight) {
-        this.play('idleRight');
+        this.play('idleRight', true);
       } else {
-        this.play('idleLeft');
+        this.play('idleLeft', true);
       }
     }
   }
