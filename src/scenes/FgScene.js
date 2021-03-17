@@ -13,8 +13,8 @@ export default class FgScene extends Phaser.Scene {
       frameHeight: 50,
     });
     this.load.spritesheet('enemy', '../../public/assets/sprites/Walk.png', {
-      frameWidth: 41,
-      frameHeight: 51,
+      frameWidth: 46,
+      frameHeight: 48,
     });
   }
 
@@ -186,13 +186,13 @@ export default class FgScene extends Phaser.Scene {
         this.enemy.body.velocity.y >= 0
       ) {
         this.enemy.body.velocity.y = -150;
-        this.enemyMovement('up');
+        this.enemy.enemyMovement('up');
       } else if (
         this.player.y > this.enemy.y &&
         this.enemy.body.velocity.y <= 0
       ) {
         this.enemy.body.velocity.y = 150;
-        this.enemyMovement('down');
+        this.enemy.enemyMovement('down');
       }
     }
   }

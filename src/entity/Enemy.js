@@ -14,7 +14,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   enemyMovement(direction) {
     switch (direction) {
       case 'left':
-        this.play('enemyRunLeft');
+        return this.play('enemyRunLeft');
+      case 'right':
+        return this.play('enemyRunRight');
+      case 'up':
+        return this.play('enemyRunUp');
+      case 'down':
+        return this.play('enemyRunDown');
     }
   }
 }
