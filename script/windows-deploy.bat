@@ -9,7 +9,7 @@ git checkout -b deploy || goto :error
 :: The START allows us to use /wait, which is essentially the same as await in JS. It will make it so that the code will not continue until webpack finishes packing the bundle.js before moving on to add/commit them.
 
 :: The problem is idk how to make this smoother because I haven't gone in depth into batch file writing. So this will open up a new command prompt window that will run the webpack command. When it finishes, you have to exit out of it yourself before this batch will continue executing its codes...and then you have to say you don't want to terminate the program, as well.
-START /wait webpack -p || goto :error
+START /wait webpack --mode production || goto :error
 
 :: Add the bundle.js/.map file. -f forces it to add because it's in .gitignore
 git add -f public/bundle.js public/bundle.js.map || goto :error
