@@ -9,6 +9,9 @@ export default class FgScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
+    this.load.image('forest', 'assets/backgrounds/forest.png');
+    this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
     this.load.spritesheet('player', './assets/sprites/cyborg.png', {
       frameWidth: 47,
       frameHeight: 50,
@@ -150,6 +153,48 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
+    //map stuff
+    const map = this.make.tilemap({ key: 'map' });
+
+    const darkGrass = map.addTilesetImage('forest', 'forest');
+
+    // const earthyTiles = map.addTilesetImage('sci-fi', 'earthy-tiles');
+
+    const grassAndBuildings = map.addTilesetImage('apocalypse', 'apocalypse');
+
+    // const extraBuildings = map.addTilesetImage(
+    //   'apocalypse-extra',
+    //   'extra-buildings'
+    // );
+
+    const belowLayer1 = map.createLayer('ground', darkGrass, 0, 0);
+
+    // const belowLayer2 = map.createStaticLayer('ground', earthyTiles, 0, 0);
+
+    // const belowLayer3 = map.createStaticLayer(
+    //   'ground',
+    //   grassAndBuildings,
+    //   0,
+    //   0
+    // );
+
+    const worldLayer1 = map.createLayer(
+      'above-ground',
+      grassAndBuildings,
+      0,
+      0
+    );
+
+    // const worldLayer2 = map.createStaticLayer(
+    //   'above-ground',
+    //   extraBuildings,
+    //   0,
+    //   0
+    // );
+
+    worldLayer1.setCollisionByProperty({ collides: true });
+
+    // worldLayer2.setCollisionByProperty({ collides: true });
     // Spawning the player
     this.player = new Player(this, 20, 400, 'player').setScale(2);
     this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(2);
