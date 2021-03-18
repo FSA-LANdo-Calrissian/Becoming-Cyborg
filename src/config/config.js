@@ -12,5 +12,6 @@ export default {
   autoRound: false,
   physics: {
     default: 'arcade',
+    arcade: { debug: true },
   },
 };
