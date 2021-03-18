@@ -152,6 +152,41 @@ export default class FgScene extends Phaser.Scene {
     });
   }
 
+  updateEnemyMovement() {
+    if (
+      this.player.x - this.enemy.x >= 180 ||
+      this.player.x - this.enemy.x >= -180
+    ) {
+      // if player to left of enemy AND enemy moving to right (or not moving)
+      if (this.player.x < this.enemy.x && this.enemy.body.velocity.x >= 0) {
+        // move enemy to left
+        this.enemy.body.velocity.x = -150;
+        this.enemy.enemyMovement('left');
+      }
+      // if player to right of enemy AND enemy moving to left (or not moving)
+      else if (
+        this.player.x > this.enemy.x &&
+        this.enemy.body.velocity.x <= 0
+      ) {
+        // move enemy to right
+        this.enemy.body.velocity.x = 150;
+        this.enemy.enemyMovement('right');
+      } else if (
+        this.player.y < this.enemy.y &&
+        this.enemy.body.velocity.y >= 0
+      ) {
+        this.enemy.body.velocity.y = -150;
+        this.enemy.enemyMovement('up');
+      } else if (
+        this.player.y > this.enemy.y &&
+        this.enemy.body.velocity.y <= 0
+      ) {
+        this.enemy.body.velocity.y = 150;
+        this.enemy.enemyMovement('down');
+      }
+    }
+  }
+
   create() {
     //map stuff
     const map = this.make.tilemap({ key: 'map' });
@@ -196,18 +231,27 @@ export default class FgScene extends Phaser.Scene {
 
     // worldLayer2.setCollisionByProperty({ collides: true });
     // Spawning the player
-    this.player = new Player(this, 20, 400, 'player').setScale(2);
-    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(2);
+    this.player = new Player(this, 20, 400, 'player').setScale(0.4);
+    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+
+    // Collision logic
+    this.physics.add.collider(this.player, worldLayer1);
+    this.physics.add.collider(this.player, this.enemy);
+    this.physics.add.collider(this.enemy, worldLayer1);
 
     // Adding the minimap
     this.minimap = this.cameras
       .add(630, 10, 150, 150)
-      .setZoom(0.2)
+      .setZoom(0.5)
       .setName('minimap');
     this.minimap.setBackgroundColor(0x000000);
     this.minimap.startFollow(this.player, true, 1, 1);
     this.minimap.ignore(this.player.hpBar.bar);
 
+    this.camera = this.scene.systems.cameras.main;
+    console.log(`scene camera`, this.scene);
+    this.camera.setZoom(4.5);
+    this.camera.startFollow(this.player);
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
       left: Phaser.Input.Keyboard.KeyCodes.A,
@@ -216,41 +260,6 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.createAnimations();
-  }
-
-  updateEnemyMovement() {
-    if (
-      this.player.x - this.enemy.x >= 180 ||
-      this.player.x - this.enemy.x >= -180
-    ) {
-      // if player to left of enemy AND enemy moving to right (or not moving)
-      if (this.player.x < this.enemy.x && this.enemy.body.velocity.x >= 0) {
-        // move enemy to left
-        this.enemy.body.velocity.x = -150;
-        this.enemy.enemyMovement('left');
-      }
-      // if player to right of enemy AND enemy moving to left (or not moving)
-      else if (
-        this.player.x > this.enemy.x &&
-        this.enemy.body.velocity.x <= 0
-      ) {
-        // move enemy to right
-        this.enemy.body.velocity.x = 150;
-        this.enemy.enemyMovement('right');
-      } else if (
-        this.player.y < this.enemy.y &&
-        this.enemy.body.velocity.y >= 0
-      ) {
-        this.enemy.body.velocity.y = -150;
-        this.enemy.enemyMovement('up');
-      } else if (
-        this.player.y > this.enemy.y &&
-        this.enemy.body.velocity.y <= 0
-      ) {
-        this.enemy.body.velocity.y = 150;
-        this.enemy.enemyMovement('down');
-      }
-    }
   }
 
   update(time, delta) {

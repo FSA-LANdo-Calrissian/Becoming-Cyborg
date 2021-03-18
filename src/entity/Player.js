@@ -8,12 +8,29 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.speed = 300; // Moving at 800 pixels per ms
+    this.speed = 100; // Moving at 800 pixels per ms
     this.health = 100;
     this.hpBar = new HealthBar(scene, 0 + 10, 0 + 10, this.health);
     this.facingRight = false;
-
+    this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
+  }
+
+  takeDamage(damage, time) {
+    // If time > cooldown since last hit
+    if (time > this.lastHurt) {
+      // Subtract damage from current health
+      this.health -= damage;
+      // Update the hp bar
+      this.hpBar.damage(this.health);
+      // Update cooldown until you can be hit again - cd 1s
+      this.lastHurt += 1000;
+    }
+
+    // On death logic
+    if (this.health <= 0) {
+      console.log('LOL ded noob');
+    }
   }
 
   updateMovement(cursors) {
@@ -53,22 +70,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     else if (cursors.left.isDown) {
       this.facingRight = false;
       this.setVelocityX(-this.speed);
+      this.setVelocityY(0);
       this.play('runLeft', true);
 
       // Running right
     } else if (cursors.right.isDown) {
       this.facingRight = true;
       this.setVelocityX(this.speed);
+      this.setVelocityY(0);
       this.play('runRight', true);
 
       // Running up
     } else if (cursors.up.isDown) {
       this.setVelocityY(-this.speed);
+      this.setVelocityX(0);
       this.play('runUp', true);
 
       // Running down
     } else if (cursors.down.isDown) {
       this.setVelocityY(this.speed);
+      this.setVelocityX(0);
       this.play('runDown', true);
 
       // No movement
