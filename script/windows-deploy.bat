@@ -12,7 +12,7 @@ git checkout -b deploy || goto :error
 START /wait webpack --mode production || goto :error
 
 :: Add the bundle.js/.map file. -f forces it to add because it's in .gitignore
-git add -f public/bundle.js public/bundle.js.map || goto :error
+git add -f public/bundle.js || goto :error
 
 :: Commit. --allow-empty lets us commit even if nothing is there.
 git commit --allow-empty -m 'Deploying...' || goto :error
