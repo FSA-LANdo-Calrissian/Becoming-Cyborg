@@ -9,18 +9,29 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false);
     this.speed = 80;
     this.health = 100;
+    this.direction = '';
   }
 
   enemyMovement(direction) {
     switch (direction) {
       case 'left':
-        return this.play('enemyRunLeft');
+        this.direction = 'left';
+        return this.play('enemyRunLeft', true);
       case 'right':
-        return this.play('enemyRunRight');
+        this.direction = 'right';
+        return this.play('enemyRunRight', true);
       case 'up':
-        return this.play('enemyRunUp');
+        this.direction = 'up';
+        return this.play('enemyRunUp', true);
       case 'down':
-        return this.play('enemyRunDown');
+        this.direction = 'down';
+        return this.play('enemyRunDown', true);
+      case 'idle':
+        return this.play('enemyIdleLeft', true);
+      case 'punchLeft':
+        return this.play('enemyPunchLeft', true);
+      case 'punchRight':
+        return this.play('enemyPunchRight', true);
     }
   }
 }
