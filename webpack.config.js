@@ -17,9 +17,19 @@ module.exports = {
     publicPath: '/public/',
     filename: 'bundle.js',
   },
-
+  resolve: {
+    extensions: ['.js'],
+  },
+  watchOptions: {
+    ignored: /node_modules/,
+  },
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'src/'),
+        exclude: /node_modules/,
+      },
       {
         test: [/\.vert$/, /\.frag$/],
         use: 'raw-loader',
