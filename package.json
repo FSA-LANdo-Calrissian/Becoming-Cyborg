@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "%homepath%\\Desktop\\FullStack\\Wall-E\\script\\windows-deploy.bat",
     "encrypt": "node %homepath%\\Desktop\\FullStack\\Wall-E\\script\\encrypt-heroku-windows.js",
-    "start-dev": "webpack-dev-server"
+    "start-dev": "webpack-dev-server",
+    "start": "nodemon main.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "yaml": "^1.10.2"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "phaser": "^3.53.1"
   }
 }
