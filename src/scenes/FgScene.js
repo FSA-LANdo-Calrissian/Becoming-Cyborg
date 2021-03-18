@@ -236,13 +236,14 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
-    this.physics.add.collider(this.player, this.enemy);
+    // this.physics.add.collider(this.player, this.enemy);
     this.physics.add.collider(this.enemy, worldLayer1);
 
     // Adding the minimap
     this.minimap = this.cameras
-      .add(850, 10, 150, 150)
+      .add(640, 10, 150, 150)
       .setZoom(0.5)
+      .setBounds(0, 0, 3000, 1000)
       .setName('minimap');
     this.minimap.setBackgroundColor(0x000000);
     this.minimap.startFollow(this.player, true, 1, 1);
@@ -250,16 +251,16 @@ export default class FgScene extends Phaser.Scene {
 
     // Shaping the minimap + border?
     const minimapBorder = new Phaser.GameObjects.Graphics(this);
-    minimapBorder.fillCircle(925, 85, 79);
+    minimapBorder.fillCircle(715, 85, 79);
     minimapBorder.fillStyle(0xffffff);
     const minimapCircle = new Phaser.GameObjects.Graphics(this);
-    minimapCircle.fillCircle(925, 85, 75);
+    minimapCircle.fillCircle(715, 85, 75);
     const circle = new Phaser.Display.Masks.GeometryMask(this, minimapCircle);
     this.minimap.setMask(circle, true);
 
     this.camera = this.cameras.main;
-    console.log(`testing...`, this.cameras);
     this.camera.setZoom(4.5);
+    this.camera.setBounds(0, 0, 1025, 768);
     this.camera.startFollow(this.player);
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -269,8 +270,9 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Adding world boundaries
+    // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, 1024, 768);
-
+    this.player.setCollideWorldBounds();
     this.createAnimations();
   }
 

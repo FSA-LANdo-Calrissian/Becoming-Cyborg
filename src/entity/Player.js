@@ -12,8 +12,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.health = 100;
     this.hpBar = new HealthBar(
       scene,
-      (1028 - 1028 / 4.5) / 2 + 10,
-      (768 - 768 / 4.5) / 2 + 10,
+      (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
+      (scene.game.config.height - scene.game.config.height / 4.5) / 2 + 5,
       this.health
     );
     this.facingRight = false;
