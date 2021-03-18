@@ -153,35 +153,43 @@ export default class FgScene extends Phaser.Scene {
   }
 
   updateEnemyMovement() {
+    if (Math.round(this.player.x) === Math.round(this.enemy.x)) {
+      this.enemy.body.velocity.x = 0;
+    } else if (Math.round(this.player.y) === Math.round(this.enemy.y)) {
+      this.enemy.body.velocity.y = 0;
+    }
     if (
-      this.player.x - this.enemy.x >= 180 ||
-      this.player.x - this.enemy.x >= -180
+      Math.round(this.player.x) - Math.round(this.enemy.x) >= 5 ||
+      Math.round(this.player.x) - Math.round(this.enemy.x) >= -5
     ) {
       // if player to left of enemy AND enemy moving to right (or not moving)
-      if (this.player.x < this.enemy.x && this.enemy.body.velocity.x >= 0) {
+      if (
+        Math.round(this.player.x) < Math.round(this.enemy.x) &&
+        Math.round(this.enemy.body.velocity.x) >= 0
+      ) {
         // move enemy to left
-        this.enemy.body.velocity.x = -150;
+        this.enemy.body.velocity.x = -35;
         this.enemy.enemyMovement('left');
       }
       // if player to right of enemy AND enemy moving to left (or not moving)
       else if (
-        this.player.x > this.enemy.x &&
-        this.enemy.body.velocity.x <= 0
+        Math.round(this.player.x) > Math.round(this.enemy.x) &&
+        Math.round(this.enemy.body.velocity.x) <= 0
       ) {
         // move enemy to right
-        this.enemy.body.velocity.x = 150;
+        this.enemy.body.velocity.x = 35;
         this.enemy.enemyMovement('right');
       } else if (
-        this.player.y < this.enemy.y &&
-        this.enemy.body.velocity.y >= 0
+        Math.round(this.player.y) < Math.round(this.enemy.y) &&
+        Math.round(this.enemy.body.velocity.y) >= 0
       ) {
-        this.enemy.body.velocity.y = -150;
+        this.enemy.body.velocity.y = -35;
         this.enemy.enemyMovement('up');
       } else if (
-        this.player.y > this.enemy.y &&
-        this.enemy.body.velocity.y <= 0
+        Math.round(this.player.y) > Math.round(this.enemy.y) &&
+        Math.round(this.enemy.body.velocity.y) <= 0
       ) {
-        this.enemy.body.velocity.y = 150;
+        this.enemy.body.velocity.y = 35;
         this.enemy.enemyMovement('down');
       }
     }
@@ -232,7 +240,7 @@ export default class FgScene extends Phaser.Scene {
     // worldLayer2.setCollisionByProperty({ collides: true });
     // Spawning the player
     this.player = new Player(this, 20, 400, 'player').setScale(0.4);
-    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.5);
 
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
