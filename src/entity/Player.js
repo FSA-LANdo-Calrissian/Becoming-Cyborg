@@ -10,7 +10,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false);
     this.speed = 100; // Moving at 800 pixels per ms
     this.health = 100;
-    this.hpBar = new HealthBar(scene, 0 + 10, 0 + 10, this.health);
+    this.hpBar = new HealthBar(
+      scene,
+      (1028 - 1028 / 4.5) / 2 + 10,
+      (768 - 768 / 4.5) / 2 + 10,
+      this.health
+    );
     this.facingRight = false;
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
