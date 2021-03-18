@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
-import HealthBar from '../hud/HealthBar';
+import Projectile from '../entity/Projectile';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -28,6 +28,8 @@ export default class FgScene extends Phaser.Scene {
         frameHeight: 48,
       }
     );
+    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
+
   }
 
   createAnimations() {
@@ -300,10 +302,28 @@ export default class FgScene extends Phaser.Scene {
 
     worldLayer1.setCollisionByProperty({ collides: true });
 
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    worldLayer1.renderDebug(debugGraphics, {
+      tileColor: null, // Color of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    });
+
     // worldLayer2.setCollisionByProperty({ collides: true });
     // Spawning the player
-    this.player = new Player(this, 20, 400, 'player').setScale(0.4);
-    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.5);
+
+    this.player = new Player(this, 20, 400, 'player').setScale(0.3);
+    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+    this.playerProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+      maxSize: 30,
+    });
+    this.enemyProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+      maxSize: 30,
+    });
 
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
@@ -311,6 +331,13 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.enemy, worldLayer1);
 
     // Adding the minimap
+    this.minimaptest = this.cameras.add(625, 0, 175, 175);
+    this.minimaptest.ignore(belowLayer1);
+    this.minimaptest.ignore(debugGraphics);
+    this.minimaptest.ignore(worldLayer1);
+    this.minimaptest.ignore(this.player);
+    this.minimaptest.ignore(this.enemy);
+    this.minimaptest.setBackgroundColor(0x000000);
     this.minimap = this.cameras
       .add(640, 10, 150, 150)
       .setZoom(0.5)
@@ -322,8 +349,10 @@ export default class FgScene extends Phaser.Scene {
 
     // Shaping the minimap + border?
     const minimapBorder = new Phaser.GameObjects.Graphics(this);
-    minimapBorder.fillCircle(715, 85, 79);
-    minimapBorder.fillStyle(0xffffff);
+    minimapBorder.fillStyle(0x000000);
+    minimapBorder.fillCircle(715, 85, 80);
+    const border = new Phaser.Display.Masks.GeometryMask(this, minimapBorder);
+    this.minimaptest.setMask(border, true);
     const minimapCircle = new Phaser.GameObjects.Graphics(this);
     minimapCircle.fillCircle(715, 85, 75);
     const circle = new Phaser.Display.Masks.GeometryMask(this, minimapCircle);
@@ -333,17 +362,22 @@ export default class FgScene extends Phaser.Scene {
     this.camera.setZoom(4.5);
     this.camera.setBounds(0, 0, 1025, 768);
     this.camera.startFollow(this.player);
+
+    // Keymapping
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      hp: Phaser.Input.Keyboard.KeyCodes.H,
+      speed: Phaser.Input.Keyboard.KeyCodes.I,
     });
 
     // Adding world boundaries
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, 1024, 768);
     this.player.setCollideWorldBounds();
+    this.enemy.setCollideWorldBounds();
     this.createAnimations();
   }
 

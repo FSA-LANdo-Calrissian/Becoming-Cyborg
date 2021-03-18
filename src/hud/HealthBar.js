@@ -27,7 +27,7 @@ export default class HealthBar {
     // First we clear the old bar - so that we can draw the new/updated one
     this.bar.clear();
     const { width, height } = this.size;
-    const margin = 2;
+    const margin = 1;
 
     // Black border around hp bar
     this.bar.fillStyle(0x000000);
