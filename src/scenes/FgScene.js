@@ -241,15 +241,24 @@ export default class FgScene extends Phaser.Scene {
 
     // Adding the minimap
     this.minimap = this.cameras
-      .add(630, 10, 150, 150)
+      .add(850, 10, 150, 150)
       .setZoom(0.5)
       .setName('minimap');
     this.minimap.setBackgroundColor(0x000000);
     this.minimap.startFollow(this.player, true, 1, 1);
     this.minimap.ignore(this.player.hpBar.bar);
 
-    this.camera = this.scene.systems.cameras.main;
-    console.log(`scene camera`, this.scene);
+    // Shaping the minimap + border?
+    const minimapBorder = new Phaser.GameObjects.Graphics(this);
+    minimapBorder.fillCircle(925, 85, 79);
+    minimapBorder.fillStyle(0xffffff);
+    const minimapCircle = new Phaser.GameObjects.Graphics(this);
+    minimapCircle.fillCircle(925, 85, 75);
+    const circle = new Phaser.Display.Masks.GeometryMask(this, minimapCircle);
+    this.minimap.setMask(circle, true);
+
+    this.camera = this.cameras.main;
+    console.log(`testing...`, this.cameras);
     this.camera.setZoom(4.5);
     this.camera.startFollow(this.player);
     this.cursors = this.input.keyboard.addKeys({
@@ -258,6 +267,9 @@ export default class FgScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     });
+
+    // Adding world boundaries
+    this.physics.world.setBounds(0, 0, 1024, 768);
 
     this.createAnimations();
   }
