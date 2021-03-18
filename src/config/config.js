@@ -2,9 +2,14 @@ import Phaser from 'phaser';
 
 export default {
   type: Phaser.AUTO,
-
-  width: 800,
-  height: 600,
+  // parent: null,
+  width: 1024,
+  height: 768,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  autoRound: false,
   physics: {
     default: 'arcade',
   },

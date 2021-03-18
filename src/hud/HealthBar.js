@@ -17,12 +17,9 @@ export default class HealthBar {
     this.draw(x, y);
   }
 
-  takeDamage(damage) {
-    this.health -= damage;
+  damage(newHealth) {
+    this.health = newHealth;
     this.draw(this.x, this.y);
-    if (this.health <= 0) {
-      console.log('LOL ded noob');
-    }
   }
 
   draw(x, y) {
