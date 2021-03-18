@@ -9,11 +9,11 @@ export default class FgScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet('player', '../../public/assets/sprites/cyborg.png', {
+    this.load.spritesheet('player', './assets/sprites/cyborg.png', {
       frameWidth: 47,
       frameHeight: 50,
     });
-    this.load.spritesheet('enemy', '../../public/assets/sprites/Walk.png', {
+    this.load.spritesheet('enemy', './assets/sprites/Walk.png', {
       frameWidth: 46,
       frameHeight: 48,
     });
