@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import HealthBar from '../hud/HealthBar';
+import Projectile from '../entity/Projectile';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -20,6 +21,7 @@ export default class FgScene extends Phaser.Scene {
       frameWidth: 46,
       frameHeight: 48,
     });
+    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
   }
 
   createAnimations() {
@@ -240,7 +242,18 @@ export default class FgScene extends Phaser.Scene {
     // worldLayer2.setCollisionByProperty({ collides: true });
     // Spawning the player
     this.player = new Player(this, 20, 400, 'player').setScale(0.4);
-    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.5);
+    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+    this.playerProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+      maxSize: 30,
+    });
+    this.enemyProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+      maxSize: 30,
+    });
+
 
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
