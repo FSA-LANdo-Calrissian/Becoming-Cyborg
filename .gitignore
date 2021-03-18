@@ -2,3 +2,4 @@ node_modules
 public/bundle.js
 public/bundle.map.js
 secrets.js
+public/bundle.js.LICENSE.txt
