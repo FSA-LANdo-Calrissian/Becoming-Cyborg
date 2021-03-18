@@ -19,6 +19,35 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.facingRight = false;
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
+    this.damageModifier = 0;
+    this.attackSpeedModifier = 0;
+  }
+
+  upgrade(type) {
+    switch (type) {
+      case 'hp':
+        console.log(`Health increased`);
+        this.health += 10;
+        break;
+      case 'ms':
+        console.log(`Speed increased`);
+        this.speed += 10;
+        break;
+      case 'as':
+        console.log(`Attack speed improved`);
+        // This subtracts 100 ms from the cooldown, essentially
+        this.attackSpeedModifier += 100;
+        break;
+      case 'damage':
+        console.log(`Damage improved`);
+        this.damageModifier += 10;
+        break;
+      default:
+        console.log('Invalid upgrade type');
+    }
+
+    console.log(`Current health: `, this.health);
+    console.log(`Current move speed`, this.speed);
   }
 
   takeDamage(damage, time) {
@@ -111,5 +140,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   update(cursors) {
     this.updateMovement(cursors);
+
+    if (cursors.hp.isDown) {
+      this.upgrade('hp');
+    } else if (cursors.speed.isDown) {
+      this.upgrade('ms');
+    }
   }
 }
