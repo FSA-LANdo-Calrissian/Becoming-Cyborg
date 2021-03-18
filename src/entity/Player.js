@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import HealthBar from '../hud/HealthBar';
+import Projectile from './Projectile';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -48,6 +49,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     console.log(`Current health: `, this.health);
     console.log(`Current move speed`, this.speed);
+
+    this.scene.input.on(
+      'pointerdown',
+      function (pointer) {
+        let mouse = pointer;
+        let angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          mouse.x + this.scene.cameras.main.scrollX,
+          mouse.y + this.scene.cameras.main.scrollY
+        );
+        const x = mouse.x + this.scene.cameras.main.scrollX;
+        const y = mouse.y + this.scene.cameras.main.scrollY;
+        this.fire(angle, x, y);
+      },
+      this
+    );
+  }
+
+  fire(angle, x, y) {
+    var blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
+    blast.rotation = angle; // THE ANGLE!
+
+    this.scene.playerProjectiles.add(blast); // group of bullets
+    this.scene.physics.moveTo(blast, x, y, 200);
   }
 
   takeDamage(damage, time) {
