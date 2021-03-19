@@ -55,8 +55,6 @@ export default class HUDScene extends Phaser.Scene {
     }
   }
 
-  makeMinimap() {}
-
   create() {
     // Create the bar
     this.bar = this.add.graphics();
