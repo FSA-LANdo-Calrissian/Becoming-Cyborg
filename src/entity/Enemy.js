@@ -46,59 +46,29 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
 
-      if (player.y < this.y && player.x < this.x) {
+      if (Math.abs(player.y - this.y) <= 10 && player.x < this.x) {
         this.enemyMovement('punchLeft');
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
-      }
-
-      if (player.y > this.y && player.x > this.x) {
+      } else if (player.x > this.x && Math.abs(player.y - this.y) <= 10) {
         this.enemyMovement('punchRight');
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
-      }
-
-      if (player.y > this.y) {
-        if (player.x < this.x) {
-          this.enemyMovement('punchLeft');
-        }
+      } else if (player.y > this.y && Math.abs(player.x - this.x) <= 10) {
         this.enemyMovement('punchDown');
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
-      }
-
-      if (player.y < this.y) {
-        if (player.x > this.x) {
-          this.enemyMovement('punchRight');
-        } else {
-          this.enemyMovement('punchUp');
-          this.body.velocity.x = 0;
-          this.body.velocity.y = 0;
-
-          return;
-        }
-      }
-
-      if (player.x < this.x) {
-        // console.log('player on the left');
-        this.enemyMovement('punchLeft');
-
+      } else if (player.y < this.y && Math.abs(player.x - this.x) <= 10) {
+        this.enemyMovement('punchUp');
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
-        return;
-      }
-      if (player.x > this.x) {
-        // console.log('player on the right');
-        this.enemyMovement('punchRight');
-        this.body.velocity.x = 0;
-        this.body.velocity.y = 0;
         return;
       }
     }
