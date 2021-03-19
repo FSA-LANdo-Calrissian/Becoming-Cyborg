@@ -29,7 +29,6 @@ export default class FgScene extends Phaser.Scene {
       }
     );
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-
   }
 
   createAnimations() {
@@ -157,7 +156,7 @@ export default class FgScene extends Phaser.Scene {
         start: 9,
         end: 11,
       }),
-      frameRate: 3,
+      frameRate: 2,
       repeat: -1,
       yoyo: true,
     });
@@ -168,96 +167,21 @@ export default class FgScene extends Phaser.Scene {
         start: 3,
         end: 5,
       }),
-      frameRate: 3,
+      frameRate: 2,
       repeat: -1,
       yoyo: true,
     });
-  }
 
-  updateEnemyMovement() {
-    // if (
-    //   Math.round(this.player.x) - Math.round(this.enemy.x) <= 1 ||
-    //   Math.round(this.player.x) - Math.round(this.enemy.x) <= -1 ||
-    //   (Math.round(this.player.y) - Math.round(this.enemy.y) <= 1 &&
-    //     Math.round(this.player.y) - Math.round(this.enemy.y) <= -1)
-    // ) {
-    //   console.log('hello');
-    //   this.enemy.enemyMovement('idle');
-    // }
-
-    if (
-      Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        this.enemy.x,
-        this.enemy.y
-      ) <= 30
-    ) {
-      this.enemy.body.velocity.x = 0;
-      this.enemy.body.velocity.y = 0;
-      if (this.player.x < this.enemy.x) {
-        console.log('player on the left');
-        this.enemy.enemyMovement('punchLeft');
-        this.enemy.body.velocity.x = 0;
-        this.enemy.body.velocity.y = 0;
-
-        return;
-      }
-      if (this.player.x > this.enemy.x) {
-        console.log('player on the right');
-        this.enemy.enemyMovement('punchRight');
-        this.enemy.body.velocity.x = 0;
-        this.enemy.body.velocity.y = 0;
-        return;
-      }
-    }
-    //   this.enemy.body.velocity.x = 0;
-    //   this.enemy.body.velocity.y = 0;
-
-    //   return;
-    // }
-    if (Math.round(this.player.x) === Math.round(this.enemy.x)) {
-      this.enemy.body.velocity.x = 0;
-    } else if (Math.round(this.player.y) === Math.round(this.enemy.y)) {
-      this.enemy.body.velocity.y = 0;
-    }
-    if (
-      Math.round(this.player.x) - Math.round(this.enemy.x) >= 100 ||
-      Math.round(this.player.x) - Math.round(this.enemy.x) >= -100 ||
-      (Math.round(this.player.y) - Math.round(this.enemy.y) >= 100 &&
-        Math.round(this.player.y) - Math.round(this.enemy.y) >= -100)
-    ) {
-      // if player to left of enemy AND enemy moving to right (or not moving)
-      if (
-        Math.round(this.player.x) < Math.round(this.enemy.x) &&
-        Math.round(this.enemy.body.velocity.x) >= 0
-      ) {
-        // move enemy to left
-        this.enemy.body.velocity.x = -35;
-        this.enemy.enemyMovement('left');
-      }
-      // if player to right of enemy AND enemy moving to left (or not moving)
-      else if (
-        Math.round(this.player.x) > Math.round(this.enemy.x) &&
-        Math.round(this.enemy.body.velocity.x) <= 0
-      ) {
-        // move enemy to right
-        this.enemy.body.velocity.x = 35;
-        this.enemy.enemyMovement('right');
-      } else if (
-        Math.round(this.player.y) < Math.round(this.enemy.y) &&
-        Math.round(this.enemy.body.velocity.y) >= 0
-      ) {
-        this.enemy.body.velocity.y = -35;
-        this.enemy.enemyMovement('up');
-      } else if (
-        Math.round(this.player.y) > Math.round(this.enemy.y) &&
-        Math.round(this.enemy.body.velocity.y) <= 0
-      ) {
-        this.enemy.body.velocity.y = 35;
-        this.enemy.enemyMovement('down');
-      }
-    }
+    this.anims.create({
+      key: 'enemyPunchUp',
+      frames: this.anims.generateFrameNumbers('enemyPunch', {
+        start: 6,
+        end: 8,
+      }),
+      frameRate: 2,
+      repeat: -1,
+      yoyo: true,
+    });
   }
 
   create() {
@@ -383,6 +307,6 @@ export default class FgScene extends Phaser.Scene {
 
   update(time, delta) {
     this.player.update(this.cursors);
-    this.updateEnemyMovement();
+    this.enemy.updateEnemyMovement(this.player, this.enemy);
   }
 }
