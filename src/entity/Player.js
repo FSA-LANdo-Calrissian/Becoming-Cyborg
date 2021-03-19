@@ -22,6 +22,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement = this.updateMovement.bind(this);
     this.damageModifier = 0;
     this.attackSpeedModifier = 0;
+    this.hitCooldown = false;
+
+    this.takeDamage = this.takeDamage.bind(this);
+    this.knockback = this.knockback.bind(this);
+    this.playDamageAnimation = this.playDamageAnimation.bind(this);
   }
 
   upgrade(type) {
@@ -76,21 +81,51 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.moveTo(blast, x, y, 200);
   }
 
-  takeDamage(damage, time) {
-    // If time > cooldown since last hit
-    if (time > this.lastHurt) {
-      // Subtract damage from current health
-      this.health -= damage;
-      // Update the hp bar
-      this.hpBar.damage(this.health);
-      // Update cooldown until you can be hit again - cd 1s
-      this.lastHurt += 1000;
-    }
+  playDamageAnimation() {
+    return this.scene.tweens.add({
+      targets: this,
+      duration: 100,
+      repeat: -1,
+      tint: 0xffffff,
+    });
+  }
 
+  knockback() {
+    console.log(`Knocking back...`, this.body);
+    this.body.touching.right ? this.setVelocityX(-500) : this.setVelocityX(500);
+  }
+
+  takeDamage(damage) {
+    // If player gets hit in the cooldown period,
+    // Do nothing
+    if (this.hitCooldown) {
+      console.log(`No damage taken`);
+      return;
+    }
     // On death logic
     if (this.health <= 0) {
       console.log('LOL ded noob');
+      return;
     }
+
+    console.log(`Ouch!`);
+    // Otherwise, set hit cooldown
+    this.hitCooldown = true;
+    // Logic for slight knockback
+    this.knockback();
+    // Play damage
+    const hitAnimation = this.playDamageAnimation();
+
+    // Subtract damage from current health
+    this.health -= damage;
+    // Update the hp bar
+    this.hpBar.damage(this.health);
+
+    this.scene.time.delayedCall(1000, () => {
+      this.hitCooldown = false;
+      hitAnimation.stop();
+      this.clearTint();
+    });
   }
 
   updateMovement(cursors) {
@@ -168,6 +203,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement(cursors);
 
     if (cursors.hp.isDown) {
+      this.takeDamage(10);
       this.upgrade('hp');
     } else if (cursors.speed.isDown) {
       this.upgrade('ms');

@@ -56,7 +56,8 @@ export default class HealthBar {
       this.bar.fillRect(
         x + margin,
         y + margin,
-        healthWidth - margin,
+        (healthWidth > this.size.width ? this.size.width : healthWidth) -
+          margin,
         height - margin
       );
     }

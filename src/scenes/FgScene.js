@@ -29,7 +29,6 @@ export default class FgScene extends Phaser.Scene {
       }
     );
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-
   }
 
   createAnimations() {
@@ -196,7 +195,7 @@ export default class FgScene extends Phaser.Scene {
       this.enemy.body.velocity.x = 0;
       this.enemy.body.velocity.y = 0;
       if (this.player.x < this.enemy.x) {
-        console.log('player on the left');
+        // console.log('player on the left');
         this.enemy.enemyMovement('punchLeft');
         this.enemy.body.velocity.x = 0;
         this.enemy.body.velocity.y = 0;
@@ -204,7 +203,7 @@ export default class FgScene extends Phaser.Scene {
         return;
       }
       if (this.player.x > this.enemy.x) {
-        console.log('player on the right');
+        // console.log('player on the right');
         this.enemy.enemyMovement('punchRight');
         this.enemy.body.velocity.x = 0;
         this.enemy.body.velocity.y = 0;
@@ -222,11 +221,18 @@ export default class FgScene extends Phaser.Scene {
       this.enemy.body.velocity.y = 0;
     }
     if (
-      Math.round(this.player.x) - Math.round(this.enemy.x) >= 100 ||
-      Math.round(this.player.x) - Math.round(this.enemy.x) >= -100 ||
-      (Math.round(this.player.y) - Math.round(this.enemy.y) >= 100 &&
-        Math.round(this.player.y) - Math.round(this.enemy.y) >= -100)
+      // Math.abs(this.player.x - this.enemy.x) >= 100 ||
+      // // Math.round(this.player.x) - Math.round(this.enemy.x) >= -100 ||
+      // Math.abs(this.player.y - this.enemy.y) >= 100
+      // Math.round(this.player.y) - Math.round(this.enemy.y) >= -100)
+      Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        this.enemy.x,
+        this.enemy.y
+      ) <= 100
     ) {
+      console.log(`Enemy detected`);
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
         Math.round(this.player.x) < Math.round(this.enemy.x) &&
@@ -328,6 +334,9 @@ export default class FgScene extends Phaser.Scene {
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
     this.physics.add.collider(this.player, this.enemy);
+    this.physics.add.overlap(this.player, this.enemy, () => {
+      this.player.takeDamage(10);
+    });
     this.physics.add.collider(this.enemy, worldLayer1);
 
     // Adding the minimap
