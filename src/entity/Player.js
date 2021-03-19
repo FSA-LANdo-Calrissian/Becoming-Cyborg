@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import HealthBar from '../hud/HealthBar';
 import Projectile from './Projectile';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -12,13 +11,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.speed = 100; // Moving at 800 pixels per ms
     this.health = 100;
     this.maxHealth = 100;
-    this.hpBar = new HealthBar(
-      scene,
-      (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
-      (scene.game.config.height - scene.game.config.height / 4.5) / 2 + 5,
-      this.health,
-      this.maxHealth
-    );
+    // this.hpBar = new HealthBar(
+    //   scene,
+    //   (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
+    //   (scene.game.config.height - scene.game.config.height / 4.5) / 2 + 5,
+    //   this.health,
+    //   this.maxHealth
+    // );
     this.facingRight = false;
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
@@ -38,7 +37,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.maxHealth += 10;
         // Update the hp bar. It doesn't change any hp values,
         // just updates so the max health will be updated.
-        this.hpBar.damage(this.health, this.maxHealth);
+        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
         break;
       case 'ms':
         console.log(`Speed increased`);
@@ -97,7 +96,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   knockback() {
-    console.log(`Knocking back...`, this.body);
     this.body.touching.right ? this.setVelocityX(-500) : this.setVelocityX(500);
   }
 
@@ -105,7 +103,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // If player gets hit in the cooldown period,
     // Do nothing
     if (this.hitCooldown) {
-      console.log(`No damage taken`);
       return;
     }
     // On death logic
@@ -114,7 +111,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    console.log(`Ouch!`);
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback
@@ -125,8 +121,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Subtract damage from current health
     this.health -= damage;
     // Update the hp bar
-    this.hpBar.damage(this.health);
+    this.scene.events.emit('takeDamage', this.health, this.maxHealth);
 
+    // After hit cooldown time, set to false, stop animation, and remove tint.
     this.scene.time.delayedCall(1000, () => {
       this.hitCooldown = false;
       hitAnimation.stop();

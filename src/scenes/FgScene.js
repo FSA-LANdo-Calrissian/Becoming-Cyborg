@@ -197,58 +197,63 @@ export default class FgScene extends Phaser.Scene {
 
   create() {
     //map stuff
-    const map = this.make.tilemap({ key: 'map' });
+    this.map = this.make.tilemap({ key: 'map' });
 
-    const darkGrass = map.addTilesetImage('forest', 'forest');
+    this.darkGrass = this.map.addTilesetImage('forest', 'forest');
 
-    // const earthyTiles = map.addTilesetImage('sci-fi', 'earthy-tiles');
+    // const earthyTiles = this.map.addTilesetImage('sci-fi', 'earthy-tiles');
 
-    const grassAndBuildings = map.addTilesetImage('apocalypse', 'apocalypse');
+    this.grassAndBuildings = this.map.addTilesetImage(
+      'apocalypse',
+      'apocalypse'
+    );
 
-    // const extraBuildings = map.addTilesetImage(
+    // const extraBuildings = this.map.addTilesetImage(
     //   'apocalypse-extra',
     //   'extra-buildings'
     // );
 
-    const belowLayer1 = map.createLayer('ground', darkGrass, 0, 0);
+    this.belowLayer1 = this.map.createLayer('ground', this.darkGrass, 0, 0);
 
-    // const belowLayer2 = map.createStaticLayer('ground', earthyTiles, 0, 0);
+    // const belowLayer2 = this.map.createStaticLayer('ground', earthyTiles, 0, 0);
 
-    // const belowLayer3 = map.createStaticLayer(
+    // const belowLayer3 = this.map.createStaticLayer(
     //   'ground',
     //   grassAndBuildings,
     //   0,
     //   0
     // );
 
-    const worldLayer1 = map.createLayer(
+    this.worldLayer1 = this.map.createLayer(
       'above-ground',
-      grassAndBuildings,
+      this.grassAndBuildings,
       0,
       0
     );
 
-    // const worldLayer2 = map.createStaticLayer(
+    // const worldLayer2 = this.map.createStaticLayer(
     //   'above-ground',
     //   extraBuildings,
     //   0,
     //   0
     // );
 
-    worldLayer1.setCollisionByProperty({ collides: true });
+    this.worldLayer1.setCollisionByProperty({ collides: true });
 
     const debugGraphics = this.add.graphics().setAlpha(0.75);
-    worldLayer1.renderDebug(debugGraphics, {
+    this.worldLayer1.renderDebug(debugGraphics, {
       tileColor: null, // Color of non-colliding tiles
       collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
     });
 
     // worldLayer2.setCollisionByProperty({ collides: true });
+
     // Spawning the player
 
     this.player = new Player(this, 20, 400, 'player').setScale(0.3);
     this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+    // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
       runChildUpdate: true,
@@ -261,41 +266,14 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Collision logic
-    this.physics.add.collider(this.player, worldLayer1);
+    this.physics.add.collider(this.player, this.worldLayer1);
     this.physics.add.collider(this.player, this.enemy);
     this.physics.add.overlap(this.player, this.enemy, () => {
       this.player.takeDamage(10);
     });
-    this.physics.add.collider(this.enemy, worldLayer1);
+    this.physics.add.collider(this.enemy, this.worldLayer1);
 
-    // Adding the minimap
-    this.minimaptest = this.cameras.add(625, 0, 175, 175);
-    this.minimaptest.ignore(belowLayer1);
-    this.minimaptest.ignore(debugGraphics);
-    this.minimaptest.ignore(worldLayer1);
-    this.minimaptest.ignore(this.player);
-    this.minimaptest.ignore(this.enemy);
-    this.minimaptest.setBackgroundColor(0x000000);
-    this.minimap = this.cameras
-      .add(640, 10, 150, 150)
-      .setZoom(0.5)
-      .setBounds(0, 0, 3000, 1000)
-      .setName('minimap');
-    this.minimap.setBackgroundColor(0x000000);
-    this.minimap.startFollow(this.player, true, 1, 1);
-    this.minimap.ignore(this.player.hpBar.bar);
-
-    // Shaping the minimap + border?
-    const minimapBorder = new Phaser.GameObjects.Graphics(this);
-    minimapBorder.fillStyle(0x000000);
-    minimapBorder.fillCircle(715, 85, 80);
-    const border = new Phaser.Display.Masks.GeometryMask(this, minimapBorder);
-    this.minimaptest.setMask(border, true);
-    const minimapCircle = new Phaser.GameObjects.Graphics(this);
-    minimapCircle.fillCircle(715, 85, 75);
-    const circle = new Phaser.Display.Masks.GeometryMask(this, minimapCircle);
-    this.minimap.setMask(circle, true);
-
+    // Camera logic
     this.camera = this.cameras.main;
     this.camera.setZoom(4.5);
     this.camera.setBounds(0, 0, 1025, 768);
