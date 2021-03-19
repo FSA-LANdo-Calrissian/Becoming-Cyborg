@@ -252,6 +252,9 @@ export default class FgScene extends Phaser.Scene {
     // Collision logic
     this.physics.add.collider(this.player, worldLayer1);
     this.physics.add.collider(this.player, this.enemy);
+    this.physics.add.overlap(this.player, this.enemy, () => {
+      this.player.takeDamage(10);
+    });
     this.physics.add.collider(this.enemy, worldLayer1);
 
     // Adding the minimap
