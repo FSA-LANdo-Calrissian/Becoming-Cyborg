@@ -6,6 +6,7 @@ import Projectile from '../entity/Projectile';
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
+    this.damageEnemy = this.damageEnemy.bind(this);
   }
 
   preload() {
@@ -29,7 +30,6 @@ export default class FgScene extends Phaser.Scene {
       }
     );
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-
   }
 
   createAnimations() {
@@ -329,6 +329,13 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.player, worldLayer1);
     this.physics.add.collider(this.player, this.enemy);
     this.physics.add.collider(this.enemy, worldLayer1);
+    this.physics.add.overlap(
+      this.enemy,
+      this.playerProjectiles,
+      this.damageEnemy,
+      null,
+      this
+    );
 
     // Adding the minimap
     this.minimaptest = this.cameras.add(625, 0, 175, 175);
@@ -384,5 +391,13 @@ export default class FgScene extends Phaser.Scene {
   update(time, delta) {
     this.player.update(this.cursors);
     this.updateEnemyMovement();
+  }
+  damageEnemy(enemy, projectile) {
+    this.enemy.health -= projectile.damage;
+    projectile.destroy();
+    if (this.enemy.health <= 0) {
+      this.enemy.setActive(false);
+      this.enemy.setVisible(false);
+    }
   }
 }

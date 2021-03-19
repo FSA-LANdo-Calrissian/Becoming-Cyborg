@@ -22,6 +22,24 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement = this.updateMovement.bind(this);
     this.damageModifier = 0;
     this.attackSpeedModifier = 0;
+    this.melee = false;
+    this.shooting = false;
+    this.scene.input.on(
+      'pointerdown',
+      function (pointer) {
+        let mouse = pointer;
+        let angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          mouse.x + this.scene.cameras.main.scrollX,
+          mouse.y + this.scene.cameras.main.scrollY
+        );
+        const x = mouse.x + this.scene.cameras.main.scrollX;
+        const y = mouse.y + this.scene.cameras.main.scrollY;
+        this.fire(angle, x, y);
+      },
+      this
+    );
   }
 
   upgrade(type) {
@@ -49,31 +67,28 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     console.log(`Current health: `, this.health);
     console.log(`Current move speed`, this.speed);
-
-    this.scene.input.on(
-      'pointerdown',
-      function (pointer) {
-        let mouse = pointer;
-        let angle = Phaser.Math.Angle.Between(
-          this.x,
-          this.y,
-          mouse.x + this.scene.cameras.main.scrollX,
-          mouse.y + this.scene.cameras.main.scrollY
-        );
-        const x = mouse.x + this.scene.cameras.main.scrollX;
-        const y = mouse.y + this.scene.cameras.main.scrollY;
-        this.fire(angle, x, y);
-      },
-      this
-    );
   }
 
+  //shooting projectiles
   fire(angle, x, y) {
-    var blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
-    blast.rotation = angle; // THE ANGLE!
+    if (!this.shooting) {
+      this.shooting = true;
+      this.scene.time.delayedCall(
+        2000,
+        () => {
+          this.shooting = false;
+        },
+        null,
+        this
+      );
+      var blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
+      blast.rotation = angle; // THE ANGLE!
 
-    this.scene.playerProjectiles.add(blast); // group of bullets
-    this.scene.physics.moveTo(blast, x, y, 200);
+      this.scene.playerProjectiles.add(blast); // group of bullets
+      this.scene.physics.moveTo(blast, x, y, 200);
+    } else {
+      //maybe add cooldown sound or something
+    }
   }
 
   takeDamage(damage, time) {
