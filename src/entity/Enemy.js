@@ -40,6 +40,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
+
     if (this.active) {
       if (
         Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 18
@@ -109,6 +110,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       } else if (Math.round(player.y) === Math.round(this.y)) {
         this.body.velocity.y = 0;
       }
+
       if (
         Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 100
       ) {
