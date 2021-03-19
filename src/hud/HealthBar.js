@@ -1,25 +1,26 @@
 import Phaser from 'phaser';
 
 export default class HealthBar {
-  constructor(scene, x, y, health) {
+  constructor(scene, x, y, health, maxHealth) {
     this.scene = scene;
     this.bar = new Phaser.GameObjects.Graphics(scene);
     this.x = x;
     this.y = y;
     this.health = health;
+    this.maxHealth = maxHealth;
     this.size = {
       width: 50,
       height: 5,
     };
-    // How much of the hp bar to deplete on damage
-    this.pixelPerHealth = this.size.width / this.health;
     scene.add.existing(this.bar);
 
     this.draw(x, y);
   }
 
-  damage(newHealth) {
+  damage(newHealth, maxHealth = this.maxHealth) {
     this.health = newHealth;
+    this.maxHealth = maxHealth;
+    console.log(`Health / MaxHealth`, this.health, this.maxHealth);
     this.draw(this.x, this.y);
   }
 
@@ -39,8 +40,14 @@ export default class HealthBar {
 
     // This makes it so the health bar goes with the camera instead of staying in that spot of the world.
     this.bar.setScrollFactor(0, 0);
+    // How much of the hp bar to deplete on damage
+    const pixelPerHealth = this.size.width / this.maxHealth;
 
-    const healthWidth = Math.floor(this.health * this.pixelPerHealth);
+    const healthWidth = Math.floor(this.health * pixelPerHealth);
+    console.log(
+      `PixelPerHealth should be updated with every upgrade`,
+      pixelPerHealth
+    );
 
     // Bar colors based on health %
     if (healthWidth <= width / 4) {
@@ -56,8 +63,7 @@ export default class HealthBar {
       this.bar.fillRect(
         x + margin,
         y + margin,
-        (healthWidth > this.size.width ? this.size.width : healthWidth) -
-          margin,
+        healthWidth - margin,
         height - margin
       );
     }

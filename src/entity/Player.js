@@ -11,11 +11,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false);
     this.speed = 100; // Moving at 800 pixels per ms
     this.health = 100;
+    this.maxHealth = 100;
     this.hpBar = new HealthBar(
       scene,
       (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
       (scene.game.config.height - scene.game.config.height / 4.5) / 2 + 5,
-      this.health
+      this.health,
+      this.maxHealth
     );
     this.facingRight = false;
     this.lastHurt = 0;
@@ -33,7 +35,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (type) {
       case 'hp':
         console.log(`Health increased`);
-        this.health += 10;
+        this.maxHealth += 10;
+        // Update the hp bar. It doesn't change any hp values,
+        // just updates so the max health will be updated.
+        this.hpBar.damage(this.health, this.maxHealth);
         break;
       case 'ms':
         console.log(`Speed increased`);
@@ -53,6 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     console.log(`Current health: `, this.health);
+    console.log(`Max health: `, this.maxHealth);
     console.log(`Current move speed`, this.speed);
 
     this.scene.input.on(
@@ -203,7 +209,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement(cursors);
 
     if (cursors.hp.isDown) {
-      this.takeDamage(10);
       this.upgrade('hp');
     } else if (cursors.speed.isDown) {
       this.upgrade('ms');

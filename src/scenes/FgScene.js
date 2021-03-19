@@ -232,7 +232,7 @@ export default class FgScene extends Phaser.Scene {
         this.enemy.y
       ) <= 100
     ) {
-      console.log(`Enemy detected`);
+      // console.log(`Enemy detected`);
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
         Math.round(this.player.x) < Math.round(this.enemy.x) &&
