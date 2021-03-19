@@ -9,6 +9,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.lifespan = 2000;
 
     this.speed = Phaser.Math.GetSpeed(800, 1); // (distance in pixels, time (ms))
+    this.damage = 25;
   }
 
   // Check which direction the player is facing and move the laserbolt in that direction as long as it lives

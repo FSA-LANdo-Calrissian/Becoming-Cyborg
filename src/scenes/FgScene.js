@@ -6,6 +6,7 @@ import Projectile from '../entity/Projectile';
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
+    this.damageEnemy = this.damageEnemy.bind(this);
   }
 
   preload() {
@@ -271,7 +272,17 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemy, () => {
       this.player.takeDamage(10);
     });
+
+    this.physics.add.overlap(
+      this.enemy,
+      this.playerProjectiles,
+      this.damageEnemy,
+      null,
+      this
+    );
+
     this.physics.add.collider(this.enemy, this.worldLayer1);
+
 
     // Camera logic
     this.camera = this.cameras.main;
@@ -300,5 +311,13 @@ export default class FgScene extends Phaser.Scene {
   update(time, delta) {
     this.player.update(this.cursors);
     this.enemy.update(this.player);
+  }
+  damageEnemy(enemy, projectile) {
+    this.enemy.health -= projectile.damage;
+    projectile.destroy();
+    if (this.enemy.health <= 0) {
+      this.enemy.setActive(false);
+      this.enemy.setVisible(false);
+    }
   }
 }
