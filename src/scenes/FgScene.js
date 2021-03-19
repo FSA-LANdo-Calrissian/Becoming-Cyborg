@@ -182,6 +182,17 @@ export default class FgScene extends Phaser.Scene {
       repeat: -1,
       yoyo: true,
     });
+
+    this.anims.create({
+      key: 'enemyPunchDown',
+      frames: this.anims.generateFrameNumbers('enemyPunch', {
+        start: 0,
+        end: 2,
+      }),
+      frameRate: 2,
+      repeat: -1,
+      yoyo: true,
+    });
   }
 
   create() {
@@ -310,6 +321,6 @@ export default class FgScene extends Phaser.Scene {
 
   update(time, delta) {
     this.player.update(this.cursors);
-    this.enemy.updateEnemyMovement(this.player, this.enemy);
+    this.enemy.update(this.player);
   }
 }
