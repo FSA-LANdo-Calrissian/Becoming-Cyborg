@@ -13,27 +13,25 @@ export default class FgScene extends Phaser.Scene {
   preload() {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
     this.load.image('forest', 'assets/backgrounds/forest.png');
+    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
-    this.load.spritesheet('player', './assets/sprites/cyborg.png', {
+    this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
       frameWidth: 47,
       frameHeight: 50,
     });
-    this.load.spritesheet('enemy', './assets/sprites/Walk.png', {
+    this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
       frameWidth: 46,
       frameHeight: 48,
     });
-    this.load.spritesheet(
-      'enemyPunch',
-      './assets/sprites/Punch_RightHand.png',
-      {
-        frameWidth: 48,
-        frameHeight: 48,
-      }
-    );
-    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
+    this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
+    this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
   }
 
-  create() {
+  create(data) {
+    this.gg = this.sound.add('gg');
     //map stuff
     this.map = this.make.tilemap({ key: 'map' });
 
@@ -105,9 +103,9 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
-    this.physics.add.collider(this.player, this.enemy);
+    // this.physics.add.collider(this.player, this.enemy);
     this.physics.add.overlap(this.player, this.enemy, () => {
-      this.player.takeDamage(10);
+      this.player.takeDamage(10, this.gg);
     });
 
     this.physics.add.overlap(
@@ -130,6 +128,7 @@ export default class FgScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      // TODO: Remove this
       hp: Phaser.Input.Keyboard.KeyCodes.H,
       speed: Phaser.Input.Keyboard.KeyCodes.I,
     });
@@ -140,6 +139,11 @@ export default class FgScene extends Phaser.Scene {
     this.player.setCollideWorldBounds();
     this.enemy.setCollideWorldBounds();
     createAnimations.call(this);
+
+    if (data.choice) {
+      this.scene.resume();
+      console.log(`In FgScene...`);
+    }
   }
 
   update(time, delta) {
@@ -150,8 +154,7 @@ export default class FgScene extends Phaser.Scene {
   damageEnemy(enemy, projectile) {
     if (enemy.active === true && projectile.active === true) {
       console.log(`Target hit! Preparing to take damage`);
-      projectile.setActive(false);
-      projectile.setVisible(false);
+      projectile.destroy();
 
       enemy.takeDamage(projectile.damage);
     }

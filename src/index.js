@@ -4,7 +4,7 @@ import FgScene from './scenes/FgScene';
 import MainScene from './scenes/MainScene';
 import PreGameScene from './scenes/PreGameScene';
 import HUDScene from './scenes/HUDScene';
-
+import GameOverScene from './scenes/GameOverScene';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -16,6 +16,7 @@ export default class Game extends Phaser.Game {
     this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
     this.scene.add('HUDScene', HUDScene);
+    this.scene.add('GameOver', GameOverScene);
     this.scene.bringToTop('HUDScene');
 
     // Then start the game by calling the main scene - or the very first one

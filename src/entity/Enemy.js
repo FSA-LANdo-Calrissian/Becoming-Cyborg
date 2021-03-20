@@ -16,8 +16,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   takeDamage(damage) {
     this.health -= damage;
     if (this.health <= 0) {
+      this.setVelocityX(0);
+      this.setVelocityY(0);
       this.setActive(false);
       this.setVisible(false);
+      this.body.enable = false;
     }
   }
 
@@ -50,7 +53,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   updateEnemyMovement(player) {
     if (
-      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 18
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 16
     ) {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
