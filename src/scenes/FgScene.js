@@ -10,6 +10,8 @@ export default class FgScene extends Phaser.Scene {
     this.damageEnemy = this.damageEnemy.bind(this);
   }
 
+  openUpgrade() {}
+
   preload() {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
     this.load.image('forest', 'assets/backgrounds/forest.png');
@@ -131,6 +133,7 @@ export default class FgScene extends Phaser.Scene {
       // TODO: Remove this
       hp: Phaser.Input.Keyboard.KeyCodes.H,
       speed: Phaser.Input.Keyboard.KeyCodes.I,
+      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
 
     // Adding world boundaries
@@ -139,6 +142,10 @@ export default class FgScene extends Phaser.Scene {
     this.player.setCollideWorldBounds();
     this.enemy.setCollideWorldBounds();
     createAnimations.call(this);
+
+    this.events.on('transitioncomplete', () => {
+      this.scene.wake();
+    });
 
     if (data.choice) {
       this.scene.restart({ choice: false });
@@ -150,6 +157,14 @@ export default class FgScene extends Phaser.Scene {
   update(time, delta) {
     this.player.update(this.cursors);
     this.enemy.update(this.player);
+    if (this.cursors.upgrade.isDown) {
+      this.scene.transition({
+        target: 'UpgradeUI',
+        sleep: true,
+        duration: 1000,
+        data: { player: this.player },
+      });
+    }
   }
 
   damageEnemy(enemy, projectile) {

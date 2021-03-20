@@ -141,7 +141,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // On death logic
     if (this.health <= 0) {
       gg.play();
-      console.log('LOL ded noob');
 
       this.scene.scene.transition({
         target: 'GameOver',

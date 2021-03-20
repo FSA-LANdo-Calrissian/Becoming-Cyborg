@@ -5,6 +5,7 @@ import MainScene from './scenes/MainScene';
 import PreGameScene from './scenes/PreGameScene';
 import HUDScene from './scenes/HUDScene';
 import GameOverScene from './scenes/GameOverScene';
+import UpgradeUI from './scenes/UpgradeUI';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -16,6 +17,7 @@ export default class Game extends Phaser.Game {
     this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
     this.scene.add('HUDScene', HUDScene);
+    this.scene.add('UpgradeUI', UpgradeUI);
     this.scene.add('GameOver', GameOverScene);
     this.scene.bringToTop('HUDScene');
 

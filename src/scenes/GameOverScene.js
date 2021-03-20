@@ -14,6 +14,7 @@ export default class GameOverScene extends Phaser.Scene {
     this.scene.transition({
       target: 'FgScene',
       duration: 1000,
+      sleep: true,
       data: { choice: 'restart' },
     });
   }
