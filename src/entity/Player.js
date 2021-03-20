@@ -11,6 +11,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.speed = 100; // Moving at 800 pixels per ms
     this.health = 100;
     this.maxHealth = 100;
+    this.stats = {
+      kills: 0,
+    };
     // this.hpBar = new HealthBar(
     //   scene,
     //   (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
@@ -52,6 +55,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (type) {
       case 'hp':
         console.log(`Health increased`);
+        this.health += 10;
         this.maxHealth += 10;
         // Update the hp bar. It doesn't change any hp values,
         // just updates so the max health will be updated.
@@ -72,6 +76,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         break;
       default:
         console.log('Invalid upgrade type');
+        return;
     }
 
     console.log(`Current health: `, this.health);
@@ -114,15 +119,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.body.touching.right ? this.setVelocityX(-500) : this.setVelocityX(500);
   }
 
-  takeDamage(damage) {
+  takeDamage(damage, gg) {
     // If player gets hit in the cooldown period,
     // Do nothing
     if (this.hitCooldown) {
-      return;
-    }
-    // On death logic
-    if (this.health <= 0) {
-      console.log('LOL ded noob');
       return;
     }
 
@@ -138,6 +138,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Update the hp bar
     this.scene.events.emit('takeDamage', this.health, this.maxHealth);
 
+    // On death logic
+    if (this.health <= 0) {
+      gg.play();
+
+      this.scene.scene.transition({
+        target: 'GameOver',
+        duration: 1000,
+        data: { stats: this.stats },
+      });
+
+      return;
+    }
+
     // After hit cooldown time, set to false, stop animation, and remove tint.
     this.scene.time.delayedCall(1000, () => {
       this.hitCooldown = false;
@@ -147,6 +160,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateMovement(cursors) {
+    if (!this.body) return;
     // Running up + left
     if (cursors.left.isDown && cursors.up.isDown) {
       this.facingRight = false;

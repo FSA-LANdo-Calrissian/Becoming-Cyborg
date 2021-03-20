@@ -64,7 +64,7 @@ export default class HUDScene extends Phaser.Scene {
     let player;
     // Need to wait for the FgScene to load first
     const loadScene = new Promise((res, rej) => {
-      this.time.delayedCall(1000, () => {
+      this.time.delayedCall(200, () => {
         res(console.log(`Loading scene info...`));
       });
     });
@@ -95,7 +95,7 @@ export default class HUDScene extends Phaser.Scene {
         .setBackgroundColor(0x000000);
       const minimapCam = mainGame.cameras
         .add(640, 10, 150, 150)
-        .setZoom(0.5)
+        .setZoom(0.6)
         .setBounds(0, 0, 3000, 1000)
         .setName('minimap')
         .setBackgroundColor(0x000000)
