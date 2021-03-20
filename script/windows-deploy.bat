@@ -25,6 +25,7 @@ git push --force heroku deploy:main || goto :error
 :: It essentially does the same thing that FullStack does in its deploy file. It will change you back to the master branch and destroy the deploy branch, then exit the batch script. This will also run at the end of every script to get rid of the deploy branch and change you back to master (as with in FullStack's script)
 :error
 echo Failed with error #%errorlevel%.
+git stash
 git checkout main
 git branch -D deploy
 exit /b %errorlevel%
