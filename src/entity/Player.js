@@ -76,6 +76,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         break;
       default:
         console.log('Invalid upgrade type');
+        return;
     }
 
     console.log(`Current health: `, this.health);

@@ -154,7 +154,6 @@ export default class FgScene extends Phaser.Scene {
 
   damageEnemy(enemy, projectile) {
     if (enemy.active === true && projectile.active === true) {
-      console.log(`Target hit! Preparing to take damage`);
       projectile.destroy();
 
       enemy.takeDamage(projectile.damage);
