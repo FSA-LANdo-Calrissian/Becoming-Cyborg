@@ -140,7 +140,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.health <= 0) {
       gg.play();
       console.log('LOL ded noob');
-      this.scene.scene.pause('MainScene');
 
       this.scene.scene.transition({
         target: 'GameOver',
@@ -160,6 +159,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateMovement(cursors) {
+    if (!this.body) return;
     // Running up + left
     if (cursors.left.isDown && cursors.up.isDown) {
       this.facingRight = false;

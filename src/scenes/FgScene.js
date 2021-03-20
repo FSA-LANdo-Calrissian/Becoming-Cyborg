@@ -141,8 +141,9 @@ export default class FgScene extends Phaser.Scene {
     createAnimations.call(this);
 
     if (data.choice) {
-      this.scene.resume();
-      console.log(`In FgScene...`);
+      this.scene.restart({ choice: false });
+      const main = this.scene.get('MainScene');
+      main.scene.restart({ choice: false });
     }
   }
 

@@ -7,8 +7,7 @@ export default class MainScene extends Phaser.Scene {
     super('MainScene');
   }
 
-  create() {
-    console.log(`Launching main scene...`);
+  create(data) {
     this.scene.launch('FgScene');
     // this.scene.launch('PreGameScene');
     this.scene.launch('HUDScene');

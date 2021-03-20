@@ -52,6 +52,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
+    if (!this.body) return;
+
     if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 16
     ) {

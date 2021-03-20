@@ -11,11 +11,10 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   clickButton() {
-    console.log(`Clicked!`);
-    this.scene.setVisible(false);
     this.scene.transition({
       target: 'FgScene',
-      data: { choice: 'reset' },
+      duration: 1000,
+      data: { choice: 'restart' },
     });
   }
 
