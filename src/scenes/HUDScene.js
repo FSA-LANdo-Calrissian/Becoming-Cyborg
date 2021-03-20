@@ -95,7 +95,7 @@ export default class HUDScene extends Phaser.Scene {
         .setBackgroundColor(0x000000);
       const minimapCam = mainGame.cameras
         .add(640, 10, 150, 150)
-        .setZoom(0.5)
+        .setZoom(0.6)
         .setBounds(0, 0, 3000, 1000)
         .setName('minimap')
         .setBackgroundColor(0x000000)
