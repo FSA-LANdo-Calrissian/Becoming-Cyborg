@@ -24,35 +24,46 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  enemyMovement(direction) {
+  enemyMovement(direction, angle) {
     switch (direction) {
       case 'left':
+        this.angle = 0;
         this.direction = 'left';
         return this.play('enemyRunLeft', true);
       case 'right':
+        this.angle = 0;
         this.direction = 'right';
         return this.play('enemyRunRight', true);
       case 'up':
+        this.angle = 0;
         this.direction = 'up';
         return this.play('enemyRunUp', true);
       case 'down':
+        this.angle = 0;
         this.direction = 'down';
         return this.play('enemyRunDown', true);
       case 'idle':
+        this.angle = 0;
         return this.play('enemyIdleLeft', true);
       case 'punchLeft':
+        this.angle = 0;
         return this.play('enemyPunchLeft', true);
       case 'punchRight':
+        this.angle = 0;
         return this.play('enemyPunchRight', true);
       case 'punchUp':
+        this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
         return this.play('enemyPunchUp', true);
       case 'punchDown':
+        this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
         return this.play('enemyPunchDown', true);
     }
   }
 
   updateEnemyMovement(player) {
     if (!this.body) return;
+
+    const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
 
     if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 16
@@ -61,25 +72,25 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.y = 0;
 
       if (Math.abs(player.y - this.y) <= 10 && player.x < this.x) {
-        this.enemyMovement('punchLeft');
+        this.enemyMovement('punchLeft', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
       } else if (player.x > this.x && Math.abs(player.y - this.y) <= 10) {
-        this.enemyMovement('punchRight');
+        this.enemyMovement('punchRight', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
       } else if (player.y > this.y && Math.abs(player.x - this.x) <= 10) {
-        this.enemyMovement('punchDown');
+        this.enemyMovement('punchDown', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 
         return;
       } else if (player.y < this.y && Math.abs(player.x - this.x) <= 10) {
-        this.enemyMovement('punchUp');
+        this.enemyMovement('punchUp', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
 

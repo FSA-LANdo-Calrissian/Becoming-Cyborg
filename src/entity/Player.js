@@ -55,6 +55,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (type) {
       case 'hp':
         console.log(`Health increased`);
+        this.health += 10;
         this.maxHealth += 10;
         // Update the hp bar. It doesn't change any hp values,
         // just updates so the max health will be updated.
