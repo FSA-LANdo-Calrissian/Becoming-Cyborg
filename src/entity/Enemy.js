@@ -14,7 +14,17 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   takeDamage(damage) {
+    /*
+      Enemy damage logic to update enemy health based on damage taken.
+      If enemy dies, set enemy sprite to invisible + inactive + non-mobile + turn off collision.
+      param damage: int -> The amount of damage the enemy will take.
+      returns null.
+    */
+
+    // Subtract damage from health
     this.health -= damage;
+
+    // Death logic.
     if (this.health <= 0) {
       this.setVelocityX(0);
       this.setVelocityY(0);
@@ -25,6 +35,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   enemyMovement(direction, angle) {
+    /*
+      Enemy animation logic. This will determine which sprite/animation to display while the enemy walks/runs/attacks.
+      param direction: string -> Enemy current moving direction. Current strings are: left, right, up, down
+      param angle: float -> Angle at which the enemy is facing. Only relevant for the punching up/down animations. Adjusts the enemy's angle to display properly.
+    */
     switch (direction) {
       case 'left':
         this.angle = 0;
@@ -61,12 +76,22 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
+    /*
+      Function to determine enemy aggro and enemy movement.
+      If player is within a range of the constant aggroRange, enemy will move toward the player. If player is within attack range, enemy will stop moving and play attack animation.
+      param player: object -> The player object, passed in through FgScene's update -> enemy update -> here. No need to change or touch.
+      returns null.
+    */
     if (!this.body) return;
+
+    const aggroRange = 50;
+    const attackRange = 16;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
 
     if (
-      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 16
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <=
+      attackRange
     ) {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
@@ -104,7 +129,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.y = 0;
     }
     if (
-      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 50
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <=
+      aggroRange
     ) {
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (

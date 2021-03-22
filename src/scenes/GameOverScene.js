@@ -6,20 +6,21 @@ export default class GameOverScene extends Phaser.Scene {
     this.clickButton = this.clickButton.bind(this);
   }
 
-  preload() {
-    this.load.image('scroll', './assets/backgrounds/scroll.png');
-  }
-
   clickButton() {
+    // Restarts the game
     this.scene.start('MainScene');
   }
 
   create(data) {
-    console.log('GO data', data);
+    // Load the game over scroll
     this.add.sprite(350, 300, 'scroll').setScale(2);
+
+    // Add text
     this.add.text(290, 200, 'Game Over!');
     this.add.text(290, 275, `Kills: ${data.stats.kills}`);
     this.reset = this.add.text(290, 350, 'Restart Game!', { fill: '#0f0' });
+
+    // Make the restart game text a button we can press to restart the game
     this.reset
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.clickButton());
