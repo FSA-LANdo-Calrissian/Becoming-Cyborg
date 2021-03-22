@@ -94,8 +94,8 @@ export default class FgScene extends Phaser.Scene {
       new Phaser.Geom.Rectangle(
         0,
         0,
-        this.tutorialText.width + 10,
-        this.tutorialText.height + 10
+        this.tutorialText.width + 15,
+        this.tutorialText.height + 30
       ),
       Phaser.Geom.Rectangle.Contains
     );
@@ -272,7 +272,6 @@ export default class FgScene extends Phaser.Scene {
         this.enemy.y
       ) < 51
     ) {
-      console.log(`Running tutorial...`);
       this.tutorialInProgress = true;
 
       this.player.play(
