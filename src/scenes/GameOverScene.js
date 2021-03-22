@@ -11,15 +11,11 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   clickButton() {
-    this.scene.transition({
-      target: 'FgScene',
-      duration: 1000,
-      sleep: true,
-      data: { choice: 'restart' },
-    });
+    this.scene.start('MainScene');
   }
 
   create(data) {
+    console.log('GO data', data);
     this.add.sprite(350, 300, 'scroll').setScale(2);
     this.add.text(290, 200, 'Game Over!');
     this.add.text(290, 275, `Kills: ${data.stats.kills}`);

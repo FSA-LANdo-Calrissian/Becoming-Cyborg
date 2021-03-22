@@ -8,29 +8,30 @@ export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.damageEnemy = this.damageEnemy.bind(this);
+    this.tutorial = false;
   }
 
   openUpgrade() {}
 
   preload() {
-    this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
-    this.load.image('forest', 'assets/backgrounds/forest.png');
-    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-    this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
-    this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-      frameWidth: 47,
-      frameHeight: 50,
-    });
-    this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
-      frameWidth: 46,
-      frameHeight: 48,
-    });
-    this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
-      frameWidth: 48,
-      frameHeight: 48,
-    });
-    this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
-    this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
+    // this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
+    // this.load.image('forest', 'assets/backgrounds/forest.png');
+    // this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
+    // this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
+    // this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
+    //   frameWidth: 47,
+    //   frameHeight: 50,
+    // });
+    // this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
+    //   frameWidth: 46,
+    //   frameHeight: 48,
+    // });
+    // this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
+    //   frameWidth: 48,
+    //   frameHeight: 48,
+    // });
+    // this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+    // this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
   }
 
   create(data) {
@@ -233,19 +234,19 @@ export default class FgScene extends Phaser.Scene {
   update(time, delta) {
     console.log(this.tutorial);
 
-    if (time < 3000) {
+    if (time < 50000) {
       console.log('hello????');
       this.tutorial = true;
     }
-    if (this.tutorial === true) {
-      this.player.body.moves = false;
-      this.enemy.body.moves = false;
-      this.player.shooting = true;
-    } else {
-      this.player.body.moves = true;
-      this.enemy.body.moves = true;
-      this.player.shooting = false;
-    }
+    // if (this.tutorial === true) {
+    //   this.player.body.moves = false;
+    //   this.enemy.body.moves = false;
+    //   this.player.shooting = true;
+    // } else {
+    //   this.player.body.moves = true;
+    //   this.enemy.body.moves = true;
+    //   this.player.shooting = false;
+    // }
 
     this.player.update(this.cursors);
     this.enemy.update(this.player);

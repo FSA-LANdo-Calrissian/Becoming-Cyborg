@@ -27,14 +27,48 @@ export default class PreGameScene extends Phaser.Scene {
     this.textIdx = 0;
     this.typewriteTextWrapped.bind(this);
     this.typewriteText.bind(this);
+    this.startMainScene.bind(this);
+    this.activateMainScene = true;
   }
-
+  // preload() {
+  //   this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
+  //   this.load.image('forest', 'assets/backgrounds/forest.png');
+  //   this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
+  //   this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
+  //   this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
+  //     frameWidth: 47,
+  //     frameHeight: 50,
+  //   });
+  //   this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
+  //     frameWidth: 46,
+  //     frameHeight: 48,
+  //   });
+  //   this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
+  //     frameWidth: 48,
+  //     frameHeight: 48,
+  //   });
+  //   this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+  //   this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
+  //   this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
+  // }
   create() {
     this.intro = this.add
       .text(400, 300, '')
       .setOrigin(0.5)
       .setWordWrapWidth(700);
     this.typewriteTextWrapped(this.introText[this.textIdx]);
+  }
+  startMainScene() {
+    console.log('HIT');
+    this.cameras.main.fadeOut(2000, 0, 0, 0, () => {
+      this.cameras.main.on(
+        'camerafadeoutcomplete',
+        () => {
+          this.scene.start('MainScene');
+        },
+        this
+      );
+    });
   }
   typewriteText(text) {
     const length = text.length;
@@ -54,15 +88,10 @@ export default class PreGameScene extends Phaser.Scene {
             this
           );
         } else if (this.textIdx === this.introText.length - 1) {
-          this.cameras.main.fadeOut(2000, 0, 0, 0, () => {
-            this.cameras.main.on(
-              'camerafadeoutcomplete',
-              () => {
-                this.scene.start('FgScene');
-              },
-              this
-            );
-          });
+          if (this.activateMainScene) {
+            this.startMainScene();
+            this.activateMainScene = false;
+          }
         }
       },
       repeat: length - 1,
