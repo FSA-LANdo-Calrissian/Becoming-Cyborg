@@ -7,9 +7,12 @@ import createAnimations from '../animations/createAnimations';
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
-    this.damageEnemy = this.damageEnemy.bind(this);
     this.finishedTutorial = false;
     this.tutorialInProgress = false;
+
+    // Bindings
+    this.loadBullet = this.loadBullet.bind(this);
+    this.damageEnemy = this.damageEnemy.bind(this);
   }
 
   openUpgrade() {
@@ -19,6 +22,14 @@ export default class FgScene extends Phaser.Scene {
       duration: 1000,
       data: { player: this.player.upgrade },
     });
+  }
+
+  loadBullet(x, y, angle) {
+    let bullet = this.bulletsGroup.get();
+    if (!bullet) {
+      bullet = new Projectile(this, x, y, 'bigBlast', angle).setScale(1.2);
+    }
+    bullet.shoot(x, y, angle);
   }
 
   preload() {
@@ -49,6 +60,7 @@ export default class FgScene extends Phaser.Scene {
       this.tutorialInProgress = false;
       this.finishedTutorial = true;
       this.player.body.moves = true;
+      this.player.shooting = false;
       this.enemy.body.moves = true;
     }
     this.tutorialText.setText(this.textLines[i]);
@@ -102,6 +114,7 @@ export default class FgScene extends Phaser.Scene {
     this.events.emit('dialogue');
 
     this.player.body.moves = false;
+    this.player.shooting = true;
     this.enemy.body.moves = false;
     this.tutorialText.on('pointerdown', () => {
       this.addText(i);
@@ -110,6 +123,7 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
+    this.finishedTutorial = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     // this.scene.launch('HUDScene');
     this.gg = this.sound.add('gg');
@@ -168,7 +182,9 @@ export default class FgScene extends Phaser.Scene {
 
     // Spawning the player
 
-    this.player = new Player(this, 38, 23, 'player').setScale(0.3);
+    this.player = new Player(this, 38, 23, 'player', this.loadBullet).setScale(
+      0.3
+    );
     this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -281,12 +297,14 @@ export default class FgScene extends Phaser.Scene {
       this.playDialogue();
     }
 
-
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors);
       this.enemy.update(this.player);
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();
+      }
+      if (this.cursors.hp.isDown) {
+        console.log(this.playerProjectiles);
       }
     }
   }
