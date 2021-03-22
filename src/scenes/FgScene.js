@@ -33,6 +33,8 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
+    this.cameras.main.fadeIn(2000, 0, 0, 0);
+    // this.scene.launch('HUDScene');
     this.gg = this.sound.add('gg');
     //map stuff
     this.map = this.make.tilemap({ key: 'map' });
