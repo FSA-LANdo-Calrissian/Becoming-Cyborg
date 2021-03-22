@@ -23,13 +23,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Subtract damage from health
     this.health -= damage;
-<<<<<<< HEAD
     const hitAnimation = this.playDamageAnimation();
 
-=======
-
     // Death logic.
->>>>>>> eb5c2fd8d59d409da2a08f73413d6604ede4ba25
     if (this.health <= 0) {
       this.setVelocityX(0);
       this.setVelocityY(0);
