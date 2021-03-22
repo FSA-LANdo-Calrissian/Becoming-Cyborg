@@ -37,9 +37,12 @@ export default class FgScene extends Phaser.Scene {
       frameHeight: 48,
     });
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+    this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
   }
 
   create(data) {
+    this.cameras.main.fadeIn(2000, 0, 0, 0);
+    // this.scene.launch('HUDScene');
     this.gg = this.sound.add('gg');
     //map stuff
     this.map = this.make.tilemap({ key: 'map' });
@@ -97,7 +100,7 @@ export default class FgScene extends Phaser.Scene {
     // Spawning the player
 
     this.player = new Player(this, 20, 400, 'player').setScale(0.3);
-    this.enemy = new Enemy(this, 760, 400, 'enemy').setScale(0.4);
+    this.enemy = new Enemy(this, 170, 400, 'enemy').setScale(0.4);
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -159,9 +162,98 @@ export default class FgScene extends Phaser.Scene {
       const main = this.scene.get('MainScene');
       main.scene.restart({ choice: false });
     }
+
+    this.textBox = this.add.image(
+      this.player.x + 70,
+      this.player.y - 50,
+      'textBox'
+    );
+    this.textBox.setScale(0.09);
+
+    // this.tutorial = true;
+    let i = 0;
+    // let continueText = this.add.text(
+    //   this.textBox.x + 20,
+    //   this.textBox.y + 10,
+    //   'Press here to continue'
+    // );
+    // continueText
+    //   .setResolution(10)
+    //   .setScale(0.23)
+    //   .setOrigin(0.5)
+    //   .setInteractive(
+    //     new Phaser.Geom.Rectangle(0, 0, text.width, text.height),
+    //     Phaser.Geom.Rectangle.Contains
+    //   )
+    //   .on('pointerdown', function addText() {
+    //     i++;
+    //     text.setText(textLines[i]);
+    //     console.log(textLines[i]);
+
+    //     console.log(i);
+    //   });
+    let textLines = [
+      'Halt human, stop right there!',
+      'Name...?',
+      'ID..?',
+      '...',
+      '"Just looking for directions" is not a valid response....',
+      'What is that you are wearing human....?',
+      'Please stand still as you are being scanned.....',
+      'Scan Complete....',
+      'Illegal Activity Detected...',
+      'Where did you get these parts human...?',
+      'Come with me human you are being detained for questioning.....',
+      'Please do not resist....',
+    ];
+    let text = this.add.text(this.textBox.x, this.textBox.y + 2, textLines[i], {
+      fontSize: '.4',
+      // fontFamily: 'Arial',
+      align: 'left',
+      wordWrap: { width: 199, useAdvancedWrap: true },
+    });
+    text.setResolution(10);
+    text.setScale(0.4).setOrigin(0.5);
+
+    text.setInteractive(
+      new Phaser.Geom.Rectangle(0, 0, text.width + 10, text.height + 10),
+      Phaser.Geom.Rectangle.Contains
+    );
+    text.on('pointerdown', function addText() {
+      if (i > textLines.length - 1) {
+        console.log('FIGHT!!');
+        this.tutorial = false;
+      } else {
+        this.tutorial = true;
+        console.log('this.tutorial set to true on pointer down');
+      }
+      i++;
+      text.setText(textLines[i]);
+    });
+
+    // var container = this.add.container(this.player.x + 70, this.player.y - 50, [
+    //   this.textBox,
+    //   text,
+    // ]);
   }
 
   update(time, delta) {
+    console.log(this.tutorial);
+
+    if (time < 3000) {
+      console.log('hello????');
+      this.tutorial = true;
+    }
+    if (this.tutorial === true) {
+      this.player.body.moves = false;
+      this.enemy.body.moves = false;
+      this.player.shooting = true;
+    } else {
+      this.player.body.moves = true;
+      this.enemy.body.moves = true;
+      this.player.shooting = false;
+    }
+
     this.player.update(this.cursors);
     this.enemy.update(this.player);
     if (this.cursors.upgrade.isDown) {
