@@ -313,13 +313,30 @@ export default class FgScene extends Phaser.Scene {
         console.log(this.playerProjectiles);
       }
     }
+
+    if (
+      this.player.isMelee &&
+      Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        this.enemy.x,
+        this.enemy.y
+      ) <= 16
+    ) {
+      this.damageEnemy(this.enemy, null);
+    }
   }
 
   damageEnemy(enemy, projectile) {
-    if (enemy.active === true && projectile.active === true) {
-      projectile.destroy();
+    console.log('enemy taking damage');
 
-      enemy.takeDamage(projectile.damage);
-    }
+    enemy.takeDamage(this.player.damage / 60);
+    console.log(enemy.health);
+
+    // if (enemy.active === true && projectile.active === true) {
+    //   projectile.destroy();
+
+    //   enemy.takeDamage(projectile.damage);
+    // }
   }
 }
