@@ -6,6 +6,7 @@ import PreGameScene from './scenes/PreGameScene';
 import HUDScene from './scenes/HUDScene';
 import GameOverScene from './scenes/GameOverScene';
 import UpgradeUI from './scenes/UpgradeUI';
+import TitleScene from './scenes/TitleScene';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -13,6 +14,7 @@ export default class Game extends Phaser.Game {
 
     // Import all the scenes and call it here
 
+    this.scene.add('TitleScene', TitleScene);
     this.scene.add('PreGameScene', PreGameScene);
     this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
@@ -22,7 +24,7 @@ export default class Game extends Phaser.Game {
     this.scene.bringToTop('HUDScene');
 
     // Then start the game by calling the main scene - or the very first one
-    this.scene.start('MainScene');
+    this.scene.start('TitleScene');
   }
 }
 

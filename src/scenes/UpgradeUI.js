@@ -14,7 +14,7 @@ export default class UpgradeUI extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
+    // this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
   }
 
   create({ player }) {
