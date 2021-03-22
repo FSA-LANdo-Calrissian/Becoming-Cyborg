@@ -10,7 +10,14 @@ export default class FgScene extends Phaser.Scene {
     this.damageEnemy = this.damageEnemy.bind(this);
   }
 
-  openUpgrade() {}
+  openUpgrade() {
+    this.scene.transition({
+      target: 'UpgradeUI',
+      sleep: true,
+      duration: 1000,
+      data: { player: this.player.upgrade },
+    });
+  }
 
   preload() {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
@@ -158,12 +165,7 @@ export default class FgScene extends Phaser.Scene {
     this.player.update(this.cursors);
     this.enemy.update(this.player);
     if (this.cursors.upgrade.isDown) {
-      this.scene.transition({
-        target: 'UpgradeUI',
-        sleep: true,
-        duration: 1000,
-        data: { player: this.player },
-      });
+      this.openUpgrade();
     }
   }
 
