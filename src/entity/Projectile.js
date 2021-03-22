@@ -12,10 +12,19 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.damage = 25;
     this.dy = 0;
     this.dx = 0;
-    this.reset(x, y, angle);
+
+    // When we grab a dead bullet, we need to reset it before we can shoot it.
+    this.reset();
   }
 
   shoot(x, y, angle) {
+    /*
+      Function to shoot projectile.
+      param x: int -> the x coordinate of where the projectile STARTS.
+      param y: int -> the y coordinate of where the projectile STARTS.
+      param angle: int -> The angle at which the projectile travels and faces.
+      returns null.
+    */
     this.setActive(true);
     this.lifespan = 2000;
     this.setVisible(true);
@@ -26,25 +35,27 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.dy = Math.sin(angle);
   }
 
-  reset(x, y, angle) {
-    // console.log(`Projectile spritekey...`, spriteKey);
+  reset() {
+    /*
+      Function to reset the projectile back to base stats. This will essentially "revive" a dead projectile that is grabbed from the projectiles group via the get method.
+
+    */
     this.setActive(true);
     this.lifespan = 2000;
     this.setVisible(true);
-    this.rotation = angle;
-    this.setPosition(x, y);
-    // SOH CAH TOA -> y is sin/x is cos
-    this.dx = Math.cos(angle);
-    this.dy = Math.sin(angle);
   }
 
   // Check which direction the player is facing and move the laserbolt in that direction as long as it lives
   update(time, delta) {
+    // Lifespan logic for projectile
     this.lifespan -= delta;
+
+    // Calculation for the travel path of the projectile.
     const moveDistance = this.speed * delta;
     this.x += this.dx * moveDistance;
     this.y += this.dy * moveDistance;
 
+    // If projectile is out of life, remove it.
     if (this.lifespan <= 0) {
       this.setVisible(false);
       this.setActive(false);

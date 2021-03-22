@@ -8,6 +8,8 @@ export default class MainScene extends Phaser.Scene {
     this.startLoadGame.bind(this);
     this.startNewGame.bind(this);
   }
+
+  // Do all of our preloading here since it's the first scene.
   preload() {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
     this.load.image('forest', 'assets/backgrounds/forest.png');
@@ -28,18 +30,23 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
+    this.load.image('scroll', './assets/backgrounds/scroll.png');
   }
+
   create(data) {
+    // New game button - this is to see the pre-game scene
     this.newGame = this.add
       .text(350, 250, 'New Game')
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startNewGame());
 
+    // Load game button. This just skips the pre-game scene for now.
     this.loadGame = this.add
       .text(350, 350, 'Load Game')
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startLoadGame());
   }
+
   startNewGame() {
     this.scene.start('PreGameScene');
   }

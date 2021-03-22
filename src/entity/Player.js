@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import Projectile from './Projectile';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey, fireWeapon) {
@@ -21,21 +20,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.stats = {
       kills: 50,
     };
-
     this.facingRight = false;
     this.lastHurt = 0;
-    this.updateMovement = this.updateMovement.bind(this);
     this.damage = 10 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
     this.melee = false;
     this.shooting = false;
+    // Helper function to fire weapon.
     this.fireWeapon = (x, y, sprite, angle) => {
       fireWeapon(x, y, sprite, angle);
     };
 
     this.hitCooldown = false;
 
+    // Bindings
+    this.updateMovement = this.updateMovement.bind(this);
     this.takeDamage = this.takeDamage.bind(this);
     this.knockback = this.knockback.bind(this);
     this.playDamageAnimation = this.playDamageAnimation.bind(this);
@@ -43,6 +43,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   shoot(time) {
+    /*
+      Function for player to fire weapon on left click if not on cooldown.
+      Only argument needed is time, passed in through the FgScene's update function -> player update -> here.
+      param time: int -> Current game time.
+      returns null
+    */
     this.scene.input.on(
       'pointerdown',
       function (pointer) {
@@ -53,10 +59,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           mouse.x + this.scene.cameras.main.scrollX,
           mouse.y + this.scene.cameras.main.scrollY
         );
-        const x = mouse.x + this.scene.cameras.main.scrollX;
-        const y = mouse.y + this.scene.cameras.main.scrollY;
+        // Determines if cd is over or not
         if (time > this.nextAttack) {
+          // We need to pass in the sprite to use here
           this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          // Calculates the cd between shots
           this.nextAttack += this.attackSpeed;
         }
       },
@@ -65,27 +72,33 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   upgradeStats(type) {
+    /*
+      Upgrade logic for upgrading player stats. Code works but upgrade UI is not implemented yet. For now, it runs with certain hotkeys.
+      param type: string -> the upgrade type.
+          Current types: hp, ms, as, damage
+      returns: null
+    */
     switch (type) {
       case 'hp':
         console.log(`Health increased`);
         this.health += 10;
-        this.maxHealth += 10;
+        this.upgrade.maxHealth += 10;
         // Update the hp bar. It doesn't change any hp values,
         // just updates so the max health will be updated.
         this.scene.events.emit('takeDamage', this.health, this.maxHealth);
         break;
       case 'ms':
         console.log(`Speed increased`);
-        this.speed += 10;
+        this.upgrade.moveSpeed += 10;
         break;
       case 'as':
         console.log(`Attack speed improved`);
         // This subtracts 100 ms from the cooldown, essentially
-        this.attackSpeedModifier += 100;
+        this.upgrade.attackSpeed += 100;
         break;
       case 'damage':
         console.log(`Damage improved`);
-        this.damageModifier += 10;
+        this.upgrade.damage += 10;
         break;
       default:
         console.log('Invalid upgrade type');
@@ -97,29 +110,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     console.log(`Current move speed`, this.speed);
   }
 
-  //shooting projectiles
-  // fire(angle, x, y) {
-  //   if (!this.shooting) {
-  //     this.shooting = true;
-  //     this.scene.time.delayedCall(
-  //       2000,
-  //       () => {
-  //         this.shooting = false;
-  //       },
-  //       null,
-  //       this
-  //     );
-  //     const blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
-  //     blast.rotation = angle; // THE ANGLE!
-
-  //     this.scene.playerProjectiles.add(blast); // group of bullets
-  //     this.scene.physics.moveTo(blast, x, y, 200);
-  //   } else {
-  //     //maybe add cooldown sound or something
-  //   }
-  // }
-
   playDamageAnimation() {
+    /*
+      Adds the tween for when player gets damaged
+    */
     return this.scene.tweens.add({
       targets: this,
       duration: 100,
@@ -129,13 +123,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   knockback() {
+    /*
+        Player knockback. Doesn't work yet (potentially based on currently played animation)
+    */
     this.body.touching.right ? this.setVelocityX(-500) : this.setVelocityX(500);
   }
 
   takeDamage(damage, gg) {
+    /*
+      Function for when the player takes damage. Will subtract the damage from current health and, if health <= 0, will transition to a game over scene.
+      Adds one second of immunity to damage after being hit, with a visible tween so you know you just got hit.
+      Lastly, updates the hp bar.
+      param damage: int -> How much damage to take
+      param gg: -> Sound file to play on death
+      returns: null
+    */
+
     // If player gets hit in the cooldown period,
-    // Do nothing
     if (this.hitCooldown) {
+      // Do nothing
       return;
     }
 
@@ -157,7 +163,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const stats = this.stats;
       this.scene.scene.stop('HUDScene');
       this.scene.scene.start('GameOver', { stats });
-
       return;
     }
 
@@ -170,7 +175,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateMovement(cursors) {
+    /*
+      Player movement logic based on which directional key is input.
+      param cursors: Passed in through FgScene update function where cursors is hash table with keyboard inputs mapped to specific keys. (See this.cursors in FgScene.js for more info)
+      returns: null
+    */
+
+    // If player is dead, this.body will be false. In this case, do nothing.
     if (!this.body) return;
+
     // Running up + left
     if (cursors.left.isDown && cursors.up.isDown) {
       this.facingRight = false;
