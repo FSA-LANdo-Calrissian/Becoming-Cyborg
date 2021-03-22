@@ -30,27 +30,7 @@ export default class PreGameScene extends Phaser.Scene {
     this.startMainScene.bind(this);
     this.activateMainScene = true;
   }
-  // preload() {
-  //   this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
-  //   this.load.image('forest', 'assets/backgrounds/forest.png');
-  //   this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-  //   this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
-  //   this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-  //     frameWidth: 47,
-  //     frameHeight: 50,
-  //   });
-  //   this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
-  //     frameWidth: 46,
-  //     frameHeight: 48,
-  //   });
-  //   this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
-  //     frameWidth: 48,
-  //     frameHeight: 48,
-  //   });
-  //   this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
-  //   this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
-  //   this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
-  // }
+
   create() {
     this.intro = this.add
       .text(400, 300, '')
@@ -58,8 +38,11 @@ export default class PreGameScene extends Phaser.Scene {
       .setWordWrapWidth(700);
     this.typewriteTextWrapped(this.introText[this.textIdx]);
   }
+
   startMainScene() {
-    console.log('HIT');
+    /*
+      Starts the main scene after all intro text has been displayed.
+    */
     this.cameras.main.fadeOut(2000, 0, 0, 0, () => {
       this.cameras.main.on(
         'camerafadeoutcomplete',
@@ -70,9 +53,18 @@ export default class PreGameScene extends Phaser.Scene {
       );
     });
   }
+
   typewriteText(text) {
+    /*
+      Displays text onto the screen
+      param text: string -> text to display
+      returns null
+    */
+
     const length = text.length;
     let i = 0;
+
+    // Some weird callback function that Adam's gonna have to explain...
     this.time.addEvent({
       callback: () => {
         this.intro.text += text[i];
@@ -98,11 +90,21 @@ export default class PreGameScene extends Phaser.Scene {
       delay: 1000,
     });
   }
-  typewriteTextWrapped(text) {
-    const lines = this.intro.getWrappedText(text);
-    const wrappedText = lines.join('\n');
 
+  typewriteTextWrapped(text) {
+    /*
+      Helper function for text that might be too long and ends up wrapping
+      param text: string -> the full text.
+      returns null
+    */
+
+    // Grab the whole text (returns an array of lines based on wrapping logic)
+    const lines = this.intro.getWrappedText(text);
+    // Combines them into one screen
+    const wrappedText = lines.join('\n');
+    // Displays text
     this.typewriteText(wrappedText);
   }
+
   update() {}
 }

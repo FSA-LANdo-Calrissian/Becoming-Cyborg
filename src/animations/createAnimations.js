@@ -1,3 +1,5 @@
+// All animations are made here and imported where needed.
+
 export default function () {
   this.anims.create({
     key: 'runLeft',

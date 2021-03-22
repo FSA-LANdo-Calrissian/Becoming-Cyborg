@@ -4,6 +4,7 @@ export default class HUDScene extends Phaser.Scene {
   constructor() {
     super('HUDScene');
 
+    // The size of the hp bar
     this.size = {
       width: 150,
       height: 10,
@@ -11,6 +12,14 @@ export default class HUDScene extends Phaser.Scene {
   }
 
   draw(newHealth, maxHealth) {
+    /*
+      Renders the hp bar.
+      param newHealth: int -> The updated health of the player. This is the value we will use to determine what percentage of health the player has left.
+      param maxHealth: int -> The player's total health amount. This is used to determine the percentage of health the player has left.
+      returns null.
+    */
+
+    // Constants for the x,y coordinate of the hp bar.
     const x = 10;
     const y = 10;
     // First we clear the old bar - so that we can draw the new/updated one
@@ -69,6 +78,7 @@ export default class HUDScene extends Phaser.Scene {
       });
     });
 
+    // After FgScene "loads" (we really just wait one second)
     loadScene.then(() => {
       player = mainGame.player;
     });
@@ -84,6 +94,7 @@ export default class HUDScene extends Phaser.Scene {
 
     // Shaping the minimap + border?
     loadScene.then(() => {
+      // Make the cameras
       const borderCam = mainGame.cameras
         .add(625, 0, 175, 175)
         .setZoom(10)
@@ -91,9 +102,6 @@ export default class HUDScene extends Phaser.Scene {
         .ignore(mainGame.enemy)
         .ignore(mainGame.belowLayer1)
         .ignore(mainGame.playerProjectiles)
-        // .ignore(mainGame.textBox)
-        // .ignore(mainGame.debugGraphics)
-        // .ignore(mainGame.worldLayer1)
         .setBackgroundColor(0x000000);
       const minimapCam = mainGame.cameras
         .add(640, 10, 150, 150)
@@ -103,10 +111,12 @@ export default class HUDScene extends Phaser.Scene {
         .setBackgroundColor(0x000000)
         .startFollow(player);
 
+      // Make the borders
       const minimapBorder = new Phaser.GameObjects.Graphics(this);
       minimapBorder.fillStyle(0x000000);
       minimapBorder.fillCircle(715, 85, 80);
       const border = new Phaser.Display.Masks.GeometryMask(this, minimapBorder);
+      // Add the mask to the camera
       borderCam.setMask(border, true);
 
       const minimapCircle = new Phaser.GameObjects.Graphics(this);
@@ -115,8 +125,8 @@ export default class HUDScene extends Phaser.Scene {
       minimapCam.setMask(circle, true);
       console.log(`Fully loaded!`);
 
+      // If in dialogue, ignore the text box and texts.
       mainGame.events.on('dialogue', () => {
-        console.log(`Adding cam ignore...`);
         minimapCam.ignore(mainGame.textBox);
         minimapCam.ignore(mainGame.tutorialText);
         minimapCam.ignore(mainGame.nameText);
