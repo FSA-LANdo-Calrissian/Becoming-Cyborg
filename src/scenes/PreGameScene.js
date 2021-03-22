@@ -79,7 +79,7 @@ export default class PreGameScene extends Phaser.Scene {
         ++i;
         if (i === length && this.textIdx !== this.introText.length - 1) {
           this.time.delayedCall(
-            10,
+            1000,
             () => {
               this.intro.text = '';
               this.typewriteTextWrapped(this.introText[++this.textIdx]);
@@ -95,7 +95,7 @@ export default class PreGameScene extends Phaser.Scene {
         }
       },
       repeat: length - 1,
-      delay: 10,
+      delay: 100,
     });
   }
   typewriteTextWrapped(text) {
