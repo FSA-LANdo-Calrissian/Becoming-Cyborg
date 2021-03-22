@@ -60,6 +60,7 @@ export default class FgScene extends Phaser.Scene {
       this.tutorialInProgress = false;
       this.finishedTutorial = true;
       this.player.body.moves = true;
+      this.player.canMelee = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
     }
@@ -121,6 +122,7 @@ export default class FgScene extends Phaser.Scene {
 
     this.player.body.moves = false;
     this.player.shooting = true;
+    this.player.canMelee = false;
     this.enemy.body.moves = false;
     this.tutorialText.on('pointerdown', () => {
       this.addText(i);
@@ -253,34 +255,6 @@ export default class FgScene extends Phaser.Scene {
       const main = this.scene.get('MainScene');
       main.scene.restart({ choice: false });
     }
-
-    // this.tutorial = true;
-
-    // let continueText = this.add.text(
-    //   this.textBox.x + 20,
-    //   this.textBox.y + 10,
-    //   'Press here to continue'
-    // );
-    // continueText
-    //   .setResolution(10)
-    //   .setScale(0.23)
-    //   .setOrigin(0.5)
-    //   .setInteractive(
-    //     new Phaser.Geom.Rectangle(0, 0, text.width, text.height),
-    //     Phaser.Geom.Rectangle.Contains
-    //   )
-    //   .on('pointerdown', function addText() {
-    //     i++;
-    //     text.setText(textLines[i]);
-    //     console.log(textLines[i]);
-
-    //     console.log(i);
-    //   });
-
-    // var container = this.add.container(this.player.x + 70, this.player.y - 50, [
-    //   this.textBox,
-    //   text,
-    // ]);
   }
 
   update(time, delta) {
@@ -321,7 +295,9 @@ export default class FgScene extends Phaser.Scene {
         this.player.y,
         this.enemy.x,
         this.enemy.y
-      ) <= 16
+      ) <= 16 &&
+      ((this.player.x < this.enemy.x && this.player.facingRight === true) ||
+        (this.player.x > this.enemy.x && this.player.facingRight === false))
     ) {
       this.damageEnemy(this.enemy, null);
     }
