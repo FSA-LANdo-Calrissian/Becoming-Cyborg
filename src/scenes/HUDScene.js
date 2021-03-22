@@ -39,7 +39,7 @@ export default class HUDScene extends Phaser.Scene {
     if (healthWidth <= width / 4) {
       this.bar.fillStyle(0xff0000);
     } else if (healthWidth <= width / 2) {
-      this.bar.fillStyle(0xffff00);
+      this.bar.fillStyle(0xfee12b);
     } else {
       this.bar.fillStyle(0x00ff00);
     }
@@ -64,7 +64,7 @@ export default class HUDScene extends Phaser.Scene {
     let player;
     // Need to wait for the FgScene to load first
     const loadScene = new Promise((res, rej) => {
-      this.time.delayedCall(200, () => {
+      this.time.delayedCall(1000, () => {
         res(console.log(`Loading scene info...`));
       });
     });
@@ -90,6 +90,7 @@ export default class HUDScene extends Phaser.Scene {
         .ignore(player)
         .ignore(mainGame.enemy)
         .ignore(mainGame.belowLayer1)
+        // .ignore(mainGame.textBox)
         // .ignore(mainGame.debugGraphics)
         // .ignore(mainGame.worldLayer1)
         .setBackgroundColor(0x000000);
@@ -112,6 +113,12 @@ export default class HUDScene extends Phaser.Scene {
       const circle = new Phaser.Display.Masks.GeometryMask(this, minimapCircle);
       minimapCam.setMask(circle, true);
       console.log(`Fully loaded!`);
+
+      mainGame.events.on('dialogue', () => {
+        console.log(`Adding cam ignore...`);
+        minimapCam.ignore(mainGame.textBox);
+        minimapCam.ignore(mainGame.tutorialText);
+      });
     });
   }
 }

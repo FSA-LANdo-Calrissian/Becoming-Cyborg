@@ -55,7 +55,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
         return this.play('enemyPunchUp', true);
       case 'punchDown':
-        this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+        this.angle = (angle + Math.PI) * Phaser.Math.RAD_TO_DEG + 90;
         return this.play('enemyPunchDown', true);
     }
   }
@@ -104,7 +104,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.y = 0;
     }
     if (
-      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 100
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <= 50
     ) {
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (

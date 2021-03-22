@@ -8,9 +8,18 @@ export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.damageEnemy = this.damageEnemy.bind(this);
+    this.finishedTutorial = false;
+    this.tutorialInProgress = false;
   }
 
-  openUpgrade() {}
+  openUpgrade() {
+    this.scene.transition({
+      target: 'UpgradeUI',
+      sleep: true,
+      duration: 1000,
+      data: { player: this.player.upgrade },
+    });
+  }
 
   preload() {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
@@ -31,6 +40,73 @@ export default class FgScene extends Phaser.Scene {
     });
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
+  }
+
+  addText(i) {
+    if (i > this.textLines.length - 1) {
+      console.log('FIGHT!!');
+      this.textBox.destroy();
+      this.tutorialInProgress = false;
+      this.finishedTutorial = true;
+      this.player.body.moves = true;
+      this.enemy.body.moves = true;
+    }
+    this.tutorialText.setText(this.textLines[i]);
+  }
+
+  playDialogue() {
+    this.textBox = this.add.image(
+      this.player.x - 10,
+      this.player.y + 50,
+      'textBox'
+    );
+    this.textBox.setScale(0.09);
+    this.textLines = [
+      'Halt human, stop right there!',
+      'Name...?',
+      'ID..?',
+      '...',
+      '"Just looking for directions" is not a valid response....',
+      'What is that you are wearing human....?',
+      'Please stand still as you are being scanned.....',
+      'Scan Complete....',
+      'Illegal Activity Detected...',
+      'Where did you get these parts human...?',
+      'Come with me human you are being detained for questioning.....',
+      'Please do not resist....',
+    ];
+    let i = 0;
+    this.tutorialText = this.add.text(
+      this.textBox.x,
+      this.textBox.y + 2,
+      this.textLines[i],
+      {
+        fontSize: '.4',
+        // fontFamily: 'Arial',
+        align: 'left',
+        wordWrap: { width: 199, useAdvancedWrap: true },
+      }
+    );
+    this.tutorialText.setResolution(10);
+    this.tutorialText.setScale(0.4).setOrigin(0.5);
+
+    this.tutorialText.setInteractive(
+      new Phaser.Geom.Rectangle(
+        0,
+        0,
+        this.tutorialText.width + 15,
+        this.tutorialText.height + 30
+      ),
+      Phaser.Geom.Rectangle.Contains
+    );
+    this.events.emit('dialogue');
+
+    this.player.body.moves = false;
+    this.enemy.body.moves = false;
+    this.tutorialText.on('pointerdown', () => {
+      this.addText(i);
+      i++;
+    });
   }
 
   create(data) {
@@ -92,8 +168,8 @@ export default class FgScene extends Phaser.Scene {
 
     // Spawning the player
 
-    this.player = new Player(this, 20, 400, 'player').setScale(0.3);
-    this.enemy = new Enemy(this, 170, 400, 'enemy').setScale(0.4);
+    this.player = new Player(this, 38, 23, 'player').setScale(0.3);
+    this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -156,15 +232,8 @@ export default class FgScene extends Phaser.Scene {
       main.scene.restart({ choice: false });
     }
 
-    this.textBox = this.add.image(
-      this.player.x + 70,
-      this.player.y - 50,
-      'textBox'
-    );
-    this.textBox.setScale(0.09);
-
     // this.tutorial = true;
-    let i = 0;
+
     // let continueText = this.add.text(
     //   this.textBox.x + 20,
     //   this.textBox.y + 10,
@@ -185,44 +254,6 @@ export default class FgScene extends Phaser.Scene {
 
     //     console.log(i);
     //   });
-    let textLines = [
-      'Halt human, stop right there!',
-      'Name...?',
-      'ID..?',
-      '...',
-      '"Just looking for directions" is not a valid response....',
-      'What is that you are wearing human....?',
-      'Please stand still as you are being scanned.....',
-      'Scan Complete....',
-      'Illegal Activity Detected...',
-      'Where did you get these parts human...?',
-      'Come with me human you are being detained for questioning.....',
-      'Please do not resist....',
-    ];
-    let text = this.add.text(this.textBox.x, this.textBox.y + 2, textLines[i], {
-      fontSize: '.4',
-      // fontFamily: 'Arial',
-      align: 'left',
-      wordWrap: { width: 199, useAdvancedWrap: true },
-    });
-    text.setResolution(10);
-    text.setScale(0.4).setOrigin(0.5);
-
-    text.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, text.width + 10, text.height + 10),
-      Phaser.Geom.Rectangle.Contains
-    );
-    text.on('pointerdown', function addText() {
-      if (i > textLines.length - 1) {
-        console.log('FIGHT!!');
-        this.tutorial = false;
-      } else {
-        this.tutorial = true;
-        console.log('this.tutorial set to true on pointer down');
-      }
-      i++;
-      text.setText(textLines[i]);
-    });
 
     // var container = this.add.container(this.player.x + 70, this.player.y - 50, [
     //   this.textBox,
@@ -231,31 +262,31 @@ export default class FgScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    console.log(this.tutorial);
+    if (
+      !this.tutorialInProgress &&
+      !this.finishedTutorial &&
+      Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        this.enemy.x,
+        this.enemy.y
+      ) < 51
+    ) {
+      this.tutorialInProgress = true;
 
-    if (time < 3000) {
-      console.log('hello????');
-      this.tutorial = true;
-    }
-    if (this.tutorial === true) {
-      this.player.body.moves = false;
-      this.enemy.body.moves = false;
-      this.player.shooting = true;
-    } else {
-      this.player.body.moves = true;
-      this.enemy.body.moves = true;
-      this.player.shooting = false;
+      this.player.play(
+        this.player.facingRight ? 'idleRight' : 'idleLeft',
+        true
+      );
+      this.playDialogue();
     }
 
-    this.player.update(this.cursors);
-    this.enemy.update(this.player);
-    if (this.cursors.upgrade.isDown) {
-      this.scene.transition({
-        target: 'UpgradeUI',
-        sleep: true,
-        duration: 1000,
-        data: { player: this.player },
-      });
+    if (!this.tutorialInProgress) {
+      this.player.update(this.cursors);
+      this.enemy.update(this.player);
+      if (this.cursors.upgrade.isDown) {
+        this.openUpgrade();
+      }
     }
   }
 
