@@ -8,9 +8,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.speed = 100; // Moving at 800 pixels per ms
+    this.upgrade = {
+      maxHealth: 0,
+      damage: 0,
+      attackSpeed: 0,
+      moveSpeed: 0,
+      regen: 0,
+    };
+    this.speed = 100 + this.upgrade.moveSpeed;
     this.health = 100;
-    this.maxHealth = 100;
+    this.maxHealth = 100 + this.upgrade.maxHealth;
     this.stats = {
       kills: 0,
     };
@@ -24,26 +31,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.facingRight = false;
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
-    this.damageModifier = 0;
-    this.attackSpeedModifier = 0;
+    this.damage = 10 + this.upgrade.damage;
+    this.attackSpeed = 0 + this.upgrade.attackSpeed; // This is the cooldown between hits
     this.melee = false;
     this.shooting = false;
-    this.scene.input.on(
-      'pointerdown',
-      function (pointer) {
-        let mouse = pointer;
-        let angle = Phaser.Math.Angle.Between(
-          this.x,
-          this.y,
-          mouse.x + this.scene.cameras.main.scrollX,
-          mouse.y + this.scene.cameras.main.scrollY
-        );
-        const x = mouse.x + this.scene.cameras.main.scrollX;
-        const y = mouse.y + this.scene.cameras.main.scrollY;
-        this.fire(angle, x, y);
-      },
-      this
-    );
+    // this.scene.input.on(
+    //   'pointerdown',
+    //   function (pointer) {
+    //     let mouse = pointer;
+    //     let angle = Phaser.Math.Angle.Between(
+    //       this.x,
+    //       this.y,
+    //       mouse.x + this.scene.cameras.main.scrollX,
+    //       mouse.y + this.scene.cameras.main.scrollY
+    //     );
+    //     const x = mouse.x + this.scene.cameras.main.scrollX;
+    //     const y = mouse.y + this.scene.cameras.main.scrollY;
+    //     this.fire(angle, x, y);
+    //   },
+    //   this
+    // );
     this.hitCooldown = false;
 
     this.takeDamage = this.takeDamage.bind(this);
@@ -51,7 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.playDamageAnimation = this.playDamageAnimation.bind(this);
   }
 
-  upgrade(type) {
+  upgradeStats(type) {
     switch (type) {
       case 'hp':
         console.log(`Health increased`);
@@ -233,9 +240,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement(cursors);
 
     if (cursors.hp.isDown) {
-      this.upgrade('hp');
+      // this.upgrade('hp');
+      console.log(this.x, this.y);
     } else if (cursors.speed.isDown) {
-      this.upgrade('ms');
+      this.upgradeStats('ms');
     }
   }
 }
