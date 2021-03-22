@@ -16,7 +16,7 @@ export default class PreGameScene extends Phaser.Scene {
       'You were just dead.',
       'I brought you back using... uh... "spare" robot parts.',
       "I wish you could recover more, but we're running out of time.",
-      'You need to deliver these notes to the leader of the robots.',
+      "You need to deliver these notes to the robot's leader.",
       "If you don't, we'll be dead before the end of the week.",
       "I'd go, but I'm confined to this damn wheelechair as you can see.",
       "I don't know how to get there, but there is a town near here.",
@@ -45,7 +45,7 @@ export default class PreGameScene extends Phaser.Scene {
         ++i;
         if (i === length && this.textIdx !== this.introText.length - 1) {
           this.time.delayedCall(
-            1000,
+            10,
             () => {
               this.intro.text = '';
               this.typewriteTextWrapped(this.introText[++this.textIdx]);
@@ -53,14 +53,21 @@ export default class PreGameScene extends Phaser.Scene {
             null,
             this
           );
+        } else if (this.textIdx === this.introText.length - 1) {
+          this.cameras.main.fadeOut(2000, 0, 0, 0, () => {
+            this.cameras.main.on(
+              'camerafadeoutcomplete',
+              () => {
+                this.scene.start('FgScene');
+              },
+              this
+            );
+          });
         }
       },
       repeat: length - 1,
-      delay: 100,
+      delay: 10,
     });
-    if (i === length - 1) {
-      this.typewriteTextWrapped(++this.textIdx);
-    }
   }
   typewriteTextWrapped(text) {
     const lines = this.intro.getWrappedText(text);
@@ -68,4 +75,5 @@ export default class PreGameScene extends Phaser.Scene {
 
     this.typewriteText(wrappedText);
   }
+  update() {}
 }
