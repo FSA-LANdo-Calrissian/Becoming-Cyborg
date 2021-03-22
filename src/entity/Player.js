@@ -19,15 +19,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.health = 100;
     this.maxHealth = 100 + this.upgrade.maxHealth;
     this.stats = {
-      kills: 0,
+      kills: 50,
     };
-    // this.hpBar = new HealthBar(
-    //   scene,
-    //   (scene.game.config.width - scene.game.config.width / 4.5) / 2 + 5,
-    //   (scene.game.config.height - scene.game.config.height / 4.5) / 2 + 5,
-    //   this.health,
-    //   this.maxHealth
-    // );
+
     this.facingRight = false;
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
@@ -36,10 +30,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.nextAttack = 0;
     this.melee = false;
     this.shooting = false;
-    this.fireWeapon = (x, y, angle) => {
-      fireWeapon(x, y, angle);
+    this.fireWeapon = (x, y, sprite, angle) => {
+      fireWeapon(x, y, sprite, angle);
     };
 
+    this.hitCooldown = false;
+
+    this.takeDamage = this.takeDamage.bind(this);
+    this.knockback = this.knockback.bind(this);
+    this.playDamageAnimation = this.playDamageAnimation.bind(this);
+    this.shoot = this.shoot.bind(this);
+  }
+
+  shoot(time) {
     this.scene.input.on(
       'pointerdown',
       function (pointer) {
@@ -52,16 +55,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         );
         const x = mouse.x + this.scene.cameras.main.scrollX;
         const y = mouse.y + this.scene.cameras.main.scrollY;
-        this.fire(angle, x, y);
+        if (time > this.nextAttack) {
+          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          this.nextAttack += this.attackSpeed;
+        }
       },
       this
     );
-
-    this.hitCooldown = false;
-
-    this.takeDamage = this.takeDamage.bind(this);
-    this.knockback = this.knockback.bind(this);
-    this.playDamageAnimation = this.playDamageAnimation.bind(this);
   }
 
   upgradeStats(type) {
@@ -98,26 +98,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   //shooting projectiles
-  fire(angle, x, y) {
-    if (!this.shooting) {
-      this.shooting = true;
-      this.scene.time.delayedCall(
-        2000,
-        () => {
-          this.shooting = false;
-        },
-        null,
-        this
-      );
-      const blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
-      blast.rotation = angle; // THE ANGLE!
+  // fire(angle, x, y) {
+  //   if (!this.shooting) {
+  //     this.shooting = true;
+  //     this.scene.time.delayedCall(
+  //       2000,
+  //       () => {
+  //         this.shooting = false;
+  //       },
+  //       null,
+  //       this
+  //     );
+  //     const blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
+  //     blast.rotation = angle; // THE ANGLE!
 
-      this.scene.playerProjectiles.add(blast); // group of bullets
-      this.scene.physics.moveTo(blast, x, y, 200);
-    } else {
-      //maybe add cooldown sound or something
-    }
-  }
+  //     this.scene.playerProjectiles.add(blast); // group of bullets
+  //     this.scene.physics.moveTo(blast, x, y, 200);
+  //   } else {
+  //     //maybe add cooldown sound or something
+  //   }
+  // }
 
   playDamageAnimation() {
     return this.scene.tweens.add({
@@ -155,7 +155,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.health <= 0) {
       gg.play();
       const stats = this.stats;
-      console.log(this.stats);
       this.scene.scene.stop('HUDScene');
       this.scene.scene.start('GameOver', { stats });
 
@@ -242,8 +241,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update(cursors) {
+  update(cursors, time) {
     this.updateMovement(cursors);
+
+    this.shoot(time);
 
     if (cursors.hp.isDown) {
       // this.upgrade('hp');

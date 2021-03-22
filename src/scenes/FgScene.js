@@ -24,33 +24,16 @@ export default class FgScene extends Phaser.Scene {
     });
   }
 
-  loadBullet(x, y, angle) {
-    let bullet = this.bulletsGroup.get();
+  loadBullet(x, y, sprite, angle) {
+    let bullet = this.playerProjectiles.getFirstDead();
     if (!bullet) {
-      bullet = new Projectile(this, x, y, 'bigBlast', angle).setScale(1.2);
+      console.log(`sprite`, sprite);
+      bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
+      this.playerProjectiles.add(bullet);
+    } else {
+      console.log(`Bullet loaded`, bullet);
     }
     bullet.shoot(x, y, angle);
-  }
-
-  preload() {
-    // this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
-    // this.load.image('forest', 'assets/backgrounds/forest.png');
-    // this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-    // this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
-    // this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-    //   frameWidth: 47,
-    //   frameHeight: 50,
-    // });
-    // this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
-    //   frameWidth: 46,
-    //   frameHeight: 48,
-    // });
-    // this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
-    //   frameWidth: 48,
-    //   frameHeight: 48,
-    // });
-    // this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
-    // this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
   }
 
   addText(i) {
@@ -298,7 +281,7 @@ export default class FgScene extends Phaser.Scene {
     }
 
     if (!this.tutorialInProgress) {
-      this.player.update(this.cursors);
+      this.player.update(this.cursors, time);
       this.enemy.update(this.player);
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();

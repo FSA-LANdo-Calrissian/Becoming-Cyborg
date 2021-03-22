@@ -8,17 +8,18 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.lifespan = 2000;
 
-    this.speed = Phaser.Math.GetSpeed(800, 1); // (distance in pixels, time (ms))
+    this.speed = Phaser.Math.GetSpeed(80, 1); // (distance in pixels, time (ms))
     this.damage = 25;
     this.dy = 0;
     this.dx = 0;
-    // this.reset(x, y, angle);
+    this.reset(x, y, angle);
   }
 
   shoot(x, y, angle) {
     this.setActive(true);
     this.lifespan = 2000;
     this.setVisible(true);
+    this.rotation = angle;
     this.setPosition(x, y);
     // SOH CAH TOA -> y is sin/x is cos
     this.dx = Math.cos(angle);
@@ -26,10 +27,11 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
   }
 
   reset(x, y, angle) {
-    // console.log(`Setting position and such...`, x, y, angle);
+    // console.log(`Projectile spritekey...`, spriteKey);
     this.setActive(true);
     this.lifespan = 2000;
     this.setVisible(true);
+    this.rotation = angle;
     this.setPosition(x, y);
     // SOH CAH TOA -> y is sin/x is cos
     this.dx = Math.cos(angle);
@@ -44,7 +46,8 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.y += this.dy * moveDistance;
 
     if (this.lifespan <= 0) {
-      this.destroy();
+      this.setVisible(false);
+      this.setActive(false);
     }
   }
 }
