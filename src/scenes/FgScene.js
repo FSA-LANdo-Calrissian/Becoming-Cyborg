@@ -52,6 +52,7 @@ export default class FgScene extends Phaser.Scene {
       this.enemy.body.moves = true;
     }
     this.tutorialText.setText(this.textLines[i]);
+    this.nameText.setText('');
   }
 
   playDialogue() {
@@ -89,6 +90,11 @@ export default class FgScene extends Phaser.Scene {
     );
     this.tutorialText.setResolution(10);
     this.tutorialText.setScale(0.4).setOrigin(0.5);
+    this.nameText = this.add
+      .text(this.textBox.x - 33, this.textBox.y - 8, 'Mr. Robot')
+      .setResolution(10)
+      .setScale(0.23)
+      .setOrigin(0.5);
 
     this.tutorialText.setInteractive(
       new Phaser.Geom.Rectangle(
@@ -280,7 +286,6 @@ export default class FgScene extends Phaser.Scene {
       );
       this.playDialogue();
     }
-
 
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors);

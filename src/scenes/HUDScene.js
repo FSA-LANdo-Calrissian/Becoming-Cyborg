@@ -118,6 +118,7 @@ export default class HUDScene extends Phaser.Scene {
         console.log(`Adding cam ignore...`);
         minimapCam.ignore(mainGame.textBox);
         minimapCam.ignore(mainGame.tutorialText);
+        minimapCam.ignore(mainGame.nameText);
       });
     });
   }
