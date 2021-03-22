@@ -75,7 +75,7 @@ export default class PreGameScene extends Phaser.Scene {
         //if end of sentence, move to next sentence and repeat
         if (i === length && this.textIdx !== this.introText.length - 1) {
           this.time.delayedCall(
-            1000,
+            100,
             () => {
               this.intro.text = '';
               this.typewriteTextWrapped(this.introText[++this.textIdx]);
@@ -97,7 +97,7 @@ export default class PreGameScene extends Phaser.Scene {
         }
       },
       repeat: length - 1,
-      delay: 100,
+      delay: 1000,
     });
   }
 
