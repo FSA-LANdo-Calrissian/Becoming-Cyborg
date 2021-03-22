@@ -171,12 +171,12 @@ export default class FgScene extends Phaser.Scene {
 
     this.worldLayer1.setCollisionByProperty({ collides: true });
 
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldLayer1.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldLayer1.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
 
     // worldLayer2.setCollisionByProperty({ collides: true });
 
