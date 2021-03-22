@@ -90,6 +90,7 @@ export default class HUDScene extends Phaser.Scene {
         .ignore(player)
         .ignore(mainGame.enemy)
         .ignore(mainGame.belowLayer1)
+        .ignore(mainGame.playerProjectiles)
         // .ignore(mainGame.textBox)
         // .ignore(mainGame.debugGraphics)
         // .ignore(mainGame.worldLayer1)

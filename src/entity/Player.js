@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Projectile from './Projectile';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey) {
+  constructor(scene, x, y, spriteKey, fireWeapon) {
     super(scene, x, y, spriteKey);
     this.scene = scene;
     this.scene.physics.world.enable(this);
@@ -32,25 +32,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.lastHurt = 0;
     this.updateMovement = this.updateMovement.bind(this);
     this.damage = 10 + this.upgrade.damage;
-    this.attackSpeed = 0 + this.upgrade.attackSpeed; // This is the cooldown between hits
+    this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
+    this.nextAttack = 0;
     this.melee = false;
     this.shooting = false;
-    // this.scene.input.on(
-    //   'pointerdown',
-    //   function (pointer) {
-    //     let mouse = pointer;
-    //     let angle = Phaser.Math.Angle.Between(
-    //       this.x,
-    //       this.y,
-    //       mouse.x + this.scene.cameras.main.scrollX,
-    //       mouse.y + this.scene.cameras.main.scrollY
-    //     );
-    //     const x = mouse.x + this.scene.cameras.main.scrollX;
-    //     const y = mouse.y + this.scene.cameras.main.scrollY;
-    //     this.fire(angle, x, y);
-    //   },
-    //   this
-    // );
+    this.fireWeapon = (x, y, angle) => {
+      fireWeapon(x, y, angle);
+    };
+
+    this.scene.input.on(
+      'pointerdown',
+      function (pointer) {
+        let mouse = pointer;
+        let angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          mouse.x + this.scene.cameras.main.scrollX,
+          mouse.y + this.scene.cameras.main.scrollY
+        );
+        const x = mouse.x + this.scene.cameras.main.scrollX;
+        const y = mouse.y + this.scene.cameras.main.scrollY;
+        this.fire(angle, x, y);
+      },
+      this
+    );
+
     this.hitCooldown = false;
 
     this.takeDamage = this.takeDamage.bind(this);
@@ -103,7 +109,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         null,
         this
       );
-      var blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
+      const blast = new Projectile(this.scene, this.x, this.y, 'bigBlast');
       blast.rotation = angle; // THE ANGLE!
 
       this.scene.playerProjectiles.add(blast); // group of bullets
