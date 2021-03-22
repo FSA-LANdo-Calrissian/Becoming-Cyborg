@@ -299,14 +299,14 @@ export default class FgScene extends Phaser.Scene {
       ((this.player.x < this.enemy.x && this.player.facingRight === true) ||
         (this.player.x > this.enemy.x && this.player.facingRight === false))
     ) {
-      this.damageEnemy(this.enemy, null);
+      this.damageEnemy(this.enemy, this.player);
     }
   }
 
-  damageEnemy(enemy, projectile) {
+  damageEnemy(enemy, source) {
     console.log('enemy taking damage');
 
-    enemy.takeDamage(this.player.damage / 60);
+    enemy.takeDamage(source.damage / 60);
     console.log(enemy.health);
 
     // if (enemy.active === true && projectile.active === true) {
