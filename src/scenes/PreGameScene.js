@@ -64,14 +64,18 @@ export default class PreGameScene extends Phaser.Scene {
     const length = text.length;
     let i = 0;
 
-    // Some weird callback function that Adam's gonna have to explain...
     this.time.addEvent({
       callback: () => {
+        /*
+          Types out intro message letter by letter then starts MainScene
+        */
+        //adding one letter at a time
         this.intro.text += text[i];
         ++i;
+        //if end of sentence, move to next sentence and repeat
         if (i === length && this.textIdx !== this.introText.length - 1) {
           this.time.delayedCall(
-            1000,
+            100,
             () => {
               this.intro.text = '';
               this.typewriteTextWrapped(this.introText[++this.textIdx]);
@@ -79,15 +83,21 @@ export default class PreGameScene extends Phaser.Scene {
             null,
             this
           );
+          //if no more sentences, start MainScene
         } else if (this.textIdx === this.introText.length - 1) {
           if (this.activateMainScene) {
-            this.startMainScene();
+            this.time.delayedCall(
+              5000,
+              () => this.startMainScene(),
+              null,
+              this
+            );
             this.activateMainScene = false;
           }
         }
       },
       repeat: length - 1,
-      delay: 100,
+      delay: 1000,
     });
   }
 

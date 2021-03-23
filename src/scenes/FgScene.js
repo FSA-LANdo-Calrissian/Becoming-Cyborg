@@ -68,12 +68,14 @@ export default class FgScene extends Phaser.Scene {
       this.tutorialInProgress = false;
       this.finishedTutorial = true;
       this.player.body.moves = true;
+      this.player.canMelee = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
     }
     // Advance the dialogue (this will also allow
     // the text to be removed from screen)
     this.tutorialText.setText(this.textLines[i]);
+    this.nameText.setText('');
   }
 
   playDialogue() {
@@ -123,6 +125,11 @@ export default class FgScene extends Phaser.Scene {
     );
     this.tutorialText.setResolution(10);
     this.tutorialText.setScale(0.4).setOrigin(0.5);
+    this.nameText = this.add
+      .text(this.textBox.x - 33, this.textBox.y - 8, 'Mr. Robot')
+      .setResolution(10)
+      .setScale(0.23)
+      .setOrigin(0.5);
 
     // Add click area to advance text. Change the numbers after
     // the tutorialText width/height in order to increase click
@@ -143,6 +150,7 @@ export default class FgScene extends Phaser.Scene {
     // Freeze enemy and player movement.
     this.player.body.moves = false;
     this.player.shooting = true;
+    this.player.canMelee = false;
     this.enemy.body.moves = false;
 
     // Add the listener for mouse click.
@@ -152,7 +160,7 @@ export default class FgScene extends Phaser.Scene {
     });
   }
 
-  damageEnemy(enemy, projectile) {
+  damageEnemy(enemy, source) {
     /*
       Logic to damage enemy. Checks if enemy isn't dead and if whatever is doing the damage is active before doing damage.
 
@@ -160,11 +168,17 @@ export default class FgScene extends Phaser.Scene {
       param projectile: object -> Thing doing the damage (must have the this.damage property on it)
       returns null.
     */
-    if (enemy.active === true && projectile.active === true) {
-      projectile.destroy();
 
-      enemy.takeDamage(projectile.damage);
-    }
+    console.log('enemy taking damage');
+
+    enemy.takeDamage(source.damage / 60);
+    console.log(enemy.health);
+
+    // if (enemy.active === true && projectile.active === true) {
+    //   projectile.destroy();
+
+    //   enemy.takeDamage(projectile.damage);
+    // }
   }
 
   create(data) {
@@ -309,6 +323,20 @@ export default class FgScene extends Phaser.Scene {
         console.log(`Current armor: ${this.player.armor}`);
         console.log(`Current regen: ${this.player.regen}`);
       }
+    }
+
+    if (
+      this.player.isMelee &&
+      Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        this.enemy.x,
+        this.enemy.y
+      ) <= 16 &&
+      ((this.player.x < this.enemy.x && this.player.facingRight === true) ||
+        (this.player.x > this.enemy.x && this.player.facingRight === false))
+    ) {
+      this.damageEnemy(this.enemy, this.player);
     }
   }
 }

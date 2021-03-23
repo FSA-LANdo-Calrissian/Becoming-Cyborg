@@ -28,7 +28,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.damage = 10 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
-    this.melee = false;
+    this.isMelee = false;
+    this.canMelee = true;
     this.shooting = false;
     // Helper function to fire weapon.
     this.fireWeapon = (x, y, sprite, angle) => {
@@ -57,20 +58,35 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-      function (pointer) {
-        let mouse = pointer;
-        let angle = Phaser.Math.Angle.Between(
-          this.x,
-          this.y,
-          mouse.x + this.scene.cameras.main.scrollX,
-          mouse.y + this.scene.cameras.main.scrollY
-        );
-        // Determines if cd is over or not
-        if (time > this.nextAttack) {
-          // We need to pass in the sprite to use here
-          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
-          // Calculates the cd between shots
-          this.nextAttack += this.attackSpeed;
+      // function (pointer) {
+      //   let mouse = pointer;
+      //   let angle = Phaser.Math.Angle.Between(
+      //     this.x,
+      //     this.y,
+      //     mouse.x + this.scene.cameras.main.scrollX,
+      //     mouse.y + this.scene.cameras.main.scrollY
+      //   );
+      //   const x = mouse.x + this.scene.cameras.main.scrollX;
+      //   const y = mouse.y + this.scene.cameras.main.scrollY;
+      //   this.fire(angle, x, y);
+      // },
+      function () {
+        if (this.isMelee === false && this.canMelee) {
+          this.melee();
+          // function (pointer) {
+          //   let mouse = pointer;
+          //   let angle = Phaser.Math.Angle.Between(
+          //     this.x,
+          //     this.y,
+          //     mouse.x + this.scene.cameras.main.scrollX,
+          //     mouse.y + this.scene.cameras.main.scrollY
+          //   );
+          //   // Determines if cd is over or not
+          //   if (time > this.nextAttack) {
+          //     // We need to pass in the sprite to use here
+          //     this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          //     // Calculates the cd between shots
+          //     this.nextAttack += this.attackSpeed;
         }
       },
       this
@@ -200,6 +216,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  melee() {
+    if (this.canMelee) {
+      this.isMelee = true;
+      if (this.facingRight) {
+        this.play('punchRight', true);
+      } else {
+        this.play('punchLeft', true);
+      }
+
+      this.canMelee = false;
+
+      this.scene.time.delayedCall(400, () => {
+        this.isMelee = false;
+      });
+
+      this.scene.time.delayedCall(2000, () => {
+        this.canMelee = true;
+      });
+    }
+  }
+
   updateMovement(cursors) {
     /*
       Player movement logic based on which directional key is input.
@@ -215,7 +252,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = false;
       this.setVelocityY(-this.speed);
       this.setVelocityX(-this.speed);
-      this.play('runUp', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runUp', true);
+      }
     }
 
     // Running up + right
@@ -223,7 +265,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = true;
       this.setVelocityY(-this.speed);
       this.setVelocityX(this.speed);
-      this.play('runUp', true);
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runUp', true);
+      }
     }
 
     // Running down + left
@@ -231,7 +277,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = false;
       this.setVelocityY(this.speed);
       this.setVelocityX(-this.speed);
-      this.play('runDown', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runDown', true);
+      }
     }
 
     // Running down + right
@@ -239,7 +290,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = true;
       this.setVelocityY(this.speed);
       this.setVelocityX(this.speed);
-      this.play('runDown', true);
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runDown', true);
+      }
     }
 
     // Running left
@@ -247,35 +302,63 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.facingRight = false;
       this.setVelocityX(-this.speed);
       this.setVelocityY(0);
-      this.play('runLeft', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runLeft', true);
+      }
 
       // Running right
     } else if (cursors.right.isDown) {
       this.facingRight = true;
       this.setVelocityX(this.speed);
       this.setVelocityY(0);
-      this.play('runRight', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runRight', true);
+      }
 
       // Running up
     } else if (cursors.up.isDown) {
       this.setVelocityY(-this.speed);
       this.setVelocityX(0);
-      this.play('runUp', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runUp', true);
+      }
 
       // Running down
     } else if (cursors.down.isDown) {
       this.setVelocityY(this.speed);
       this.setVelocityX(0);
-      this.play('runDown', true);
+
+      if (this.isMelee) {
+        this.melee();
+      } else {
+        this.play('runDown', true);
+      }
 
       // No movement
     } else {
       this.setVelocityX(0);
       this.setVelocityY(0);
       if (this.facingRight) {
-        this.play('idleRight', true);
+        if (this.isMelee) {
+          this.melee();
+        } else {
+          this.play('idleRight', true);
+        }
       } else {
-        this.play('idleLeft', true);
+        if (this.isMelee) {
+          this.melee();
+        } else {
+          this.play('idleLeft', true);
+        }
       }
     }
   }

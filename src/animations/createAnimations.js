@@ -66,6 +66,28 @@ export default function () {
   });
 
   this.anims.create({
+    key: 'punchLeft',
+    frames: this.anims.generateFrameNumbers('player', {
+      start: 22,
+      end: 25,
+    }),
+    frameRate: 20,
+    repeat: -1,
+    yoyo: true,
+  });
+
+  this.anims.create({
+    key: 'punchRight',
+    frames: this.anims.generateFrameNumbers('player', {
+      start: 31,
+      end: 34,
+    }),
+    frameRate: 20,
+    repeat: -1,
+    yoyo: true,
+  });
+
+  this.anims.create({
     key: 'enemyRunLeft',
     frames: this.anims.generateFrameNumbers('enemy', {
       start: 9,

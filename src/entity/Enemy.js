@@ -8,7 +8,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = 80;
-    this.health = 100;
+    this.health = 40;
     this.direction = '';
     this.takeDamage = this.takeDamage.bind(this);
   }
@@ -23,6 +23,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Subtract damage from health
     this.health -= damage;
+    const hitAnimation = this.playDamageAnimation();
 
     // Death logic.
     if (this.health <= 0) {
@@ -32,6 +33,19 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setVisible(false);
       this.body.enable = false;
     }
+    this.scene.time.delayedCall(1000, () => {
+      hitAnimation.stop();
+      this.clearTint();
+    });
+  }
+
+  playDamageAnimation() {
+    return this.scene.tweens.add({
+      targets: this,
+      duration: 100,
+      repeat: -1,
+      tint: 0xffffff,
+    });
   }
 
   enemyMovement(direction, angle) {
