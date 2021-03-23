@@ -58,7 +58,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-
       function () {
         if (this.isMelee === false && this.canMelee) {
           this.melee();
@@ -174,7 +173,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       // Do nothing
       return;
     }
-
+    console.log(`body touching?`, this.body.touching);
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback

@@ -127,9 +127,15 @@ export default class HUDScene extends Phaser.Scene {
 
       // If in dialogue, ignore the text box and texts.
       mainGame.events.on('dialogue', () => {
-        minimapCam.ignore(mainGame.textBox);
-        minimapCam.ignore(mainGame.tutorialText);
-        minimapCam.ignore(mainGame.nameText);
+        if (mainGame.textBox) {
+          minimapCam.ignore(mainGame.textBox);
+        }
+        if (mainGame.tutorialText) {
+          minimapCam.ignore(mainGame.tutorialText);
+        }
+        if (mainGame.nameText) {
+          minimapCam.ignore(mainGame.nameText);
+        }
       });
     });
   }
