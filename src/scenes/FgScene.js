@@ -25,7 +25,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 1000,
-      data: { player: this.player.upgrade },
+      data: { player: this.player },
     });
   }
 
@@ -273,10 +273,9 @@ export default class FgScene extends Phaser.Scene {
     this.enemy.setCollideWorldBounds();
     createAnimations.call(this);
 
-    this.events.on('transitioncomplete', () => {
+    this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
     });
-
     // data.choice is only available when player restarts game.
     if (data.choice) {
       this.scene.restart({ choice: false });
@@ -316,7 +315,13 @@ export default class FgScene extends Phaser.Scene {
         this.openUpgrade();
       }
       if (this.cursors.hp.isDown) {
-        console.log(this.playerProjectiles);
+        // Press h button to see stats.
+        console.log(
+          `Current health: ${this.player.health}/${this.player.maxHealth}`
+        );
+        console.log(`Current move speed: ${this.player.speed}`);
+        console.log(`Current armor: ${this.player.armor}`);
+        console.log(`Current regen: ${this.player.regen}`);
       }
     }
 
