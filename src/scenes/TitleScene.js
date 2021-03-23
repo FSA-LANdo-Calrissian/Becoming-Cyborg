@@ -19,20 +19,36 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 47,
       frameHeight: 50,
     });
-    this.load.spritesheet('enemy', 'assets/sprites/Walk.png', {
+    this.load.spritesheet('meleeRobot', 'assets/sprites/Walk.png', {
       frameWidth: 46,
       frameHeight: 48,
     });
-    this.load.spritesheet('enemyPunch', 'assets/sprites/Punch_RightHand.png', {
-      frameWidth: 48,
-      frameHeight: 48,
-    });
+    this.load.spritesheet(
+      'meleeRobotAttack',
+      'assets/sprites/Punch_RightHand.png',
+      {
+        frameWidth: 48,
+        frameHeight: 48,
+      }
+    );
     this.load.spritesheet(
       'upgradeStation',
       'assets/sprites/upgrade-station.png',
       {
         frameWidth: 144,
         frameHeight: 144,
+      }
+    );
+    this.load.spritesheet('wolfUpDown', 'assets/sprites/wolf-updown.png', {
+      frameWidth: 32,
+      frameHeight: 64,
+    });
+    this.load.spritesheet(
+      'wolfLeftRight',
+      'assets/sprites/wolf-leftright.png',
+      {
+        frameWidth: 64,
+        frameHeight: 32,
       }
     );
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
