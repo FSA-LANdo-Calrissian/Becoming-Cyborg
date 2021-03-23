@@ -37,7 +37,7 @@ export default function () {
   this.anims.create({
     key: 'runDown',
     frames: this.anims.generateFrameNumbers('player', {
-      start: 19,
+      start: 20,
       end: 21,
     }),
     frameRate: 5,
@@ -183,5 +183,16 @@ export default function () {
     frameRate: 2,
     repeat: -1,
     yoyo: true,
+  });
+
+  this.anims.create({
+    key: 'upgradeStationAnim',
+    frames: this.anims.generateFrameNumbers('upgradeStation', {
+      start: 0,
+      end: 15,
+    }),
+    frameRate: 6,
+    yoyo: true,
+    repeat: 0,
   });
 }
