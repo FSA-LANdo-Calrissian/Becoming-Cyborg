@@ -32,6 +32,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
     this.load.image('scroll', './assets/backgrounds/scroll.png');
     this.load.image('arrow', 'assets/backgrounds/arrow.png');
+    this.load.image('interact', 'assets/backgrounds/interact.png');
   }
 
   create(data) {

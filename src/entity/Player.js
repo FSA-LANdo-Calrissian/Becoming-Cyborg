@@ -58,18 +58,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-      // function (pointer) {
-      //   let mouse = pointer;
-      //   let angle = Phaser.Math.Angle.Between(
-      //     this.x,
-      //     this.y,
-      //     mouse.x + this.scene.cameras.main.scrollX,
-      //     mouse.y + this.scene.cameras.main.scrollY
-      //   );
-      //   const x = mouse.x + this.scene.cameras.main.scrollX;
-      //   const y = mouse.y + this.scene.cameras.main.scrollY;
-      //   this.fire(angle, x, y);
-      // },
       function () {
         if (this.isMelee === false && this.canMelee) {
           this.melee();
@@ -185,7 +173,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       // Do nothing
       return;
     }
-
+    console.log(`body touching?`, this.body.touching);
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback

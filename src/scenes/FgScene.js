@@ -3,6 +3,7 @@ import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Projectile from '../entity/Projectile';
 import createAnimations from '../animations/createAnimations';
+import NPC from '../entity/NPC';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -222,6 +223,8 @@ export default class FgScene extends Phaser.Scene {
     );
     this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
 
+    this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -234,10 +237,21 @@ export default class FgScene extends Phaser.Scene {
       maxSize: 30,
     });
 
+    this.npcGroup = this.physics.add.group({
+      classType: NPC,
+      runChildUpdate: true,
+    });
+
+    this.npcGroup.add(this.npc);
+
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
     this.physics.add.overlap(this.player, this.enemy, () => {
       this.player.takeDamage(10, this.gg);
+    });
+
+    this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
+      npc.displayTooltip();
     });
 
     this.physics.add.overlap(
@@ -311,6 +325,7 @@ export default class FgScene extends Phaser.Scene {
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
+
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();
       }
