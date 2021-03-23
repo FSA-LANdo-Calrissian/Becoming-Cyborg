@@ -366,16 +366,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (time > this.nextHeal) {
       // Only when not at max health
       if (this.health < this.maxHealth) {
-        this.health += this.regen;
+        // If regen pushes you over max health, set hp to max health
+        if (this.health + this.regen > this.maxHealth) {
+          this.health = this.maxHealth;
+        } else {
+          // Otherwise, add regen
+          this.health += this.regen;
+        }
+        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
         this.nextHeal += this.regenCD;
       }
-    }
-
-    if (cursors.hp.isDown) {
-      // this.upgrade('hp');
-      console.log(this.x, this.y);
-    } else if (cursors.speed.isDown) {
-      this.upgradeStats('ms');
     }
   }
 }

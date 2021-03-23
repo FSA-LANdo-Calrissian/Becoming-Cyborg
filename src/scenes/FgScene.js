@@ -250,7 +250,7 @@ export default class FgScene extends Phaser.Scene {
     this.enemiesGroup = this.physics.add.group({
       classType: Enemy,
       runChildUpdate: true,
-      setCollideWorldBounds: true,
+      collideWorldBounds: true,
     });
 
     this.npcGroup = this.physics.add.group({
@@ -265,11 +265,25 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
-    this.physics.add.overlap(this.player, this.enemiesGroup, () => {
-      if (this.enemy.isMelee === true) {
-        this.player.takeDamage(10, this.gg);
+    this.physics.add.overlap(
+      this.player,
+      this.enemiesGroup,
+      (player, enemy) => {
+        if (enemy.isMelee === true) {
+          this.player.takeDamage(10, this.gg);
+        }
+
+        if (
+          player.isMelee &&
+          Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y) <=
+            16 &&
+          ((this.player.x < enemy.x && this.player.facingRight === true) ||
+            (this.player.x > enemy.x && this.player.facingRight === false))
+        ) {
+          this.damageEnemy(enemy, player);
+        }
       }
-    });
+    );
 
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
       // Displays tooltip on overlap.
@@ -384,20 +398,6 @@ export default class FgScene extends Phaser.Scene {
         console.log(`Current armor: ${this.player.armor}`);
         console.log(`Current regen: ${this.player.regen}`);
       }
-    }
-
-    if (
-      this.player.isMelee &&
-      Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        this.enemy.x,
-        this.enemy.y
-      ) <= 16 &&
-      ((this.player.x < this.enemy.x && this.player.facingRight === true) ||
-        (this.player.x > this.enemy.x && this.player.facingRight === false))
-    ) {
-      this.damageEnemy(this.enemy, this.player);
     }
   }
 }
