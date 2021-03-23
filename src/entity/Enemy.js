@@ -91,6 +91,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
+    //edge case for if enemy is suppposedly moving but not going anywhere. Tells enemy to keep going through patrol options
     if (
       this.isMoving === true &&
       this.body.velocity.x === 0 &&
@@ -199,6 +200,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   randomPatrol() {
+    // function that gets a random number and tells enemy to patrol based on the random number
     let randomNum = this.getRandomInt(5);
     if (randomNum === 1) {
       if (this.isMoving === false) {
@@ -243,6 +245,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
   getRandomInt(max) {
+    // just generates a random number for enemy patrol
     return Math.floor(Math.random() * Math.floor(max));
   }
 
