@@ -251,6 +251,7 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
+      // Displays tooltip on overlap.
       npc.displayTooltip();
     });
 

@@ -12,6 +12,9 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
   }
 
   displayTooltip() {
+    /*
+      Method to display the message "Press space bar to interact". For some reason, the add.text is blurry, so an image is used instead. If we can fix the text, that would be preferred.
+    */
     if (!this.messageDisplayed) {
       this.messageDisplayed = true;
       // this.scene.tutorialText = this.scene.add.text(
@@ -32,6 +35,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     let wasTouching = !this.body.wasTouching.none;
 
     if (!touching && wasTouching && this.messageDisplayed) {
+      // Destroys tooltip when no more overlap
       this.scene.tutorialText.destroy();
       this.messageDisplayed = false;
     }
