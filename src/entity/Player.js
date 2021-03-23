@@ -13,8 +13,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       attackSpeed: 0,
       moveSpeed: 0,
       regen: 0,
+      armor: 0,
     };
     this.speed = 100 + this.upgrade.moveSpeed;
+    this.armor = 0 + this.upgrade.armor;
+    this.regen = 0 + this.upgrade.regen;
     this.health = 100;
     this.maxHealth = 100 + this.upgrade.maxHealth;
     this.stats = {
@@ -22,7 +25,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.facingRight = false;
     this.lastHurt = 0;
-    this.damage = 10 + this.upgrade.damage;
+    this.damage = 20 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
     this.isMelee = false;
@@ -32,6 +35,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.fireWeapon = (x, y, sprite, angle) => {
       fireWeapon(x, y, sprite, angle);
     };
+
+    this.nextHeal = 0;
+    this.regenCD = 5000;
 
     this.hitCooldown = false;
 
@@ -52,18 +58,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-      // function (pointer) {
-      //   let mouse = pointer;
-      //   let angle = Phaser.Math.Angle.Between(
-      //     this.x,
-      //     this.y,
-      //     mouse.x + this.scene.cameras.main.scrollX,
-      //     mouse.y + this.scene.cameras.main.scrollY
-      //   );
-      //   const x = mouse.x + this.scene.cameras.main.scrollX;
-      //   const y = mouse.y + this.scene.cameras.main.scrollY;
-      //   this.fire(angle, x, y);
-      // },
       function () {
         if (this.isMelee === false && this.canMelee) {
           this.melee();
@@ -87,43 +81,62 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
+  updateStats() {
+    /*
+      Helper function to upgrade the stats after an upgrade was put in. This is because this.speed and all the other stats do not dynamically update as we update the "this.upgrade" object, so we reset it here.
+    */
+    this.speed = 100 + this.upgrade.moveSpeed;
+    this.maxHealth = 100 + this.upgrade.maxHealth;
+    this.damage = 10 + this.upgrade.damage;
+    this.attackSpeed = 2000 - this.upgrade.attackSpeed;
+    this.armor = 0 + this.upgrade.armor;
+    this.regen = 0 + this.upgrade.regen;
+  }
+
   upgradeStats(type) {
     /*
       Upgrade logic for upgrading player stats. Code works but upgrade UI is not implemented yet. For now, it runs with certain hotkeys.
       param type: string -> the upgrade type.
-          Current types: hp, ms, as, damage
+          Current types: hpUp, hpDown, ms, as, damage
       returns: null
     */
+
     switch (type) {
-      case 'hp':
-        console.log(`Health increased`);
+      case 'hpUp':
         this.health += 10;
         this.upgrade.maxHealth += 10;
-        // Update the hp bar. It doesn't change any hp values,
-        // just updates so the max health will be updated.
-        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
         break;
-      case 'ms':
-        console.log(`Speed increased`);
-        this.upgrade.moveSpeed += 10;
+      case 'hpDown':
+        this.health -= 10;
+        this.upgrade.maxHealth -= 10;
         break;
-      case 'as':
-        console.log(`Attack speed improved`);
-        // This subtracts 100 ms from the cooldown, essentially
-        this.upgrade.attackSpeed += 100;
+      case 'msUp':
+        this.upgrade.moveSpeed += 5;
         break;
-      case 'damage':
-        console.log(`Damage improved`);
-        this.upgrade.damage += 10;
+      case 'msDown':
+        this.upgrade.moveSpeed -= 5;
+        break;
+      case 'armorUp':
+        this.upgrade.armor += 1;
+        break;
+      case 'armorDown':
+        this.upgrade.armor -= 1;
+        break;
+      case 'regenUp':
+        this.upgrade.regen += 1;
+        break;
+      case 'regenDown':
+        this.upgrade.regen -= 1;
         break;
       default:
         console.log('Invalid upgrade type');
         return;
     }
 
-    console.log(`Current health: `, this.health);
-    console.log(`Max health: `, this.maxHealth);
-    console.log(`Current move speed`, this.speed);
+    this.updateStats();
+    // Update the hp bar. It doesn't change any hp values,
+    // just updates so the max health will be updated.
+    this.scene.events.emit('takeDamage', this.health, this.maxHealth);
   }
 
   playDamageAnimation() {
@@ -160,7 +173,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       // Do nothing
       return;
     }
-
+    console.log(`body touching?`, this.body.touching);
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback
@@ -168,8 +181,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Play damage
     const hitAnimation = this.playDamageAnimation();
 
-    // Subtract damage from current health
-    this.health -= damage;
+    // Subtract damage minus armor reduction from current health
+    this.health -= damage - this.armor;
+
     // Update the hp bar
     this.scene.events.emit('takeDamage', this.health, this.maxHealth);
 
@@ -191,21 +205,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   melee() {
+    //checks if player canMelee based on a timeout
     if (this.canMelee) {
       this.isMelee = true;
+
+      // if player is facing right, melee in that direction else melee in other direction
       if (this.facingRight) {
         this.play('punchRight', true);
       } else {
         this.play('punchLeft', true);
       }
-
+      // since player is actively meleeing, sets canMelee to false so the player cannot melee while he is meleeing
       this.canMelee = false;
 
       this.scene.time.delayedCall(400, () => {
+        // this sets the melee attack duration
         this.isMelee = false;
       });
 
       this.scene.time.delayedCall(2000, () => {
+        // this is the cooldown for melee attack
         this.canMelee = true;
       });
     }
@@ -228,6 +247,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(-this.speed);
 
       if (this.isMelee) {
+        //if the player is in the process of meleeing, sets the animation to melee instead of running
         this.melee();
       } else {
         this.play('runUp', true);
@@ -341,6 +361,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.updateMovement(cursors);
 
     this.shoot(time);
+
+    // Regen logic. Heal this.regen hp every 5 seconds
+    if (time > this.nextHeal) {
+      // Only when not at max health
+      if (this.health < this.maxHealth) {
+        this.health += this.regen;
+        this.nextHeal += this.regenCD;
+      }
+    }
 
     if (cursors.hp.isDown) {
       // this.upgrade('hp');

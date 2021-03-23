@@ -3,6 +3,7 @@ import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Projectile from '../entity/Projectile';
 import createAnimations from '../animations/createAnimations';
+import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 
 export default class FgScene extends Phaser.Scene {
@@ -26,7 +27,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 1000,
-      data: { player: this.player.upgrade },
+      data: { player: this.player },
     });
   }
 
@@ -230,6 +231,8 @@ export default class FgScene extends Phaser.Scene {
 
     this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
 
+    this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -242,10 +245,22 @@ export default class FgScene extends Phaser.Scene {
       maxSize: 30,
     });
 
+    this.npcGroup = this.physics.add.group({
+      classType: NPC,
+      runChildUpdate: true,
+    });
+
+    this.npcGroup.add(this.npc);
+
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
     this.physics.add.overlap(this.player, this.enemy, () => {
       this.player.takeDamage(10, this.gg);
+    });
+
+    this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
+      // Displays tooltip on overlap.
+      npc.displayTooltip();
     });
 
     this.physics.add.overlap(
@@ -289,10 +304,9 @@ export default class FgScene extends Phaser.Scene {
     this.enemy.setCollideWorldBounds();
     createAnimations.call(this);
 
-    this.events.on('transitioncomplete', () => {
+    this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
     });
-
     // data.choice is only available when player restarts game.
     if (data.choice) {
       this.scene.restart({ choice: false });
@@ -305,6 +319,10 @@ export default class FgScene extends Phaser.Scene {
     // Tutorial logic - if player hasn't talked to enemy robot
     // yet and is within a range of 51 of the robot, initialize
     // talking.
+
+    if (!this.finishedTutorial) {
+      this.enemy.body.moves = false;
+    }
     if (
       !this.tutorialInProgress &&
       !this.finishedTutorial &&
@@ -329,11 +347,18 @@ export default class FgScene extends Phaser.Scene {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
       this.wolf.update(this.player);
+
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();
       }
       if (this.cursors.hp.isDown) {
-        console.log(this.playerProjectiles);
+        // Press h button to see stats.
+        console.log(
+          `Current health: ${this.player.health}/${this.player.maxHealth}`
+        );
+        console.log(`Current move speed: ${this.player.speed}`);
+        console.log(`Current armor: ${this.player.armor}`);
+        console.log(`Current regen: ${this.player.regen}`);
       }
     }
 
