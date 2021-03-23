@@ -226,7 +226,7 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setSize(30, 35)
       .setOffset(10, 12);
-    this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
+    this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
 
     // Groups
     this.playerProjectiles = this.physics.add.group({

@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
+    this.spriteKey = spriteKey;
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
@@ -58,34 +59,36 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       case 'left':
         this.angle = 0;
         this.direction = 'left';
-        return this.play('enemyRunLeft', true);
+        return this.play(`${this.spriteKey}RunLeft`, true);
       case 'right':
         this.angle = 0;
         this.direction = 'right';
-        return this.play('enemyRunRight', true);
+        return this.play(`${this.spriteKey}RunRight`, true);
       case 'up':
         this.angle = 0;
         this.direction = 'up';
-        return this.play('enemyRunUp', true);
+        return this.play(`${this.spriteKey}RunUp`, true);
       case 'down':
         this.angle = 0;
         this.direction = 'down';
-        return this.play('enemyRunDown', true);
+        return this.play(`${this.spriteKey}RunDown`, true);
       case 'idle':
         this.angle = 0;
-        return this.play('enemyIdleLeft', true);
+        return this.play(`${this.spriteKey}IdleRight`, true);
       case 'punchLeft':
+        console.log('HERE', this.spriteKey);
+
         this.angle = 0;
-        return this.play('enemyPunchLeft', true);
+        return this.play(`${this.spriteKey}AttackLeft`, true);
       case 'punchRight':
         this.angle = 0;
-        return this.play('enemyPunchRight', true);
+        return this.play(`${this.spriteKey}AttackRight`, true);
       case 'punchUp':
         this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-        return this.play('enemyPunchUp', true);
+        return this.play(`${this.spriteKey}AttackUp`, true);
       case 'punchDown':
         this.angle = (angle + Math.PI) * Phaser.Math.RAD_TO_DEG + 90;
-        return this.play('enemyPunchDown', true);
+        return this.play(`${this.spriteKey}AttackDown`, true);
     }
   }
 

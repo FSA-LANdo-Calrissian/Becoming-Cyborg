@@ -6,7 +6,6 @@ export default class UpgradeStation extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    this.loaded = true;
     this.playAnim = this.playAnim.bind(this);
   }
   playAnim() {

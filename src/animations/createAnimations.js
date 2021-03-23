@@ -1,6 +1,7 @@
 // All animations are made here and imported where needed.
 
 export default function () {
+  //player animations
   this.anims.create({
     key: 'runLeft',
     frames: this.anims.generateFrameNumbers('player', {
@@ -11,7 +12,6 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
     key: 'runRight',
     frames: this.anims.generateFrameNumbers('player', {
@@ -22,7 +22,6 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
     key: 'runUp',
     frames: this.anims.generateFrameNumbers('player', {
@@ -33,7 +32,6 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
     key: 'runDown',
     frames: this.anims.generateFrameNumbers('player', {
@@ -44,7 +42,6 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
     key: 'idleRight',
     frames: this.anims.generateFrameNumbers('player', {
@@ -54,7 +51,6 @@ export default function () {
     frameRate: 0,
     repeat: 0,
   });
-
   this.anims.create({
     key: 'idleLeft',
     frames: this.anims.generateFrameNumbers('player', {
@@ -64,7 +60,6 @@ export default function () {
     frameRate: 0,
     repeat: 0,
   });
-
   this.anims.create({
     key: 'punchLeft',
     frames: this.anims.generateFrameNumbers('player', {
@@ -75,7 +70,6 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
     key: 'punchRight',
     frames: this.anims.generateFrameNumbers('player', {
@@ -87,9 +81,10 @@ export default function () {
     yoyo: true,
   });
 
+  //Melee robot animations
   this.anims.create({
-    key: 'enemyRunLeft',
-    frames: this.anims.generateFrameNumbers('enemy', {
+    key: 'meleeRobotRunLeft',
+    frames: this.anims.generateFrameNumbers('meleeRobot', {
       start: 9,
       end: 11,
     }),
@@ -97,10 +92,9 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyRunRight',
-    frames: this.anims.generateFrameNumbers('enemy', {
+    key: 'meleeRobotRunRight',
+    frames: this.anims.generateFrameNumbers('meleeRobot', {
       start: 3,
       end: 5,
     }),
@@ -108,10 +102,9 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyRunUp',
-    frames: this.anims.generateFrameNumbers('enemy', {
+    key: 'meleeRobotRunUp',
+    frames: this.anims.generateFrameNumbers('meleeRobot', {
       start: 6,
       end: 8,
     }),
@@ -119,10 +112,9 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyRunDown',
-    frames: this.anims.generateFrameNumbers('enemy', {
+    key: 'meleeRobotRunDown',
+    frames: this.anims.generateFrameNumbers('meleeRobot', {
       start: 0,
       end: 2,
     }),
@@ -130,20 +122,13 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyIdleRight',
-    frames: this.anims.generateFrameNumbers('enemy', {
-      start: 4,
-      end: 4,
-    }),
-    frameRate: 0,
-    repeat: 0,
+    key: 'meleeRobotIdleRight',
+    frames: [{ key: 'meleeRobot', frame: 4 }],
   });
-
   this.anims.create({
-    key: 'enemyPunchLeft',
-    frames: this.anims.generateFrameNumbers('enemyPunch', {
+    key: 'meleeRobotAttackLeft',
+    frames: this.anims.generateFrameNumbers('meleeRobotAttack', {
       start: 9,
       end: 11,
     }),
@@ -151,10 +136,9 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyPunchRight',
-    frames: this.anims.generateFrameNumbers('enemyPunch', {
+    key: 'meleeRobotAttackRight',
+    frames: this.anims.generateFrameNumbers('meleeRobotAttack', {
       start: 3,
       end: 5,
     }),
@@ -162,10 +146,9 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
-
   this.anims.create({
-    key: 'enemyPunchUp',
-    frames: this.anims.generateFrameNumbers('enemyPunch', {
+    key: 'meleeRobotAttackUp',
+    frames: this.anims.generateFrameNumbers('meleeRobotAttack', {
       start: 6,
       end: 8,
     }),
@@ -175,8 +158,8 @@ export default function () {
   });
 
   this.anims.create({
-    key: 'enemyPunchDown',
-    frames: this.anims.generateFrameNumbers('enemyPunch', {
+    key: 'meleeRobotAttackDown',
+    frames: this.anims.generateFrameNumbers('meleeRobotAttack', {
       start: 0,
       end: 2,
     }),
