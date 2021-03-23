@@ -288,6 +288,10 @@ export default class FgScene extends Phaser.Scene {
     // Tutorial logic - if player hasn't talked to enemy robot
     // yet and is within a range of 51 of the robot, initialize
     // talking.
+
+    if (!this.finishedTutorial) {
+      this.enemy.body.moves = false;
+    }
     if (
       !this.tutorialInProgress &&
       !this.finishedTutorial &&

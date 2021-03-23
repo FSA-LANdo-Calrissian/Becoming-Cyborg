@@ -10,6 +10,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.speed = 80;
     this.health = 40;
     this.direction = '';
+    this.isMoving = false;
     this.takeDamage = this.takeDamage.bind(this);
   }
 
@@ -90,6 +91,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
+    //edge case for if enemy is suppposedly moving but not going anywhere. Tells enemy to keep going through patrol options
+    if (
+      this.isMoving === true &&
+      (this.body.velocity === 0 || Math.abs(this.body.velocity) < 35)
+    ) {
+      this.randomPatrol();
+    }
     /*
       Function to determine enemy aggro and enemy movement.
       If player is within a range of the constant aggroRange, enemy will move toward the player. If player is within attack range, enemy will stop moving and play attack animation.
@@ -109,29 +117,34 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     ) {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
+      this.isMoving = false;
 
       if (Math.abs(player.y - this.y) <= 10 && player.x < this.x) {
         this.enemyMovement('punchLeft', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
+        this.isMoving = false;
 
         return;
       } else if (player.x > this.x && Math.abs(player.y - this.y) <= 10) {
         this.enemyMovement('punchRight', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
+        this.isMoving = false;
 
         return;
       } else if (player.y > this.y && Math.abs(player.x - this.x) <= 10) {
         this.enemyMovement('punchDown', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
+        this.isMoving = false;
 
         return;
       } else if (player.y < this.y && Math.abs(player.x - this.x) <= 10) {
         this.enemyMovement('punchUp', angle);
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
+        this.isMoving = false;
 
         return;
       }
@@ -154,6 +167,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         // move enemy to left
         this.body.velocity.x = -35;
         this.enemyMovement('left');
+        this.isMoving = true;
       }
       // if player to right of enemy AND enemy moving to left (or not moving)
       else if (
@@ -163,20 +177,75 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         // move enemy to right
         this.body.velocity.x = 35;
         this.enemyMovement('right');
+        this.isMoving = true;
       } else if (
         Math.round(player.y) < Math.round(this.y) &&
         Math.round(this.body.velocity.y) >= 0
       ) {
         this.body.velocity.y = -35;
         this.enemyMovement('up');
+        this.isMoving = true;
       } else if (
         Math.round(player.y) > Math.round(this.y) &&
         Math.round(this.body.velocity.y) <= 0
       ) {
         this.body.velocity.y = 35;
         this.enemyMovement('down');
+        this.isMoving = true;
+      }
+    } else {
+      this.randomPatrol();
+    }
+  }
+
+  randomPatrol() {
+    // function that gets a random number and tells enemy to patrol based on the random number
+    let randomNum = this.getRandomInt(5);
+    if (randomNum === 1) {
+      if (this.isMoving === false) {
+        this.body.velocity.x = -35;
+        this.enemyMovement('left');
+        this.isMoving = true;
+        this.scene.time.delayedCall(3000, () => {
+          this.body.velocity.y = 0;
+          this.isMoving = false;
+        });
+      }
+    } else if (randomNum === 2) {
+      if (this.isMoving === false) {
+        this.body.velocity.x = 35;
+        this.enemyMovement('right');
+        this.isMoving = true;
+        this.scene.time.delayedCall(3000, () => {
+          this.body.velocity.y = 0;
+          this.isMoving = false;
+        });
+      }
+    } else if (randomNum === 3) {
+      if (this.isMoving === false) {
+        this.body.velocity.y = -35;
+        this.enemyMovement('up');
+        this.isMoving = true;
+        this.scene.time.delayedCall(3000, () => {
+          this.body.velocity.y = 0;
+          this.isMoving = false;
+        });
+      }
+    } else {
+      if (this.isMoving === false) {
+        this.body.velocity.y = 35;
+        this.enemyMovement('down');
+        this.isMoving = true;
+        this.scene.time.delayedCall(3000, () => {
+          this.body.velocity.y = 0;
+          this.isMoving = false;
+        });
       }
     }
+  }
+  getRandomInt(max) {
+    // just generates a random number for enemy patrol
+    return Math.floor(Math.random() * Math.floor(max));
   }
 
   update(player) {

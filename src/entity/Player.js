@@ -25,7 +25,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.facingRight = false;
     this.lastHurt = 0;
-    this.damage = 10 + this.upgrade.damage;
+    this.damage = 20 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
     this.isMelee = false;
@@ -58,18 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-      // function (pointer) {
-      //   let mouse = pointer;
-      //   let angle = Phaser.Math.Angle.Between(
-      //     this.x,
-      //     this.y,
-      //     mouse.x + this.scene.cameras.main.scrollX,
-      //     mouse.y + this.scene.cameras.main.scrollY
-      //   );
-      //   const x = mouse.x + this.scene.cameras.main.scrollX;
-      //   const y = mouse.y + this.scene.cameras.main.scrollY;
-      //   this.fire(angle, x, y);
-      // },
+
       function () {
         if (this.isMelee === false && this.canMelee) {
           this.melee();
@@ -217,21 +206,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   melee() {
+    //checks if player canMelee based on a timeout
     if (this.canMelee) {
       this.isMelee = true;
+
+      // if player is facing right, melee in that direction else melee in other direction
       if (this.facingRight) {
         this.play('punchRight', true);
       } else {
         this.play('punchLeft', true);
       }
-
+      // since player is actively meleeing, sets canMelee to false so the player cannot melee while he is meleeing
       this.canMelee = false;
 
       this.scene.time.delayedCall(400, () => {
+        // this sets the melee attack duration
         this.isMelee = false;
       });
 
       this.scene.time.delayedCall(2000, () => {
+        // this is the cooldown for melee attack
         this.canMelee = true;
       });
     }
@@ -254,6 +248,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(-this.speed);
 
       if (this.isMelee) {
+        //if the player is in the process of meleeing, sets the animation to melee instead of running
         this.melee();
       } else {
         this.play('runUp', true);
