@@ -140,8 +140,8 @@ export default class FgScene extends Phaser.Scene {
       new Phaser.Geom.Rectangle(
         0,
         0,
-        this.tutorialText.width + 15,
-        this.tutorialText.height + 30
+        this.tutorialText.width + 100,
+        this.tutorialText.height + 100
       ),
       Phaser.Geom.Rectangle.Contains
     );
@@ -231,7 +231,6 @@ export default class FgScene extends Phaser.Scene {
     this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
 
     this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
-
 
     this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
 
