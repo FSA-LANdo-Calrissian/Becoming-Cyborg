@@ -17,7 +17,7 @@ export default class UpgradeUI extends Phaser.Scene {
 
   upgradeHelper(upgradeName) {
     /*
-      Function to increase/decrease player's stats based on which upgrade button was hit. This calls the player's upgradeStats method.
+      Function to increase/decrease player's stats based on which upgrade button was hit. This calls the player's upgradeStats method. Uses switch case based on the upgradeName passed into the function, which comes from the gameObject's name property.
       param upgradeName: string -> The name of the gameObject that was pressed. This will determine which stat to change and which direction to change it
       Current upgradeNames: hpUp, hpDown
       returns null
