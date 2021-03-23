@@ -11,6 +11,7 @@ export default class FgScene extends Phaser.Scene {
     super('FgScene');
     this.finishedTutorial = false;
     this.tutorialInProgress = false;
+    this.upgradeOpened = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -267,13 +268,15 @@ export default class FgScene extends Phaser.Scene {
       this.damageEnemy
     );
 
-    this.physics.add.overlap(
-      this.player,
-      this.upgradeStation,
-      this.upgradeStation.playAnim,
-      null,
-      this
-    );
+    this.physics.add.overlap(this.player, this.upgradeStation, () => {
+      this.upgradeStation.playAnim();
+      if (!this.upgradeOpened) {
+        this.upgradeOpened = true;
+        this.time.delayedCall(4000, () => {
+          this.openUpgrade();
+        });
+      }
+    });
 
     this.physics.add.collider(this.enemy, this.worldLayer1);
 
@@ -304,6 +307,11 @@ export default class FgScene extends Phaser.Scene {
 
     this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
+      // If we're coming from the upgrade UI
+      // Set upgradeOpened to false so we can get back into it
+      if (fromScene.scene.key === 'UpgradeUI') {
+        this.upgradeOpened = false;
+      }
     });
     // data.choice is only available when player restarts game.
     if (data.choice) {
@@ -311,6 +319,11 @@ export default class FgScene extends Phaser.Scene {
       const main = this.scene.get('MainScene');
       main.scene.restart({ choice: false });
     }
+
+    // For debugging purposes to see pointer position
+    // this.input.on('pointerdown', (pointer) => {
+    //   console.log(`pointer position: `, pointer.x, pointer.y);
+    // });
   }
 
   update(time, delta) {
