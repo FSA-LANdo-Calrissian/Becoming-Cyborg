@@ -1,8 +1,6 @@
 language: node_js
 node_js:
   - 14 # uses version 14
-addons:
-  postgresql: '10' # recent postgres version on Travis
 dist: xenial # uses xenial environment
 notifications:
   email:
