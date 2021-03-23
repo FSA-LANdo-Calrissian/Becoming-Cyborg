@@ -3,6 +3,7 @@ import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Projectile from '../entity/Projectile';
 import createAnimations from '../animations/createAnimations';
+import UpgradeStation from '../entity/UpgradeStation';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -217,6 +218,13 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Spawning the entities
+    this.upgradeStation = new UpgradeStation(
+      this,
+      56,
+      46,
+      'upgradeStation'
+    ).setScale(0.3);
+
     this.player = new Player(this, 38, 23, 'player', this.loadBullet).setScale(
       0.3
     );
