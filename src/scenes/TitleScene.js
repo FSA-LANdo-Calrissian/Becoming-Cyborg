@@ -52,6 +52,8 @@ export default class MainScene extends Phaser.Scene {
       }
     );
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+    this.load.image('potion', 'assets/items/potion.png');
+    this.load.image('iron', 'assets/items/iron.png');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
     this.load.image('scroll', './assets/backgrounds/scroll.png');

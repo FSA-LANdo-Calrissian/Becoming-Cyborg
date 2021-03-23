@@ -1,20 +1,50 @@
 import Phaser from 'phaser';
+import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
+    this.class = 'robot';
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = 80;
-    this.health = 40;
+    this.health = 4;
     this.direction = '';
     this.isMoving = false;
     this.isMelee = false;
     this.canMelee = true;
+    this.dropTable = {
+      robot: ['potion', 'iron'],
+      animal: ['potion'],
+    };
     this.takeDamage = this.takeDamage.bind(this);
+    this.dropItems = this.dropItems.bind(this);
+  }
+
+  dropItems() {
+    /*
+      Method to drop items on death. The items spawn based on a drop table (this.dropTable). The class (this.class) determines which drop table to select from.
+      amount is a random number between 1 and 3 for how many items will drop.
+      item is which item will drop. It calls droptable[class][index], where class is this.class and index is a random integer between 0 and length of drop table.
+      drop is the item that drops and then adds it to the items group. It will spawn a random distance away from the dead enemy's x,y coordinate.
+    */
+    const type = this.class;
+    const amount = Math.floor(Math.random() * 3 + 1);
+    for (let i = 0; i < amount; i++) {
+      const item = this.dropTable[type][
+        Math.floor(Math.random() * this.dropTable[type].length)
+      ];
+      const drop = new Item(
+        this.scene,
+        this.x + Math.random() * 20,
+        this.y + Math.random() * 20,
+        item
+      ).setScale(0.1);
+      this.scene.itemsGroup.add(drop);
+    }
   }
 
   takeDamage(damage) {
@@ -36,6 +66,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setActive(false);
       this.setVisible(false);
       this.body.enable = false;
+      this.dropItems();
     }
     this.scene.time.delayedCall(1000, () => {
       hitAnimation.stop();
@@ -236,7 +267,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
       }
 
-      console.log('im chasing');
+      // console.log('im chasing');
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
         Math.round(player.x) < Math.round(this.x) &&

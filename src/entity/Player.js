@@ -28,6 +28,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.damage = 20 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
+    this.currentWeapon = 'melee';
     this.isMelee = false;
     this.canMelee = true;
     this.shooting = false;
@@ -58,23 +59,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     */
     this.scene.input.on(
       'pointerdown',
-      function () {
-        if (this.isMelee === false && this.canMelee) {
-          this.melee();
-          // function (pointer) {
-          //   let mouse = pointer;
-          //   let angle = Phaser.Math.Angle.Between(
-          //     this.x,
-          //     this.y,
-          //     mouse.x + this.scene.cameras.main.scrollX,
-          //     mouse.y + this.scene.cameras.main.scrollY
-          //   );
-          //   // Determines if cd is over or not
-          //   if (time > this.nextAttack) {
-          //     // We need to pass in the sprite to use here
-          //     this.fireWeapon(this.x, this.y, 'bigBlast', angle);
-          //     // Calculates the cd between shots
-          //     this.nextAttack += this.attackSpeed;
+      function (pointer) {
+        if (this.currentWeapon === 'melee') {
+          if (this.isMelee === false && this.canMelee) {
+            this.melee();
+          }
+        } else {
+          let mouse = pointer;
+          let angle = Phaser.Math.Angle.Between(
+            this.x,
+            this.y,
+            mouse.x + this.scene.cameras.main.scrollX,
+            mouse.y + this.scene.cameras.main.scrollY
+          );
+          // Determines if cd is over or not
+          if (time > this.nextAttack) {
+            // We need to pass in the sprite to use here
+            this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+            // Calculates the cd between shots
+            this.nextAttack += this.attackSpeed;
+          }
         }
       },
       this

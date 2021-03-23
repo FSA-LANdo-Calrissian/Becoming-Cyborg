@@ -5,6 +5,7 @@ import Projectile from '../entity/Projectile';
 import createAnimations from '../animations/createAnimations';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
+import Item from '../entity/Item';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -255,6 +256,11 @@ export default class FgScene extends Phaser.Scene {
 
     this.npcGroup = this.physics.add.group({
       classType: NPC,
+      runChildUpdate: true,
+    });
+
+    this.itemsGroup = this.physics.add.group({
+      classType: Item,
       runChildUpdate: true,
     });
 
