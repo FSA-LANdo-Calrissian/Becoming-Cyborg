@@ -27,6 +27,14 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 48,
     });
+    this.load.spritesheet(
+      'upgradeStation',
+      'assets/sprites/upgrade-station.png',
+      {
+        frameWidth: 144,
+        frameHeight: 144,
+      }
+    );
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
