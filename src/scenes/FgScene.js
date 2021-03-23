@@ -227,9 +227,11 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setSize(30, 35)
       .setOffset(10, 12);
-    this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
-    this.enemy.startingPointX = 473;
-    this.enemy.startingPointY = 176;
+
+    this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
+
+    this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
+
 
     this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
 
@@ -348,6 +350,7 @@ export default class FgScene extends Phaser.Scene {
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
+      this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();
