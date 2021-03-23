@@ -301,6 +301,7 @@ export default class FgScene extends Phaser.Scene {
         this.openUpgrade();
       }
       if (this.cursors.hp.isDown) {
+        // Press h button to see stats.
         console.log(
           `Current health: ${this.player.health}/${this.player.maxHealth}`
         );

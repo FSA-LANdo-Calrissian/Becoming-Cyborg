@@ -178,11 +178,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const hitAnimation = this.playDamageAnimation();
 
     // Subtract damage minus armor reduction from current health
-    console.log(
-      `Enemy does ${damage} damage to your ${this.health} hp. Armor blocks ${this.armor} damage`
-    );
     this.health -= damage - this.armor;
-    console.log(`Health after being hit: `, this.health);
+
     // Update the hp bar
     this.scene.events.emit('takeDamage', this.health, this.maxHealth);
 
@@ -292,7 +289,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (time > this.nextHeal) {
       // Only when not at max health
       if (this.health < this.maxHealth) {
-        console.log(`Regen ${this.regen} hp!`);
         this.health += this.regen;
         this.nextHeal += this.regenCD;
       }
