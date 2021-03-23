@@ -228,6 +228,8 @@ export default class FgScene extends Phaser.Scene {
       .setOffset(10, 12);
     this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
 
+    this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -326,6 +328,7 @@ export default class FgScene extends Phaser.Scene {
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
+      this.wolf.update(this.player);
       if (this.cursors.upgrade.isDown) {
         this.openUpgrade();
       }

@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
-    this.spriteKey = spriteKey;
+    this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
@@ -76,8 +76,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.angle = 0;
         return this.play(`${this.spriteKey}IdleRight`, true);
       case 'punchLeft':
-        console.log('HERE', this.spriteKey);
-
         this.angle = 0;
         return this.play(`${this.spriteKey}AttackLeft`, true);
       case 'punchRight':
