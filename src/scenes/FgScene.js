@@ -3,6 +3,7 @@ import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Projectile from '../entity/Projectile';
 import createAnimations from '../animations/createAnimations';
+import UpgradeStation from '../entity/UpgradeStation';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -217,9 +218,14 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Spawning the entities
-    this.player = new Player(this, 38, 23, 'player', this.loadBullet).setScale(
-      0.3
-    );
+    this.upgradeStation = new UpgradeStation(this, 72, 66, 'upgradeStation')
+      .setScale(0.3)
+      .setSize(10, 10);
+
+    this.player = new Player(this, 38, 23, 'player', this.loadBullet)
+      .setScale(0.3)
+      .setSize(30, 35)
+      .setOffset(10, 12);
     this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
 
     // Groups
@@ -244,6 +250,14 @@ export default class FgScene extends Phaser.Scene {
       this.enemy,
       this.playerProjectiles,
       this.damageEnemy
+    );
+
+    this.physics.add.overlap(
+      this.player,
+      this.upgradeStation,
+      this.upgradeStation.playAnim,
+      null,
+      this
     );
 
     this.physics.add.collider(this.enemy, this.worldLayer1);
