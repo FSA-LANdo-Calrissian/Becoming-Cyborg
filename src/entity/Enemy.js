@@ -94,8 +94,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     //edge case for if enemy is suppposedly moving but not going anywhere. Tells enemy to keep going through patrol options
     if (
       this.isMoving === true &&
-      this.body.velocity.x === 0 &&
-      this.body.velocity.y === 0
+      (this.body.velocity === 0 || Math.abs(this.body.velocity) < 35)
     ) {
       this.randomPatrol();
     }
