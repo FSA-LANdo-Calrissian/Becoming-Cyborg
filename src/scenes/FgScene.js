@@ -233,7 +233,6 @@ export default class FgScene extends Phaser.Scene {
 
     this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
 
-
     this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
 
     // Groups
@@ -248,16 +247,25 @@ export default class FgScene extends Phaser.Scene {
       maxSize: 30,
     });
 
+    this.enemiesGroup = this.physics.add.group({
+      classType: Enemy,
+      runChildUpdate: true,
+      setCollideWorldBounds: true,
+    });
+
     this.npcGroup = this.physics.add.group({
       classType: NPC,
       runChildUpdate: true,
     });
 
+    // Adding entities to groups
     this.npcGroup.add(this.npc);
+    this.enemiesGroup.add(this.enemy);
+    this.enemiesGroup.add(this.wolf);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
-    this.physics.add.overlap(this.player, this.enemy, () => {
+    this.physics.add.overlap(this.player, this.enemiesGroup, () => {
       if (this.enemy.isMelee === true) {
         this.player.takeDamage(10, this.gg);
       }
@@ -269,7 +277,7 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(
-      this.enemy,
+      this.enemiesGroup,
       this.playerProjectiles,
       this.damageEnemy
     );
@@ -284,7 +292,7 @@ export default class FgScene extends Phaser.Scene {
       }
     });
 
-    this.physics.add.collider(this.enemy, this.worldLayer1);
+    this.physics.add.collider(this.enemiesGroup, this.worldLayer1);
 
     // Camera logic
     this.camera = this.cameras.main;
@@ -308,7 +316,6 @@ export default class FgScene extends Phaser.Scene {
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, 1024, 768);
     this.player.setCollideWorldBounds();
-    this.enemy.setCollideWorldBounds();
     createAnimations.call(this);
 
     this.events.on('transitioncomplete', (fromScene) => {
