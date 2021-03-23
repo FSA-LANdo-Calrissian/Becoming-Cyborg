@@ -228,6 +228,8 @@ export default class FgScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
     this.enemy = new Enemy(this, 473, 176, 'enemy').setScale(0.4);
+    this.enemy.startingPointX = 473;
+    this.enemy.startingPointY = 176;
 
     this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
 
@@ -253,7 +255,9 @@ export default class FgScene extends Phaser.Scene {
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
     this.physics.add.overlap(this.player, this.enemy, () => {
-      this.player.takeDamage(10, this.gg);
+      if (this.enemy.isMelee === true) {
+        this.player.takeDamage(10, this.gg);
+      }
     });
 
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
