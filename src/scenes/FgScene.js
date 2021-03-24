@@ -2,7 +2,11 @@ import Phaser from 'phaser';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Projectile from '../entity/Projectile';
-import createAnimations from '../animations/createAnimations';
+import createAnimalAnims from '../animations/createAnimalAnims';
+import createPlayerAnims from '../animations/createPlayerAnims';
+import createRobotAnims from '../animations/createRobotAnims';
+import createNPCAnims from '../animations/createNPCAnims';
+import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 
@@ -184,6 +188,13 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
+    //Creating animations
+    createWorldAnims.call(this);
+    createPlayerAnims.call(this);
+    createNPCAnims.call(this);
+    createRobotAnims.call(this);
+    createAnimalAnims.call(this);
+
     // Initializing the game.
     this.finishedTutorial = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
@@ -230,8 +241,7 @@ export default class FgScene extends Phaser.Scene {
 
     this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
 
-    this.wolf = new Enemy(this, 38, 70, 'wolfLeftRight').setScale(0.2);
-
+    this.wolf = new Enemy(this, 38, 200, 'wolf').setScale(0.2).setSize(45, 45);
 
     this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
 
@@ -306,7 +316,6 @@ export default class FgScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 1024, 768);
     this.player.setCollideWorldBounds();
     this.enemy.setCollideWorldBounds();
-    createAnimations.call(this);
 
     this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
