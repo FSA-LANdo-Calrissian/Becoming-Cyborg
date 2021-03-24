@@ -152,7 +152,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     if (!this.body) return;
 
     const aggroRange = 85;
-    const attackRange = 16;
+    const attackRange = 8;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
 
@@ -319,9 +319,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       //if player is out of range, enemy stops then after 5 secs goes on patrol
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
-      this.scene.time.delayedCall(6000, () => {
-        this.randomPatrol(player, aggroRange);
-      });
+      if (this.scene.tutorialInProgress) {
+        return;
+      } else {
+        this.scene.time.delayedCall(6000, () => {
+          this.randomPatrol(player, aggroRange);
+        });
+      }
     }
   }
 
