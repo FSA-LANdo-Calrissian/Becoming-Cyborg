@@ -177,7 +177,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       // Do nothing
       return;
     }
-    console.log(`body touching?`, this.body.touching);
+
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback
