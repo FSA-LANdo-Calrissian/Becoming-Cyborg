@@ -227,7 +227,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.isMelee = false;
       });
 
-      this.scene.time.delayedCall(1700, () => {
+      this.scene.time.delayedCall(2000, () => {
         // this is the cooldown for melee attack
         this.canMelee = true;
       });
