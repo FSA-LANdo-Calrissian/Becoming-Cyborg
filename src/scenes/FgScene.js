@@ -9,12 +9,14 @@ import createNPCAnims from '../animations/createNPCAnims';
 import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
+import Item from '../entity/Item';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.finishedTutorial = false;
     this.tutorialInProgress = false;
+    this.upgradeOpened = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -175,10 +177,7 @@ export default class FgScene extends Phaser.Scene {
       returns null.
     */
 
-    console.log('enemy taking damage');
-
     enemy.takeDamage(source.damage / 60);
-    console.log(enemy.health);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
@@ -257,20 +256,48 @@ export default class FgScene extends Phaser.Scene {
       maxSize: 30,
     });
 
+    this.enemiesGroup = this.physics.add.group({
+      classType: Enemy,
+      runChildUpdate: true,
+      collideWorldBounds: true,
+    });
+
     this.npcGroup = this.physics.add.group({
       classType: NPC,
       runChildUpdate: true,
     });
 
+    this.itemsGroup = this.physics.add.group({
+      classType: Item,
+      runChildUpdate: true,
+    });
+
+    // Adding entities to groups
     this.npcGroup.add(this.npc);
+    this.enemiesGroup.add(this.enemy);
+    this.enemiesGroup.add(this.wolf);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
-    this.physics.add.overlap(this.player, this.enemy, () => {
-      if (this.enemy.isMelee === true) {
-        this.player.takeDamage(10, this.gg);
+    this.physics.add.overlap(
+      this.player,
+      this.enemiesGroup,
+      (player, enemy) => {
+        if (enemy.isMelee === true) {
+          this.player.takeDamage(10, this.gg);
+        }
+
+        if (
+          player.isMelee &&
+          Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y) <=
+            16 &&
+          ((this.player.x < enemy.x && this.player.facingRight === true) ||
+            (this.player.x > enemy.x && this.player.facingRight === false))
+        ) {
+          this.damageEnemy(enemy, player);
+        }
       }
-    });
+    );
 
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
       // Displays tooltip on overlap.
@@ -278,20 +305,22 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(
-      this.enemy,
+      this.enemiesGroup,
       this.playerProjectiles,
       this.damageEnemy
     );
 
-    this.physics.add.overlap(
-      this.player,
-      this.upgradeStation,
-      this.upgradeStation.playAnim,
-      null,
-      this
-    );
+    this.physics.add.overlap(this.player, this.upgradeStation, () => {
+      this.upgradeStation.playAnim();
+      if (!this.upgradeOpened) {
+        this.upgradeOpened = true;
+        this.time.delayedCall(4000, () => {
+          this.openUpgrade();
+        });
+      }
+    });
 
-    this.physics.add.collider(this.enemy, this.worldLayer1);
+    this.physics.add.collider(this.enemiesGroup, this.worldLayer1);
 
     // Camera logic
     this.camera = this.cameras.main;
@@ -319,6 +348,11 @@ export default class FgScene extends Phaser.Scene {
 
     this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
+      // If we're coming from the upgrade UI
+      // Set upgradeOpened to false so we can get back into it
+      if (fromScene.scene.key === 'UpgradeUI') {
+        this.upgradeOpened = false;
+      }
     });
     // data.choice is only available when player restarts game.
     if (data.choice) {
@@ -326,6 +360,11 @@ export default class FgScene extends Phaser.Scene {
       const main = this.scene.get('MainScene');
       main.scene.restart({ choice: false });
     }
+
+    // For debugging purposes to see pointer position
+    // this.input.on('pointerdown', (pointer) => {
+    //   console.log(`pointer position: `, pointer.x, pointer.y);
+    // });
   }
 
   update(time, delta) {
@@ -373,20 +412,6 @@ export default class FgScene extends Phaser.Scene {
         console.log(`Current armor: ${this.player.armor}`);
         console.log(`Current regen: ${this.player.regen}`);
       }
-    }
-
-    if (
-      this.player.isMelee &&
-      Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        this.enemy.x,
-        this.enemy.y
-      ) <= 16 &&
-      ((this.player.x < this.enemy.x && this.player.facingRight === true) ||
-        (this.player.x > this.enemy.x && this.player.facingRight === false))
-    ) {
-      this.damageEnemy(this.enemy, this.player);
     }
   }
 }
