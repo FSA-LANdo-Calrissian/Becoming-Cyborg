@@ -3,7 +3,16 @@ import Phaser from 'phaser';
 export default class UpgradeUI extends Phaser.Scene {
   constructor() {
     super('UpgradeUI');
+    this.upgrades = ['knife', 'gun', 'fireBall'];
+    this.upgradesIdx = 0;
+    this.upgradeMaterials = {
+      knife: { iron: 5, oil: 5, knifeAttachment: 1 },
+      gun: { iron: 10, oil: 10, gunAttachment: 1 },
+      fireBall: { iron: 15, oil: 15, fireBallAttachment: 1 },
+    };
   }
+
+  checkMaterials() {}
 
   returnToGame(player) {
     /*
@@ -88,8 +97,41 @@ export default class UpgradeUI extends Phaser.Scene {
     // We save this to this.player so that we have access to it
     // when we transition back to FgScene
     this.player = player;
+    this.player = {
+      upgrade: {
+        maxHealth: 0,
+        damage: 0,
+        attackSpeed: 0,
+        moveSpeed: 0,
+        regen: 0,
+        armor: 0,
+      },
+      inventory: {
+        iron: 10,
+        oil: 10,
+        gunAttachment: 1,
+        knifeAttachment: 0,
+        fireBallAttachment: 1,
+        gun: 0,
+        knife: 0,
+        fireball: 0,
+      },
+    };
     // The upgrade UI image
     this.add.sprite(400, 300, 'upgrade').setScale(1.2);
+
+    // Current player inventory
+    this.add.text(350, 10, 'Inventory:');
+    this.add.text(
+      310,
+      30,
+      `Iron: ${this.player.inventory.iron}, Oil: ${this.player.inventory.iron}`
+    );
+    this.add.text(
+      100,
+      50,
+      `Knife Attachments: ${this.player.inventory.knifeAttachment}, Gun Attachments: ${this.player.inventory.gunAttachment}, Fire Ball Attachments: ${this.player.inventory.fireBallAttachment}`
+    );
 
     // For hp upgrades
     const hpUp = this.add.sprite(400, 155, 'arrow').setScale(0.8);
@@ -106,14 +148,53 @@ export default class UpgradeUI extends Phaser.Scene {
     );
 
     // For the top left upgrade area
-    const topLeftUp = this.add.sprite(168, 155, 'arrow').setScale(0.8);
-    const topLeftDown = this.add.sprite(168, 195, 'arrow').setScale(0.8);
-    topLeftDown.angle = 180;
-    topLeftDown.setName('topLeftDown');
-    topLeftUp.setName('topLeftUp');
-    topLeftUp.setInteractive();
-    topLeftDown.setInteractive();
-    this.topLeftText = this.add.text(128, 235, `UpgradeTextHere`);
+    const upgrade = this.add.image(168, 165, 'knife').setScale(0.19);
+    const materials = this.add
+      .text(85, 200, 'Iron: 5, Oil: 5, Part: 1')
+      .setScale(0.7);
+    const createButton = this.add.sprite(168, 240, 'button').setScale(0.2);
+    const createText = this.add
+      .text(135, 235, 'create')
+      .setInteractive()
+      .on('pointerup', this.checkMaterials);
+    const nextButton = this.add.sprite(250, 240, 'button').setScale(0.2);
+    const nextText = this.add
+      .text(230, 235, 'next')
+      .setInteractive()
+      .on('pointerup', () => {
+        if (this.upgradesIdx !== this.upgrades.length - 1) {
+          const nextUpgrade = this.upgrades[++this.upgradesIdx];
+          upgrade.setTexture(nextUpgrade);
+          const iron = this.upgradeMaterials[nextUpgrade].iron;
+          const oil = this.upgradeMaterials[nextUpgrade].oil;
+          const part = this.upgradeMaterials[nextUpgrade][
+            `${nextUpgrade}Attachment`
+          ];
+          materials.setText(`Iron: ${iron}, Oil: ${oil}, Part: ${part}`);
+        }
+      });
+    const prevButton = this.add.sprite(90, 240, 'button').setScale(0.2);
+    const prevText = this.add
+      .text(70, 235, 'prev')
+      .setInteractive()
+      .on('pointerup', () => {
+        if (this.upgradesIdx !== 0) {
+          const prevUpgrade = this.upgrades[--this.upgradesIdx];
+          upgrade.setTexture(prevUpgrade);
+          const iron = this.upgradeMaterials[prevUpgrade].iron;
+          const oil = this.upgradeMaterials[prevUpgrade].oil;
+          const part = this.upgradeMaterials[prevUpgrade][
+            `${prevUpgrade}Attachment`
+          ];
+          materials.setText(`Iron: ${iron}, Oil: ${oil}, Part: ${part}`);
+        }
+      });
+    // topLeftDown.angle = 180;
+    // topLeftDown.setName('topLeftDown');
+    // topLeftUp.setName('topLeftUp');
+    // topLeftUp.setInteractive();
+    // topLeftDown.setInteractive();
+    // this.topLeftText = this.add.text(128, 235, `UpgradeTextHere`);
 
     // For the top right upgrade area
     const topRightUp = this.add.sprite(627, 155, 'arrow').setScale(0.8);
