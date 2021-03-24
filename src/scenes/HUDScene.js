@@ -95,14 +95,7 @@ export default class HUDScene extends Phaser.Scene {
     // Shaping the minimap + border?
     loadScene.then(() => {
       // Make the cameras
-      const borderCam = mainGame.cameras
-        .add(625, 0, 175, 175)
-        .setZoom(10)
-        .ignore(player)
-        .ignore(mainGame.enemy)
-        .ignore(mainGame.belowLayer1)
-        .ignore(mainGame.playerProjectiles)
-        .setBackgroundColor(0x000000);
+
       const minimapCam = mainGame.cameras
         .add(640, 10, 150, 150)
         .setZoom(0.6)
@@ -111,13 +104,8 @@ export default class HUDScene extends Phaser.Scene {
         .setBackgroundColor(0x000000)
         .startFollow(player);
 
-      // Make the borders
-      const minimapBorder = new Phaser.GameObjects.Graphics(this);
-      minimapBorder.fillStyle(0x000000);
-      minimapBorder.fillCircle(715, 85, 80);
-      const border = new Phaser.Display.Masks.GeometryMask(this, minimapBorder);
-      // Add the mask to the camera
-      borderCam.setMask(border, true);
+      // Make the border
+      this.add.sprite(716, 85, 'minimap').setScale(0.52);
 
       const minimapCircle = new Phaser.GameObjects.Graphics(this);
       minimapCircle.fillCircle(715, 85, 75);

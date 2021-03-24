@@ -2,11 +2,11 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey) {
+  constructor(scene, x, y, spriteKey, classType) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
-    this.class = 'robot';
+    this.class = classType;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
@@ -58,6 +58,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         ).setScale(0.1);
         this.scene.itemsGroup.add(drop);
       }
+      // Reset base config for items in case grabbed from group
+      drop.reset();
     }
   }
 
