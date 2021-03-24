@@ -76,6 +76,6 @@ export default class MainScene extends Phaser.Scene {
     this.scene.start('PreGameScene');
   }
   startLoadGame() {
-    this.scene.start('UpgradeUI');
+    this.scene.start('MainScene');
   }
 }
