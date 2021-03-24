@@ -1,7 +1,5 @@
 import Phaser from 'phaser';
 
-// The Main scene is the one that calls and loads the background and foreground
-// This is so we can load both bg + fg together on top of each other.
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super('TitleScene');
@@ -9,8 +7,8 @@ export default class MainScene extends Phaser.Scene {
     this.startNewGame.bind(this);
   }
 
-  // Do all of our preloading here since it's the first scene.
   preload() {
+    //Preloading all game assets
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
     this.load.image('forest', 'assets/backgrounds/forest.png');
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
@@ -39,22 +37,17 @@ export default class MainScene extends Phaser.Scene {
         frameHeight: 144,
       }
     );
-    this.load.spritesheet('wolfUpDown', 'assets/sprites/wolf-updown.png', {
-      frameWidth: 32,
-      frameHeight: 64,
+    this.load.spritesheet('wolf', 'assets/sprites/wolf.png', {
+      frameWidth: 68,
+      frameHeight: 68,
     });
-    this.load.spritesheet(
-      'wolfLeftRight',
-      'assets/sprites/wolf-leftright.png',
-      {
-        frameWidth: 64,
-        frameHeight: 32,
-      }
-    );
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+    this.load.image('potion', 'assets/items/potion.png');
+    this.load.image('iron', 'assets/items/iron.png');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
-    this.load.image('scroll', './assets/backgrounds/scroll.png');
+    this.load.image('gameOver', './assets/backgrounds/gg.jpg');
     this.load.image('arrow', 'assets/backgrounds/arrow.png');
     this.load.image('interact', 'assets/backgrounds/interact.png');
   }

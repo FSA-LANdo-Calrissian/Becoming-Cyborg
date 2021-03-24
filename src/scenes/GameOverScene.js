@@ -13,7 +13,7 @@ export default class GameOverScene extends Phaser.Scene {
 
   create(data) {
     // Load the game over scroll
-    this.add.sprite(350, 300, 'scroll').setScale(2);
+    this.add.sprite(390, 300, 'gameOver').setScale(1.5);
 
     // Add text
     this.add.text(290, 200, 'Game Over!');
