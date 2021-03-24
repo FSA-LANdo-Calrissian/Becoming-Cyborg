@@ -149,6 +149,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param player: object -> The player object, passed in through FgScene's update -> enemy update -> here. No need to change or touch.
       returns null.
     */
+
     if (!this.body) return;
 
     const aggroRange = 85;
@@ -319,6 +320,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       //if player is out of range, enemy stops then after 5 secs goes on patrol
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
+
+
       if (this.scene.tutorialInProgress) {
         return;
       } else {
@@ -327,6 +330,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         });
       }
     }
+
   }
 
   randomPatrol(player, aggroRange) {
@@ -334,6 +338,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >
       aggroRange
     ) {
+
       // makes sure player is still out of range and starts patrol of by stopping first
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
@@ -365,7 +370,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           this.body.velocity.y = 0;
           this.body.velocity.x = -35;
 
+
           this.enemyMovement('left');
+
 
           this.scene.time.delayedCall(2000, () => {
             // switch back to going right after 5 seconds
@@ -377,6 +384,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           return;
         }
       });
+
     } else {
       return;
     }

@@ -7,6 +7,7 @@ import HUDScene from './scenes/HUDScene';
 import GameOverScene from './scenes/GameOverScene';
 import UpgradeUI from './scenes/UpgradeUI';
 import TitleScene from './scenes/TitleScene';
+import TutorialCutScene from './scenes/TutorialCutScene';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -18,6 +19,7 @@ export default class Game extends Phaser.Game {
     this.scene.add('PreGameScene', PreGameScene);
     this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
+    this.scene.add('TutorialCutScene', TutorialCutScene);
     this.scene.add('HUDScene', HUDScene);
     this.scene.add('UpgradeUI', UpgradeUI);
     this.scene.add('GameOver', GameOverScene);
