@@ -10,9 +10,44 @@ export default class UpgradeUI extends Phaser.Scene {
       gun: { iron: 10, oil: 10, gunAttachment: 1 },
       fireBall: { iron: 15, oil: 15, fireBallAttachment: 1 },
     };
+    this.currLeftIron = 5;
+    this.currLeftOil = 5;
+    this.currLeftPart = 1;
   }
 
-  checkMaterials() {}
+  checkLeftMaterials() {
+    /*
+      Function to compare player materials to required materials for upgrade. If player has required materials, upgrade will be added to player's inventory and used materials will be subtracted from player's inventory. If player does not have required materials, alert will be displayed.
+      Returns null
+    */
+    const currUpgrade = this.upgrades[this.upgradesIdx];
+    if (
+      this.player.inventory.iron >= this.currLeftIron &&
+      this.player.inventory.oil >= this.currLeftOil &&
+      this.player.inventory[`${currUpgrade}Attachment`] >= this.currLeftPart
+    ) {
+      this.player.inventory[currUpgrade]++;
+      this.player.inventory.iron -= this.currLeftIron;
+      this.player.inventory.oil -= this.currLeftOil;
+      this.player.inventory[`${currUpgrade}Attachment`] -= this.currLeftPart;
+    }
+  }
+
+  updateUpgradeButtons({ gun, knife, fireBall }) {
+    /*
+      Function to update upgrade button to either create or equip depending on if characcter has weapon in inventory.
+      param gun: comes from this.player.inventory --> number of gun upgrades in inventory
+      param knife: comes from this.player.inventory --> number of knife upgrades in inventory
+      param fireBall: comes from this.player.inventory --> number of fireBall upgrades in inventory
+    */
+  }
+
+  equipLeft() {
+    /*
+      Function to equip left arm weapon
+      returns null
+    */
+  }
 
   returnToGame(player) {
     /*
@@ -156,7 +191,11 @@ export default class UpgradeUI extends Phaser.Scene {
     const createText = this.add
       .text(135, 235, 'create')
       .setInteractive()
-      .on('pointerup', this.checkMaterials);
+      .on('pointerup', this.checkLeftMaterials);
+    const equipText = this.add
+      .text(135, 235, 'equip')
+      .setInteractive()
+      .on('pointerup', this.equipLeft);
     const nextButton = this.add.sprite(250, 240, 'button').setScale(0.2);
     const nextText = this.add
       .text(230, 235, 'next')
@@ -165,12 +204,14 @@ export default class UpgradeUI extends Phaser.Scene {
         if (this.upgradesIdx !== this.upgrades.length - 1) {
           const nextUpgrade = this.upgrades[++this.upgradesIdx];
           upgrade.setTexture(nextUpgrade);
-          const iron = this.upgradeMaterials[nextUpgrade].iron;
-          const oil = this.upgradeMaterials[nextUpgrade].oil;
-          const part = this.upgradeMaterials[nextUpgrade][
+          this.currLeftIron = this.upgradeMaterials[nextUpgrade].iron;
+          this.currLeftOil = this.upgradeMaterials[nextUpgrade].oil;
+          this.currLeftPart = this.upgradeMaterials[nextUpgrade][
             `${nextUpgrade}Attachment`
           ];
-          materials.setText(`Iron: ${iron}, Oil: ${oil}, Part: ${part}`);
+          materials.setText(
+            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
+          );
         }
       });
     const prevButton = this.add.sprite(90, 240, 'button').setScale(0.2);
@@ -181,12 +222,14 @@ export default class UpgradeUI extends Phaser.Scene {
         if (this.upgradesIdx !== 0) {
           const prevUpgrade = this.upgrades[--this.upgradesIdx];
           upgrade.setTexture(prevUpgrade);
-          const iron = this.upgradeMaterials[prevUpgrade].iron;
-          const oil = this.upgradeMaterials[prevUpgrade].oil;
-          const part = this.upgradeMaterials[prevUpgrade][
+          this.currLeftIron = this.upgradeMaterials[prevUpgrade].iron;
+          this.currLeftOil = this.upgradeMaterials[prevUpgrade].oil;
+          this.currLeftPart = this.upgradeMaterials[prevUpgrade][
             `${prevUpgrade}Attachment`
           ];
-          materials.setText(`Iron: ${iron}, Oil: ${oil}, Part: ${part}`);
+          materials.setText(
+            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
+          );
         }
       });
     // topLeftDown.angle = 180;
