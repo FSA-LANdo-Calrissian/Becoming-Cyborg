@@ -79,11 +79,11 @@ export default class FgScene extends Phaser.Scene {
       this.player.canMelee = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
+      this.nameText.setText('');
     }
     // Advance the dialogue (this will also allow
     // the text to be removed from screen)
     this.tutorialText.setText(this.textLines[i]);
-    this.nameText.setText('');
   }
 
   playDialogue() {
@@ -112,7 +112,7 @@ export default class FgScene extends Phaser.Scene {
       'Please stand still as you are being scanned.....',
       'Scan Complete....',
       'Illegal Activity Detected...',
-      'Where did you get these parts human...?',
+      'Where did you get these parts, human...?',
       'Come with me human you are being detained for questioning.....',
       'Please do not resist....',
     ];

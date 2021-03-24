@@ -35,7 +35,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     const type = this.class;
     const amount = Math.floor(Math.random() * 3 + 1);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < amount; i++) {
       const itemKey = this.dropTable[type][
         Math.floor(Math.random() * this.dropTable[type].length)
       ];
