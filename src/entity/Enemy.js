@@ -151,7 +151,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     */
     if (!this.body) return;
 
-    const aggroRange = 75;
+    const aggroRange = 85;
     const attackRange = 16;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
@@ -319,50 +319,60 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       //if player is out of range, enemy stops then after 5 secs goes on patrol
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
-      this.scene.time.delayedCall(5000, () => {
+      this.scene.time.delayedCall(6000, () => {
         this.randomPatrol(player, aggroRange);
       });
-    } else return;
+    }
   }
 
   randomPatrol(player, aggroRange) {
     if (
-      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >=
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >
       aggroRange
     ) {
-      if (
-        // if enemy is going left or this is the first time patrol is called we want him to go right
-        this.goingLeft ||
-        (this.goingLeft === false && this.goingRight === false)
-      ) {
-        this.body.velocity.y = 0;
-        this.body.velocity.x = 35;
-        this.enemyMovement('right');
+      // makes sure player is still out of range and starts patrol of by stopping first
+      this.body.velocity.y = 0;
+      this.body.velocity.x = 0;
+      this.scene.time.delayedCall(3000, () => {
+        if (
+          // if enemy is going left or this is the first time patrol is called we want him to go right
+          (this.goingLeft ||
+            (this.goingLeft === false && this.goingRight === false)) &&
+          Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >
+            aggroRange
+        ) {
+          //going right
+          this.body.velocity.y = 0;
+          this.body.velocity.x = 35;
+          this.enemyMovement('right');
 
-        console.log('moving right');
+          this.scene.time.delayedCall(2000, () => {
+            // after 5 seconds switch to going left
+            this.goingLeft = false;
+            this.goingRight = true;
+          });
+          return;
+        } else if (
+          this.goingRight &&
+          Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >
+            aggroRange
+        ) {
+          // checks if enemy is still outta range and if enemy was going right switch to going left
+          this.body.velocity.y = 0;
+          this.body.velocity.x = -35;
 
-        this.scene.time.delayedCall(5000, () => {
-          // after 5 seconds switch to going left
-          this.goingLeft = false;
-          this.goingRight = true;
-        });
-      }
-      if (this.goingRight) {
-        // if enemy was going right switch to going left
-        this.body.velocity.y = 0;
-        this.body.velocity.x = -35;
+          this.enemyMovement('left');
 
-        this.enemyMovement('left');
-        console.log('moving left');
-
-        this.scene.time.delayedCall(5000, () => {
-          // switch back to going right after 5 seconds
-          this.goingRight = false;
-          this.goingLeft = true;
-
-          console.log('stopping');
-        });
-      }
+          this.scene.time.delayedCall(2000, () => {
+            // switch back to going right after 5 seconds
+            this.goingRight = false;
+            this.goingLeft = true;
+          });
+          return;
+        } else {
+          return;
+        }
+      });
     } else {
       return;
     }
