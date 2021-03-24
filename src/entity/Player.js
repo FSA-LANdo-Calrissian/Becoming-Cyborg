@@ -15,6 +15,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       regen: 0,
       armor: 0,
     };
+    this.inventory = {
+      iron: 0,
+    };
     this.speed = 100 + this.upgrade.moveSpeed;
     this.armor = 0 + this.upgrade.armor;
     this.regen = 0 + this.upgrade.regen;
@@ -83,6 +86,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       this
     );
+  }
+
+  pickUpItem(item) {
+    /*
+       Method to pick up items on overlap. It will add the item to inventory if it's an inventory item or heal if potion.
+       param item: string -> spriteKey of the item picked up. Will be used in the switch/case for what to do with the item.
+       returns null
+    */
+
+    console.log(`Item picked up: `, item);
+    switch (item) {
+      case 'iron':
+        this.inventory.iron += 1;
+        break;
+      case 'potion':
+        this.health += 10;
+        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
+        break;
+      default:
+        console.log(`Not a valid item...`);
+    }
   }
 
   updateStats() {

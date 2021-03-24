@@ -13,14 +13,14 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
     this.reset(x, y);
   }
 
-  reset(x, y) {
+  reset() {
     /*
       Function to reset lifespan and item when grabbed from the group
     */
     this.setVisible(true);
     this.setActive(true);
-    this.setPosition(x, y);
     this.lifespan = 30000;
+    this.body.enable = true;
   }
 
   update(time, delta) {

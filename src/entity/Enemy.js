@@ -47,9 +47,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.y + Math.random() * 20,
         itemKey
       );
-
+      console.log(`Item grabbed? `, drop);
       if (!drop) {
         // Create + add to group if not available
+        console.log(`No item grabbed. Creating new..`);
         drop = new Item(
           this.scene,
           this.x + Math.random() * 20,
@@ -58,6 +59,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         ).setScale(0.1);
         this.scene.itemsGroup.add(drop);
       }
+      drop.reset();
     }
   }
 

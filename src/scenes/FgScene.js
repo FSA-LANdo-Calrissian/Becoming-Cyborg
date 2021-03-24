@@ -282,6 +282,19 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
+    this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
+      // If player full on health, don't pick up potions.
+      if (
+        item.texture.key === 'potion' &&
+        this.player.health === this.player.maxHealth
+      ) {
+        return;
+      }
+      // Otherwise, pick up items
+      player.pickUpItem(item.texture.key);
+      // And make it disappear from screen.
+      item.lifespan = 0;
+    });
     this.physics.add.overlap(
       this.player,
       this.enemiesGroup,
