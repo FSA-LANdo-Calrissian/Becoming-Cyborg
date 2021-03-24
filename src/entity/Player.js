@@ -17,6 +17,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.inventory = {
       iron: 0,
+      oil: 0,
+      gunAttachment: 0,
+      knifeAttachment: 0,
+      fireBallAttachment: 0,
+      gun: 0,
+      knife: 0,
+      fireball: 0,
     };
     this.speed = 100 + this.upgrade.moveSpeed;
     this.armor = 0 + this.upgrade.armor;
