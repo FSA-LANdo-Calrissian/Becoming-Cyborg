@@ -30,20 +30,34 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       amount is a random number between 1 and 3 for how many items will drop.
       item is which item will drop. It calls droptable[class][index], where class is this.class and index is a random integer between 0 and length of drop table.
       drop is the item that drops and then adds it to the items group. It will spawn a random distance away from the dead enemy's x,y coordinate.
+      It will attempt to grab an existing drop from the group before trying to create it.
     */
+
     const type = this.class;
     const amount = Math.floor(Math.random() * 3 + 1);
     for (let i = 0; i < amount; i++) {
-      const item = this.dropTable[type][
+      const itemKey = this.dropTable[type][
         Math.floor(Math.random() * this.dropTable[type].length)
       ];
-      const drop = new Item(
-        this.scene,
+
+      // Find drop from group if available
+      let drop = this.scene.itemsGroup.getFirstDead(
+        false,
         this.x + Math.random() * 20,
         this.y + Math.random() * 20,
-        item
-      ).setScale(0.1);
-      this.scene.itemsGroup.add(drop);
+        itemKey
+      );
+
+      if (!drop) {
+        // Create + add to group if not available
+        drop = new Item(
+          this.scene,
+          this.x + Math.random() * 20,
+          this.y + Math.random() * 20,
+          itemKey
+        ).setScale(0.1);
+        this.scene.itemsGroup.add(drop);
+      }
     }
   }
 
