@@ -218,7 +218,7 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Spawning the entities
-    this.upgradeStation = new UpgradeStation(this, 72, 66, 'upgradeStation')
+    this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
       .setScale(0.3)
       .setSize(10, 10);
 
@@ -351,9 +351,9 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // For debugging purposes to see pointer position
-    // this.input.on('pointerdown', (pointer) => {
-    //   console.log(`pointer position: `, pointer.x, pointer.y);
-    // });
+    this.input.on('pointerdown', (pointer) => {
+      console.log(`pointer position: `, pointer.x, pointer.y);
+    });
   }
 
   update(time, delta) {

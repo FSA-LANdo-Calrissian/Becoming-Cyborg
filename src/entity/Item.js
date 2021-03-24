@@ -9,10 +9,23 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false);
     this.upBob = 0;
     this.bobbingUp = true;
+    this.lifespan = 30000;
+    this.reset(x, y);
+  }
+
+  reset(x, y) {
+    /*
+      Function to reset lifespan and item when grabbed from the group
+    */
+    this.setVisible(true);
+    this.setActive(true);
+    this.setPosition(x, y);
+    this.lifespan = 30000;
   }
 
   update(time, delta) {
     // Lets the items bob up and down in the scene.
+    this.lifespan -= delta;
     if (this.bobbingUp) {
       this.setVelocityY(-3);
     } else {
@@ -25,6 +38,11 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
       this.scene.time.delayedCall(1000, () => {
         this.bobbingUp = true;
       });
+    }
+
+    if (this.lifespan <= 0) {
+      this.setVisible(false);
+      this.setActive(false);
     }
   }
 }
