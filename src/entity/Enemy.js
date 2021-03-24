@@ -317,9 +317,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.isMoving = true;
       }
     } else {
-      this.scene.time.delayedCall(2000, () => {
-        return this.randomPatrol();
-      });
+      // this.scene.time.delayedCall(2000, () => {
+      //   return this.randomPatrol();
+      // });
     }
   }
 
