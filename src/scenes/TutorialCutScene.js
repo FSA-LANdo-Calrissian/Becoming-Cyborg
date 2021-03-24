@@ -1,12 +1,14 @@
 import Phaser from 'phaser';
+import { advanceDialogue } from './cutscenes';
 
-export default class FgScene extends Phaser.Scene {
+export default class TutorialCutScene extends Phaser.Scene {
   constructor() {
     super('TutorialCutScene');
-    this.oneSec = 0;
+    this.preDialogue = false;
+    this.dialogue = false;
   }
 
-  addText(i) {
+  addText(k, textLines, textBox, nameText, nameTextLines, tutorialText) {
     /*
       Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
       param i: int -> The current index of the dialogue.
@@ -14,17 +16,104 @@ export default class FgScene extends Phaser.Scene {
     */
 
     // If the dialogue is over (index higher than length)
-    if (i > this.textLines.length - 1) {
-      // Destroy box + allow movement.
-      this.textBox.destroy();
+    if (k > textLines.length - 1) {
+      // Destroy bollow movement.
+      textBox.destroy();
       this.tutorialInProgress = false;
       this.finishedTutorial = true;
-      this.nameText.setText('');
-      this.endCutScene();
+
+      this.input.keyboard.removeListener('keydown-SPACE');
+      tutorialText.removeListener('pointerdown');
+
+      this.endScene();
     }
     // Advance the dialogue (this will also allow
     // the text to be removed from screen)
-    this.tutorialText.setText(this.textLines[i]);
+    tutorialText.setText(textLines[k]);
+    nameText.setText(nameTextLines[k]);
+  }
+
+  endScene() {
+    /*
+      Helper function to determine what to do next in cutscene
+    */
+
+    if (this.preDialogue && !this.dialogue) {
+      this.playDialogue();
+    } else if (this.preDialogue && this.dialogue) {
+      this.endCutScene();
+    }
+  }
+
+  playPreDialogue() {
+    /*
+      Scene before the dialogue
+    */
+    this.textBox = this.add
+      .image(this.player.x - 10, this.player.y + 350, 'textBox')
+      .setScale(0.5);
+
+    this.textLines = [
+      "Human, you've been found guilty of scratching my metallic hull",
+      'I will now sentence you to death',
+      'Any last words?',
+      "It was an accident, please! I'll be careful next time!",
+      'Weird choice of final words. Die, human',
+      'AaaAaArRRggGGggGhHhHHh',
+      "You, human. You're guilty of not stopping him from scratching my beautiful metal. ",
+      'You will also perish here',
+      'Any last words?',
+      '...',
+    ];
+
+    this.nameTextLines = [
+      'Mr. Robot',
+      'Mr. Robot',
+      'Mr. Robot',
+      'Mac',
+      'Mr. Robot',
+      'Mac',
+      'Mr. Robot',
+      'Mr. Robot',
+      'Mr. Robot',
+      'Dr. Dang',
+    ];
+
+    let j = 0;
+
+    this.tutorialText = this.add.text(
+      this.textBox.x + 5,
+      this.textBox.y + 15,
+      this.textLines[j],
+      {
+        fontSize: '.4',
+        // fontFamily: 'Arial',
+        align: 'left',
+        wordWrap: { width: 199, useAdvancedWrap: true },
+      }
+    );
+
+    this.tutorialText.setResolution(10);
+    this.tutorialText.setScale(2.5).setOrigin(0.5);
+    this.nameText = this.add
+      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
+        fontSize: '.4',
+      })
+      .setResolution(10)
+      .setScale(2.5)
+      .setOrigin(0.5);
+
+    advanceDialogue.call(
+      this,
+      j,
+      this.textLines,
+      this.textBox,
+      this.nameText,
+      this.nameTextLines,
+      this.tutorialText
+    );
+
+    this.preDialogue = true;
   }
 
   playDialogue() {
@@ -58,8 +147,11 @@ export default class FgScene extends Phaser.Scene {
       'Please do not resist....',
     ];
 
+    this.nameTextLines = Array(20).fill('Mr. Robot');
+
     // Initialize index.
     let i = 0;
+    console.log(`Under i line`);
     // Add text.
     this.tutorialText = this.add.text(
       this.textBox.x + 5,
@@ -75,32 +167,27 @@ export default class FgScene extends Phaser.Scene {
     this.tutorialText.setResolution(10);
     this.tutorialText.setScale(2.5).setOrigin(0.5);
     this.nameText = this.add
-      .text(this.textBox.x - 195, this.textBox.y - 45, 'Mr. Robot')
+      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
+        fontSize: '.4',
+      })
       .setResolution(10)
-      .setScale(1)
+      .setScale(2.5)
       .setOrigin(0.5);
 
     // Add click area to advance text. Change the numbers after
     // the tutorialText width/height in order to increase click
     // area.
-    this.tutorialText.setInteractive(
-      new Phaser.Geom.Rectangle(
-        0,
-        0,
-        this.tutorialText.width + 15,
-        this.tutorialText.height + 30
-      ),
-      Phaser.Geom.Rectangle.Contains
+    advanceDialogue.call(
+      this,
+      i,
+      this.textLines,
+      this.textBox,
+      this.nameText,
+      this.nameTextLines,
+      this.tutorialText
     );
 
-    // Emit this so that the text doesn't show up on minimap
-    this.events.emit('dialogue');
-
-    // Add the listener for mouse click.
-    this.tutorialText.on('pointerdown', () => {
-      this.addText(i);
-      i++;
-    });
+    this.dialogue = true;
   }
 
   endCutScene() {
@@ -118,23 +205,9 @@ export default class FgScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.addKeys({
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
-    console.log(`Starting the camera panning`);
-    this.playDialogue();
+
+    this.playPreDialogue();
   }
 
-  update(time, delta) {
-    // if (time > this.oneSec) {
-    //   console.log(`Current camera position? `, this.camera.panEffect.current);
-    //   console.log(
-    //     `Current X,Y position? `,
-    //     this.camera.scrollX,
-    //     this.camera.scrollY
-    //   );
-    //   this.oneSec += 1000;
-    // }
-    if (this.cursors.cont.isDown) {
-      // this.endCutScene();
-      console.log(`Current camera position: `, this.camera.x, this.camera.y);
-    }
-  }
+  update(time, delta) {}
 }

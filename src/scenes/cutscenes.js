@@ -1,3 +1,70 @@
+import Phaser from 'phaser';
+
+/*
+================================
+~~~~~~~To advance dialogue~~~~~~
+================================
+*/
+
+export function advanceDialogue(
+  i,
+  textLines,
+  textBox,
+  nameText,
+  nameTextLines,
+  tutorialText
+) {
+  /*
+    Helper function - makes it so clicking on the dialogue or hitting space bar advances the dialogue
+    To use this, import it (remember to destructure). Then use advanceDialogue.call() because we have to bind the this context. Then pass in the rest of the arguments after "this".
+    param i: int -> Index for the textLines
+    param tutorialText: object created from this.add.text. This is where we will render our text
+    param textLines: Array of strings corresponding to the order of the conversation
+    param textBox: object created from this.add.image. This is the dialogue box from where the text will be rendered.
+    param nameText: The name of the person speaking.
+    returns null
+
+    **NOTE** You will need to have an addText function in your cutscene, as well. This function is the helper function to swap the dialogue and contains the logic for after the dialogue is over. It needs to take the arguments listed below in the order listed (same order as this one, essentially.)
+  */
+
+  tutorialText.setInteractive(
+    new Phaser.Geom.Rectangle(
+      0,
+      0,
+      tutorialText.width + 15,
+      tutorialText.height + 30
+    ),
+    Phaser.Geom.Rectangle.Contains
+  );
+
+  this.input.keyboard.on('keydown-SPACE', () => {
+    this.addText(
+      i + 1,
+      textLines,
+      textBox,
+      nameText,
+      nameTextLines,
+      tutorialText
+    );
+    i++;
+  });
+
+  // Emit this so that the text doesn't show up on minimap
+  this.events.emit('dialogue');
+
+  // Add the listener for mouse click.
+  this.tutorialText.on('pointerdown', () => {
+    this.addText(
+      i + 1,
+      textLines,
+      textBox,
+      nameText,
+      nameTextLines,
+      tutorialText
+    );
+    i++;
+  });
+}
 /*
 ================================
 ~~~~~~~Tutorial cutscenes~~~~~~~
@@ -73,7 +140,6 @@ export function playCutScene() {
     */
   this.player.setVelocityX(0);
   this.player.setVelocityY(0);
-  // this.player.body.moves = false;
   this.player.canMelee = false;
   this.player.shooting = true;
   this.enemy.body.moves = false;

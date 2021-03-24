@@ -293,10 +293,9 @@ export default class FgScene extends Phaser.Scene {
     this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
       this.tutorialInProgress = false;
       this.finishedTutorial = true;
-      // this.player.body.moves = true;
-      // this.player.canMelee = true;
-      // this.player.shooting = false;
-      // this.enemy.body.moves = true;
+      this.player.canMelee = true;
+      this.player.shooting = false;
+      this.enemy.body.moves = true;
       this.scene.resume();
     });
 
