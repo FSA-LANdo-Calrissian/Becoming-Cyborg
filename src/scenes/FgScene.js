@@ -238,7 +238,10 @@ export default class FgScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
 
-    this.enemy = new Enemy(this, 473, 176, 'meleeRobot').setScale(0.4);
+    this.enemy = new Enemy(this, 473, 176, 'meleeRobot')
+      .setScale(0.4)
+      .setSize(38, 35)
+      .setOffset(5);
 
     this.wolf = new Enemy(this, 38, 200, 'wolf').setScale(0.2).setSize(45, 45);
 
