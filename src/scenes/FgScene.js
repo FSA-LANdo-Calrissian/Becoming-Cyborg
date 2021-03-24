@@ -10,12 +10,14 @@ import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
+import { initCutScene, playCutScene } from './cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.finishedTutorial = false;
     this.tutorialInProgress = false;
+    this.initTutorial = false;
     this.upgradeOpened = false;
 
     // Bindings
@@ -32,7 +34,7 @@ export default class FgScene extends Phaser.Scene {
     this.scene.transition({
       target: 'UpgradeUI',
       sleep: true,
-      duration: 1000,
+      duration: 10,
       data: { player: this.player },
     });
   }
@@ -60,112 +62,6 @@ export default class FgScene extends Phaser.Scene {
     }
     // Pew pew the bullet.
     bullet.shoot(x, y, angle);
-  }
-
-  addText(i) {
-    /*
-      Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
-      param i: int -> The current index of the dialogue.
-      returns null
-    */
-
-    // If the dialogue is over (index higher than length)
-    if (i > this.textLines.length - 1) {
-      // Destroy box + allow movement.
-      this.textBox.destroy();
-      this.tutorialInProgress = false;
-      this.finishedTutorial = true;
-      this.player.body.moves = true;
-      this.player.canMelee = true;
-      this.player.shooting = false;
-      this.enemy.body.moves = true;
-      this.nameText.setText('');
-    }
-    // Advance the dialogue (this will also allow
-    // the text to be removed from screen)
-    this.tutorialText.setText(this.textLines[i]);
-  }
-
-  playDialogue() {
-    /*
-      Tutorial dialogue. Contains the logic to advance through the dialogue on player clicking on the text.
-      Can increase the click area by changing the setInteractive rectangle width/height.
-      No params.
-      Returns null.
-    */
-
-    // Make the text box
-    this.textBox = this.add.image(
-      this.player.x - 10,
-      this.player.y + 50,
-      'textBox'
-    );
-    this.textBox.setScale(0.09);
-    // Lines to display in conversation.
-    this.textLines = [
-      'Halt human, stop right there!',
-      'Name...?',
-      'ID..?',
-      '...',
-      '"Just looking for directions" is not a valid response....',
-      'What is that you are wearing human....?',
-      'Please stand still as you are being scanned.....',
-      'Scan Complete....',
-      'Illegal Activity Detected...',
-      'Where did you get these parts, human...?',
-      'Come with me human you are being detained for questioning.....',
-      'Please do not resist....',
-    ];
-
-    // Initialize index.
-    let i = 0;
-    // Add text.
-    this.tutorialText = this.add.text(
-      this.textBox.x,
-      this.textBox.y + 2,
-      this.textLines[i],
-      {
-        fontSize: '.4',
-        // fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: 199, useAdvancedWrap: true },
-      }
-    );
-    this.tutorialText.setResolution(10);
-    this.tutorialText.setScale(0.4).setOrigin(0.5);
-    this.nameText = this.add
-      .text(this.textBox.x - 33, this.textBox.y - 8, 'Mr. Robot')
-      .setResolution(10)
-      .setScale(0.23)
-      .setOrigin(0.5);
-
-    // Add click area to advance text. Change the numbers after
-    // the tutorialText width/height in order to increase click
-    // area.
-    this.tutorialText.setInteractive(
-      new Phaser.Geom.Rectangle(
-        0,
-        0,
-        this.tutorialText.width + 15,
-        this.tutorialText.height + 30
-      ),
-      Phaser.Geom.Rectangle.Contains
-    );
-
-    // Emit this so that the text doesn't show up on minimap
-    this.events.emit('dialogue');
-
-    // Freeze enemy and player movement.
-    this.player.body.moves = false;
-    this.player.shooting = true;
-    this.player.canMelee = false;
-    this.enemy.body.moves = false;
-
-    // Add the listener for mouse click.
-    this.tutorialText.on('pointerdown', () => {
-      this.addText(i);
-      i++;
-    });
   }
 
   damageEnemy(enemy, source) {
@@ -247,8 +143,10 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.2)
       .setSize(45, 45);
 
-    this.npc = new NPC(this, 90, 50, 'player').setScale(0.3);
+    this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
+    this.deadNPC = new NPC(this, 453, 176, 'player').setScale(0.3);
+    this.deadNPC.flipX = !this.deadNPC.flipX;
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -278,7 +176,7 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Adding entities to groups
-    this.npcGroup.add(this.npc);
+    this.npcGroup.add(this.doctor);
     this.enemiesGroup.add(this.enemy);
     this.enemiesGroup.add(this.wolf);
 
@@ -364,14 +262,44 @@ export default class FgScene extends Phaser.Scene {
     this.player.setCollideWorldBounds();
     this.enemy.setCollideWorldBounds();
 
+    // Event emitters
+
+    // Event listeners
     this.events.on('transitioncomplete', (fromScene) => {
       this.scene.wake();
       // If we're coming from the upgrade UI
       // Set upgradeOpened to false so we can get back into it
-      if (fromScene.scene.key === 'UpgradeUI') {
-        this.upgradeOpened = false;
+      switch (fromScene.scene.key) {
+        case 'UpgradeUI':
+          this.upgradeOpened = false;
+          break;
+        case 'TutorialCutScene':
+          this.tutorialInProgress = false;
+          this.finishedTutorial = true;
+          this.player.body.moves = true;
+          this.player.canMelee = true;
+          this.player.shooting = false;
+          this.enemy.body.moves = true;
+          break;
+        default:
+          return;
       }
     });
+
+    this.scene.get('TutorialCutScene').events.on('tutorialPause', () => {
+      this.scene.pause();
+    });
+
+    this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
+      this.tutorialInProgress = false;
+      this.finishedTutorial = true;
+      // this.player.body.moves = true;
+      // this.player.canMelee = true;
+      // this.player.shooting = false;
+      // this.enemy.body.moves = true;
+      this.scene.resume();
+    });
+
     // data.choice is only available when player restarts game.
     if (data.choice) {
       this.scene.restart({ choice: false });
@@ -385,15 +313,14 @@ export default class FgScene extends Phaser.Scene {
     });
   }
 
-  update(time, delta) {
-    // Tutorial logic - if player hasn't talked to enemy robot
-    // yet and is within a range of 51 of the robot, initialize
-    // talking.
+  tutorialHelper(distance) {
+    /*
+      Method to help check whether or not to run tutorial.
+      param distance: int -> Range to start check
+      returns bool
+    */
 
-    if (!this.finishedTutorial) {
-      this.enemy.body.moves = false;
-    }
-    if (
+    return (
       !this.tutorialInProgress &&
       !this.finishedTutorial &&
       Phaser.Math.Distance.Between(
@@ -401,15 +328,50 @@ export default class FgScene extends Phaser.Scene {
         this.player.y,
         this.enemy.x,
         this.enemy.y
-      ) < 51
-    ) {
+      ) < distance
+    );
+  }
+
+  update(time, delta) {
+    if (!this.finishedTutorial && !this.tutorialInProgress) {
+      this.enemy.body.moves = false;
+    }
+
+    // If player in 150 range of enemy, play initial cutscene
+    if (this.tutorialHelper(150)) {
+      if (!this.initTutorial) {
+        this.tutorialInProgress = true;
+        // stop animations
+        this.player.play(
+          this.player.facingRight ? 'idleRight' : 'idleLeft',
+          true
+        );
+        this.enemy.play('meleeRobotIdleLeft');
+        const huh = this.add
+          .sprite(this.player.x + 8, this.player.y - 8, '?')
+          .setScale(0.015)
+          .setAlpha(1, 1, 1, 1);
+        this.time.delayedCall(1000, () => {
+          huh.destroy();
+        });
+        initCutScene.call(this);
+      }
+    }
+
+    // If player within 51 range, play tutorial scene.
+    if (this.tutorialHelper(51)) {
       this.tutorialInProgress = true;
       // stop animations
       this.player.play(
         this.player.facingRight ? 'idleRight' : 'idleLeft',
         true
       );
-      this.playDialogue();
+      this.enemy.play(
+        this.enemy.x - this.player.x > 0
+          ? 'meleeRobotIdleLeft'
+          : 'meleeRobotIdleRight'
+      );
+      playCutScene.call(this);
     }
 
     // If not in dialogue, allow player to move with cursors.
@@ -419,16 +381,25 @@ export default class FgScene extends Phaser.Scene {
       this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
+        // TODO: Remove this for production
         this.openUpgrade();
       }
       if (this.cursors.hp.isDown) {
         // Press h button to see stats.
+        // TODO: Remove this for production
         console.log(
           `Current health: ${this.player.health}/${this.player.maxHealth}`
         );
         console.log(`Current move speed: ${this.player.speed}`);
         console.log(`Current armor: ${this.player.armor}`);
         console.log(`Current regen: ${this.player.regen}`);
+        console.log(`Current player position: `, this.player.x, this.player.y);
+        console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+        console.log(
+          `Current camera position: `,
+          this.cameras.main.scrollX,
+          this.cameras.main.scrollY
+        );
       }
     }
   }

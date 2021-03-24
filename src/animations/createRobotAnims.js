@@ -45,6 +45,10 @@ export default function createRobotAnims() {
     frames: [{ key: 'meleeRobot', frame: 4 }],
   });
   this.anims.create({
+    key: 'meleeRobotIdleLeft',
+    frames: [{ key: 'meleeRobot', frame: 10 }],
+  });
+  this.anims.create({
     key: 'meleeRobotAttackLeft',
     frames: this.anims.generateFrameNumbers('meleeRobotAttack', {
       start: 9,

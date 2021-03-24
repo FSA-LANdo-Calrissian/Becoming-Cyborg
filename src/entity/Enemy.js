@@ -149,6 +149,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param player: object -> The player object, passed in through FgScene's update -> enemy update -> here. No need to change or touch.
       returns null.
     */
+
     if (!this.body) return;
 
     const aggroRange = 75;
@@ -320,6 +321,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
       this.scene.time.delayedCall(5000, () => {
+        if (this.scene.tutorialInProgress) {
+          return;
+        }
         this.randomPatrol(player, aggroRange);
       });
     } else return;
@@ -339,7 +343,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.velocity.x = 35;
         this.enemyMovement('right');
 
-        console.log('moving right');
+        // console.log('moving right');
 
         this.scene.time.delayedCall(5000, () => {
           // after 5 seconds switch to going left
@@ -353,14 +357,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.velocity.x = -35;
 
         this.enemyMovement('left');
-        console.log('moving left');
+        // console.log('moving left');
 
         this.scene.time.delayedCall(5000, () => {
           // switch back to going right after 5 seconds
           this.goingRight = false;
           this.goingLeft = true;
 
-          console.log('stopping');
+          // console.log('stopping');
         });
       }
     } else {

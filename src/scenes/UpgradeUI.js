@@ -11,7 +11,7 @@ export default class UpgradeUI extends Phaser.Scene {
     */
     this.scene.transition({
       target: 'FgScene',
-      duration: 1000,
+      duration: 10,
     });
   }
 

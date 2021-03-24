@@ -51,6 +51,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('arrow', 'assets/backgrounds/arrow.png');
     this.load.image('interact', 'assets/backgrounds/interact.png');
     this.load.image('minimap', 'assets/backgrounds/minimap.png');
+    this.load.image('?', 'assets/backgrounds/question.png');
+    this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
   }
 
   create(data) {

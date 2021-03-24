@@ -95,7 +95,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
        returns null
     */
 
-    console.log(`Item picked up: `, item);
     switch (item) {
       case 'iron':
         this.inventory.iron += 1;
