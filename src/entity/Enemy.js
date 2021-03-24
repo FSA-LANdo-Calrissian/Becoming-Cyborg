@@ -1,64 +1,20 @@
 import Phaser from 'phaser';
-import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
-    this.class = 'robot';
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = 80;
-    this.health = 4;
+    this.health = 40;
     this.direction = '';
     this.isMoving = false;
     this.isMelee = false;
     this.canMelee = true;
-    this.dropTable = {
-      robot: ['potion', 'iron'],
-      animal: ['potion'],
-    };
     this.takeDamage = this.takeDamage.bind(this);
-    this.dropItems = this.dropItems.bind(this);
-  }
-
-  dropItems() {
-    /*
-      Method to drop items on death. The items spawn based on a drop table (this.dropTable). The class (this.class) determines which drop table to select from.
-      amount is a random number between 1 and 3 for how many items will drop.
-      item is which item will drop. It calls droptable[class][index], where class is this.class and index is a random integer between 0 and length of drop table.
-      drop is the item that drops and then adds it to the items group. It will spawn a random distance away from the dead enemy's x,y coordinate.
-      It will attempt to grab an existing drop from the group before trying to create it.
-    */
-
-    const type = this.class;
-    const amount = Math.floor(Math.random() * 3 + 1);
-    for (let i = 0; i < amount; i++) {
-      const itemKey = this.dropTable[type][
-        Math.floor(Math.random() * this.dropTable[type].length)
-      ];
-
-      // Find drop from group if available
-      let drop = this.scene.itemsGroup.getFirstDead(
-        false,
-        this.x + Math.random() * 20,
-        this.y + Math.random() * 20,
-        itemKey
-      );
-
-      if (!drop) {
-        // Create + add to group if not available
-        drop = new Item(
-          this.scene,
-          this.x + Math.random() * 20,
-          this.y + Math.random() * 20,
-          itemKey
-        ).setScale(0.1);
-        this.scene.itemsGroup.add(drop);
-      }
-    }
   }
 
   takeDamage(damage) {
@@ -80,7 +36,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setActive(false);
       this.setVisible(false);
       this.body.enable = false;
-      this.dropItems();
     }
     this.scene.time.delayedCall(1000, () => {
       hitAnimation.stop();
@@ -281,7 +236,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
       }
 
-      // console.log('im chasing');
+      console.log('im chasing');
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
         Math.round(player.x) < Math.round(this.x) &&
@@ -317,63 +272,92 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.isMoving = true;
       }
     } else {
+      console.log('stopping');
+      this.body.velocity.x = 0;
+      this.body.velocity.y = 0;
+      this.isMoving = false;
       this.scene.time.delayedCall(2000, () => {
+        console.log('switching to patrol');
         return this.randomPatrol();
       });
     }
   }
 
   randomPatrol() {
-    if (
-      (this.body.velocity.x === 0 && this.body.velocity.y == 0) ||
-      Math.abs(this.body.velocity) < 35
-    ) {
+    this.body.velocity.x = 35;
+    this.body.velocity.y = 0;
+    this.isMoving = true;
+    this.enemyMovement('right');
+    this.scene.time.delayedCall(3000, () => {
+      console.log('stopping moving right');
+      this.body.velocity.x = 0;
       this.isMoving = false;
-    }
-    // function that gets a random number and tells enemy to patrol based on the random number
-    let randomNum = this.getRandomInt(5);
-    if (randomNum === 1) {
-      if (this.isMoving === false) {
-        this.body.velocity.x = -35;
-        this.enemyMovement('left');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
-        });
-      }
-    } else if (randomNum === 2) {
-      if (this.isMoving === false) {
-        this.body.velocity.x = 35;
-        this.enemyMovement('right');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
-        });
-      }
-    } else if (randomNum === 3) {
-      if (this.isMoving === false) {
-        this.body.velocity.y = -35;
-        this.enemyMovement('up');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
-        });
-      }
-    } else if (this.isMoving === false) {
-      this.body.velocity.y = 35;
-      this.enemyMovement('down');
+    });
+    this.scene.time.delayedCall(3000, () => {
+      this.body.velocity.x = -35;
+      this.body.velocity.y = 0;
       this.isMoving = true;
+      console.log('stopping moving left');
+      this.enemyMovement('left');
       this.scene.time.delayedCall(3000, () => {
-        this.body.velocity.y = 0;
+        this.body.velocity.x = 0;
         this.isMoving = false;
       });
-    } else {
-      return;
-    }
+    });
+    this.scene.time.delayedCall(3000, () => {
+      this.randomPatrol();
+    });
   }
+  // if (
+  //   (this.body.velocity.x === 0 && this.body.velocity.y == 0) ||
+  //   Math.abs(this.body.velocity) < 35
+  // ) {
+  //   this.isMoving = false;
+  // }
+  // // function that gets a random number and tells enemy to patrol based on the random number
+  // let randomNum = this.getRandomInt(5);
+  // if (randomNum === 1) {
+  //   if (this.isMoving === false) {
+  //     this.body.velocity.x = -35;
+  //     this.enemyMovement('left');
+  //     this.isMoving = true;
+  //     this.scene.time.delayedCall(3000, () => {
+  //       this.body.velocity.y = 0;
+  //       this.isMoving = false;
+  //     });
+  //   }
+  // } else if (randomNum === 2) {
+  //   if (this.isMoving === false) {
+  //     this.body.velocity.x = 35;
+  //     this.enemyMovement('right');
+  //     this.isMoving = true;
+  //     this.scene.time.delayedCall(3000, () => {
+  //       this.body.velocity.y = 0;
+  //       this.isMoving = false;
+  //     });
+  //   }
+  // } else if (randomNum === 3) {
+  //   if (this.isMoving === false) {
+  //     this.body.velocity.y = -35;
+  //     this.enemyMovement('up');
+  //     this.isMoving = true;
+  //     this.scene.time.delayedCall(3000, () => {
+  //       this.body.velocity.y = 0;
+  //       this.isMoving = false;
+  //     });
+  //   }
+  // } else if (this.isMoving === false) {
+  //   this.body.velocity.y = 35;
+  //   this.enemyMovement('down');
+  //   this.isMoving = true;
+  //   this.scene.time.delayedCall(3000, () => {
+  //     this.body.velocity.y = 0;
+  //     this.isMoving = false;
+  //   });
+  // } else {
+  //   return;
+  // }
+  // }
   getRandomInt(max) {
     // just generates a random number for enemy patrol
     return Math.floor(Math.random() * Math.floor(max));
