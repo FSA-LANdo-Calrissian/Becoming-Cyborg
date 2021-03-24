@@ -146,8 +146,8 @@ export default class FgScene extends Phaser.Scene {
       new Phaser.Geom.Rectangle(
         0,
         0,
-        this.tutorialText.width + 100,
-        this.tutorialText.height + 100
+        this.tutorialText.width + 15,
+        this.tutorialText.height + 30
       ),
       Phaser.Geom.Rectangle.Contains
     );
