@@ -43,6 +43,8 @@ export default class Item extends Phaser.Physics.Arcade.Sprite {
     if (this.lifespan <= 0) {
       this.setVisible(false);
       this.setActive(false);
+      this.setVelocityY(0);
+      this.body.enable = false;
     }
   }
 }
