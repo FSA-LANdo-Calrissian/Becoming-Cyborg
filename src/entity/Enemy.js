@@ -2,11 +2,11 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey) {
+  constructor(scene, x, y, spriteKey, classType) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
-    this.class = 'robot';
+    this.class = classType;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
@@ -35,7 +35,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     const type = this.class;
     const amount = Math.floor(Math.random() * 3 + 1);
-    for (let i = 0; i < amount; i++) {
+    for (let i = 0; i < 10; i++) {
       const itemKey = this.dropTable[type][
         Math.floor(Math.random() * this.dropTable[type].length)
       ];
