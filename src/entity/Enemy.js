@@ -16,6 +16,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.isMoving = false;
     this.isMelee = false;
     this.canMelee = true;
+    this.goingLeft = false;
+    this.goingRight = false;
     this.dropTable = {
       robot: ['potion', 'iron'],
       animal: ['potion'],
@@ -139,13 +141,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   updateEnemyMovement(player) {
-    //edge case for if enemy is suppposedly moving but not going anywhere. Tells enemy to keep going through patrol options
-    if (
-      this.isMoving === true &&
-      (this.body.velocity === 0 || Math.abs(this.body.velocity) < 35)
-    ) {
-      this.randomPatrol();
-    }
     /*
       Function to determine enemy aggro and enemy movement.
       If player is within a range of the constant aggroRange, enemy will move toward the player. If player is within attack range, enemy will stop moving and play attack animation.
@@ -281,7 +276,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
       }
 
-      // console.log('im chasing');
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
         Math.round(player.x) < Math.round(this.x) &&
@@ -316,67 +310,60 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.enemyMovement('down');
         this.isMoving = true;
       }
-    } else {
-      // this.scene.time.delayedCall(2000, () => {
-      //   return this.randomPatrol();
-      // });
-    }
+    } else if (
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >=
+      aggroRange
+    ) {
+      //if player is out of range, enemy stops then after 5 secs goes on patrol
+      this.body.velocity.y = 0;
+      this.body.velocity.x = 0;
+      this.scene.time.delayedCall(5000, () => {
+        this.randomPatrol(player, aggroRange);
+      });
+    } else return;
   }
 
-  randomPatrol() {
+  randomPatrol(player, aggroRange) {
     if (
-      (this.body.velocity.x === 0 && this.body.velocity.y == 0) ||
-      Math.abs(this.body.velocity) < 35
+      Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >=
+      aggroRange
     ) {
-      this.isMoving = false;
-    }
-    // function that gets a random number and tells enemy to patrol based on the random number
-    let randomNum = this.getRandomInt(5);
-    if (randomNum === 1) {
-      if (this.isMoving === false) {
-        this.body.velocity.x = -35;
-        this.enemyMovement('left');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
-        });
-      }
-    } else if (randomNum === 2) {
-      if (this.isMoving === false) {
+      if (
+        // if enemy is going left or this is the first time patrol is called we want him to go right
+        this.goingLeft ||
+        (this.goingLeft === false && this.goingRight === false)
+      ) {
+        this.body.velocity.y = 0;
         this.body.velocity.x = 35;
         this.enemyMovement('right');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
+
+        console.log('moving right');
+
+        this.scene.time.delayedCall(5000, () => {
+          // after 5 seconds switch to going left
+          this.goingLeft = false;
+          this.goingRight = true;
         });
       }
-    } else if (randomNum === 3) {
-      if (this.isMoving === false) {
-        this.body.velocity.y = -35;
-        this.enemyMovement('up');
-        this.isMoving = true;
-        this.scene.time.delayedCall(3000, () => {
-          this.body.velocity.y = 0;
-          this.isMoving = false;
-        });
-      }
-    } else if (this.isMoving === false) {
-      this.body.velocity.y = 35;
-      this.enemyMovement('down');
-      this.isMoving = true;
-      this.scene.time.delayedCall(3000, () => {
+      if (this.goingRight) {
+        // if enemy was going right switch to going left
         this.body.velocity.y = 0;
-        this.isMoving = false;
-      });
+        this.body.velocity.x = -35;
+
+        this.enemyMovement('left');
+        console.log('moving left');
+
+        this.scene.time.delayedCall(5000, () => {
+          // switch back to going right after 5 seconds
+          this.goingRight = false;
+          this.goingLeft = true;
+
+          console.log('stopping');
+        });
+      }
     } else {
       return;
     }
-  }
-  getRandomInt(max) {
-    // just generates a random number for enemy patrol
-    return Math.floor(Math.random() * Math.floor(max));
   }
 
   update(player) {
