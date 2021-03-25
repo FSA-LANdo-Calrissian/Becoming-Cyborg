@@ -17,13 +17,13 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     */
     if (!this.messageDisplayed) {
       this.messageDisplayed = true;
-      // this.scene.tutorialText = this.scene.add.text(
+      // this.scene.dialogueText = this.scene.add.text(
       //   this.x - 10,
       //   this.y - 10,
       //   'Hit spacebar to interact',
       //   { fontSize: 8, wordWrap: { width: 60 } }
       // );
-      this.scene.tutorialText = this.scene.add
+      this.scene.dialogueText = this.scene.add
         .image(this.x - 10, this.y - 10, 'interact')
         .setScale(0.3);
       this.scene.events.emit('dialogue');
@@ -36,7 +36,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
 
     if (!touching && wasTouching && this.messageDisplayed) {
       // Destroys tooltip when no more overlap
-      this.scene.tutorialText.destroy();
+      this.scene.dialogueText.destroy();
       this.messageDisplayed = false;
     }
   }

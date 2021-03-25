@@ -80,7 +80,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    if (this.scene.input.activePointer.leftButtonDown()) {
+    if (this.scene.input.activePointer.leftButtonDown() && !this.scene.dialogueInProgress) {
       if (
         this.currentLeftWeapon === 'none' ||
         this.currentLeftWeapon === 'knife'
@@ -405,23 +405,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(cursors, time) {
-    this.updateMovement(cursors);
+    if (!this.scene.dialogueInProgress) {
+      this.updateMovement(cursors);
 
-    this.shoot(time);
+      this.shoot(time);
 
-    // Regen logic. Heal this.regen hp every 5 seconds
-    if (time > this.nextHeal) {
-      // Only when not at max health
-      if (this.health < this.maxHealth) {
-        // If regen pushes you over max health, set hp to max health
-        if (this.health + this.regen > this.maxHealth) {
-          this.health = this.maxHealth;
-        } else {
-          // Otherwise, add regen
-          this.health += this.regen;
+      // Regen logic. Heal this.regen hp every 5 seconds
+      if (time > this.nextHeal) {
+        // Only when not at max health
+        if (this.health < this.maxHealth) {
+          // If regen pushes you over max health, set hp to max health
+          if (this.health + this.regen > this.maxHealth) {
+            this.health = this.maxHealth;
+          } else {
+            // Otherwise, add regen
+            this.health += this.regen;
+          }
+          this.scene.events.emit('takeDamage', this.health, this.maxHealth);
+          this.nextHeal += this.regenCD;
         }
-        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
-        this.nextHeal += this.regenCD;
       }
     }
   }
