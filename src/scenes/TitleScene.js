@@ -59,7 +59,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.spritesheet('explode', 'assets/sprites/fieryexplode.png', {
       frameWidth: 128,
-      frameHeight: 124,
+      frameHeight: 123,
     });
 
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');

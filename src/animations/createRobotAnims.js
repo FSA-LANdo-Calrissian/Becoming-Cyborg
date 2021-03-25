@@ -120,7 +120,7 @@ export default function createRobotAnims() {
       start: 0,
       end: 24,
     }),
-    frameRate: 20,
+    frameRate: 50,
     repeat: 0,
   });
 }

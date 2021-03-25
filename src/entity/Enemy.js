@@ -79,7 +79,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Death logic.
     if (this.health <= 0) {
-      this.on('animationcomplete', () => {
+      this.on('animationcomplete-death', () => {
         this.setActive(false);
         this.setVisible(false);
         this.dropItems();
@@ -389,7 +389,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(player) {
-    if (!this.isDead) {
+    if (!this.isDead && !this.scene.dialogueInProgress) {
       this.updateEnemyMovement(player);
     }
   }

@@ -2,9 +2,64 @@ import Phaser from 'phaser';
 
 /*
 ================================
-~~~~~~~To advance dialogue~~~~~~
+~~~~~~~Helper functions~~~~~~~~~
 ================================
 */
+
+function freeze(player, scene) {
+  /*
+    Helper function to stop all player movements
+  */
+
+  scene.dialogueInProgress = true;
+  player.setVelocityX(0);
+  player.setVelocityY(0);
+  player.canMelee = false;
+  player.shooting = true;
+}
+
+export function generateDialogueUI(textLines, nameTextLines) {
+  /*
+    Helper function to make the text box and place the text on screen.
+    param textLines: array of strings -> The dialogue text in an array of strings.
+    param nameTextLines: array of strings -> Name that belongs to each line of dialogue text. This is to put the name into the little name box. Should have the same length as textLines.
+  */
+
+  // Make the text box
+  this.textBox = this.add.image(
+    this.player.x - 10,
+    this.player.y + 350,
+    'textBox'
+  );
+  this.textBox.setScale(0.5);
+
+  // Lines to display in conversation.
+  this.textLines = textLines;
+
+  this.nameTextLines = nameTextLines;
+
+  // Add text.
+  this.tutorialText = this.add.text(
+    this.textBox.x + 5,
+    this.textBox.y + 15,
+    this.textLines[0],
+    {
+      fontSize: '.4',
+      // fontFamily: 'Arial',
+      align: 'left',
+      wordWrap: { width: 199, useAdvancedWrap: true },
+    }
+  );
+  this.tutorialText.setResolution(10);
+  this.tutorialText.setScale(2.5).setOrigin(0.5);
+  this.nameText = this.add
+    .text(this.textBox.x - 185, this.textBox.y - 45, this.nameTextLines[0], {
+      fontSize: '.4',
+    })
+    .setResolution(10)
+    .setScale(2.5)
+    .setOrigin(0.5);
+}
 
 export function advanceDialogue(
   i,
@@ -77,11 +132,7 @@ export function initCutScene() {
   */
 
   // Stop all movement
-  this.player.setVelocityX(0);
-  this.player.setVelocityY(0);
-  this.player.canMelee = false;
-  this.player.shooting = true;
-  this.enemy.body.moves = false;
+  freeze(this.player, this);
   this.initTutorial = true;
 
   // Stop camera so we can pan
@@ -138,11 +189,9 @@ export function playCutScene() {
       No params.
       Returns null.
     */
-  this.player.setVelocityX(0);
-  this.player.setVelocityY(0);
-  this.player.canMelee = false;
-  this.player.shooting = true;
-  this.enemy.body.moves = false;
+
+  // Stop player movements
+  freeze(this.player, this);
 
   this.scene.launch('TutorialCutScene', {
     player: this.player,
@@ -150,6 +199,15 @@ export function playCutScene() {
     camera: this.cameras.main,
     deadNPC: this.deadNPC,
   });
+}
+
+export function robotKilled() {
+  /*
+    Runs the cutscene for after the robot is killed.
+  */
+
+  // Stop player movements
+  freeze(this.player, this);
 }
 
 /*
