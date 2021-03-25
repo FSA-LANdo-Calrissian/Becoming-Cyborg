@@ -80,7 +80,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    if (this.scene.input.activePointer.leftButtonDown() && !this.scene.dialogueInProgress) {
+    if (
+      this.scene.input.activePointer.leftButtonDown() &&
+      !this.scene.dialogueInProgress
+    ) {
       if (
         this.currentLeftWeapon === 'none' ||
         this.currentLeftWeapon === 'knife'
@@ -101,7 +104,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           // We need to pass in the sprite to use here
           this.fireWeapon(this.x, this.y, 'bigBlast', angle);
           // Calculates the cd between shots
-          this.nextAttack += this.attackSpeed;
+          this.nextAttack = time + this.attackSpeed;
         }
       }
     }
