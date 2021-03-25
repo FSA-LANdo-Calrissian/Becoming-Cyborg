@@ -88,4 +88,30 @@ export default function createRobotAnims() {
     repeat: -1,
     yoyo: true,
   });
+  this.anims.create({
+    key: 'tutorial',
+    frames: this.anims.generateFrameNumbers('tutorialShoot', {
+      start: 19,
+      end: 19,
+    }),
+    frameRate: 0,
+  });
+  this.anims.create({
+    key: 'tutorial1',
+    frames: this.anims.generateFrameNumbers('tutorialShoot', {
+      start: 15,
+      end: 19,
+    }),
+    frameRate: 4,
+    repeat: 5,
+  });
+  this.anims.create({
+    key: 'tutorial2',
+    frames: this.anims.generateFrameNumbers('tutorialShoot', {
+      start: 4,
+      end: 4,
+    }),
+    frameRate: 4,
+    repeat: -1,
+  });
 }

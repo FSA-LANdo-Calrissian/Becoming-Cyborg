@@ -4,8 +4,9 @@ import { advanceDialogue } from './cutscenes';
 export default class TutorialCutScene extends Phaser.Scene {
   constructor() {
     super('TutorialCutScene');
-    this.preDialogue = false;
-    this.dialogue = false;
+    this.sceneOne = false;
+    this.sceneTwo = false;
+    this.sceneThree = false;
   }
 
   addText(k, textLines, textBox, nameText, nameTextLines, tutorialText) {
@@ -38,16 +39,31 @@ export default class TutorialCutScene extends Phaser.Scene {
       Helper function to determine what to do next in cutscene
     */
 
-    if (this.preDialogue && !this.dialogue) {
-      this.playDialogue();
-    } else if (this.preDialogue && this.dialogue) {
+    if (this.sceneOne && !this.sceneTwo) {
+      this.enemy.play('tutorial1', true);
+      this.playSceneTwo();
+      this.time.delayedCall(1000, () => {
+        this.deadNPC.play('MacRIP');
+      });
+      this.time.delayedCall(2000, () => {
+        this.enemy.play('tutorial2', false);
+      });
+    } else if (this.sceneTwo && !this.sceneThree) {
+      this.enemy.play(
+        this.enemy.x - this.player.x > 0
+          ? 'meleeRobotIdleLeft'
+          : 'meleeRobotIdleRight'
+      );
+      this.events.emit('tutorialPause');
+      this.playSceneThree();
+    } else if (this.sceneThree) {
       this.endCutScene();
     }
   }
 
-  playPreDialogue() {
+  playSceneOne() {
     /*
-      Scene before the dialogue
+      Scene before the killing
     */
     this.textBox = this.add
       .image(this.player.x - 10, this.player.y + 350, 'textBox')
@@ -59,11 +75,6 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Any last words?',
       "It was an accident, please! I'll be careful next time!",
       'Weird choice of final words. Die, human',
-      'AaaAaArRRggGGggGhHhHHh',
-      "You, human. You're guilty of not stopping him from scratching my beautiful metal. ",
-      'You will also perish here',
-      'Any last words?',
-      '...',
     ];
 
     this.nameTextLines = [
@@ -72,6 +83,63 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Mr. Robot',
       'Mac',
       'Mr. Robot',
+    ];
+
+    let j = 0;
+
+    this.tutorialText = this.add.text(
+      this.textBox.x + 5,
+      this.textBox.y + 15,
+      this.textLines[j],
+      {
+        fontSize: '.4',
+        // fontFamily: 'Arial',
+        align: 'left',
+        wordWrap: { width: 199, useAdvancedWrap: true },
+      }
+    );
+
+    this.tutorialText.setResolution(10);
+    this.tutorialText.setScale(2.5).setOrigin(0.5);
+    this.nameText = this.add
+      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
+        fontSize: '.4',
+      })
+      .setResolution(10)
+      .setScale(2.5)
+      .setOrigin(0.5);
+
+    advanceDialogue.call(
+      this,
+      j,
+      this.textLines,
+      this.textBox,
+      this.nameText,
+      this.nameTextLines,
+      this.tutorialText
+    );
+
+    this.sceneOne = true;
+  }
+
+  playSceneTwo() {
+    /*
+      Post killing scene
+    */
+    this.textBox = this.add
+      .image(this.player.x - 10, this.player.y + 350, 'textBox')
+      .setScale(0.5);
+
+    this.textLines = [
+      'AaaAaArRRggGGggGhHhHHh',
+      '...',
+      "You, human. You're guilty of not stopping him from scratching my beautiful metal. ",
+      'You will also perish here',
+      'Any last words?',
+      '...',
+    ];
+
+    this.nameTextLines = [
       'Mac',
       'Mr. Robot',
       'Mr. Robot',
@@ -113,10 +181,10 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.tutorialText
     );
 
-    this.preDialogue = true;
+    this.sceneTwo = true;
   }
 
-  playDialogue() {
+  playSceneThree() {
     /*
       Tutorial dialogue. Contains the logic to advance through the dialogue on player clicking on the text.
       Can increase the click area by changing the setInteractive rectangle width/height.
@@ -187,7 +255,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.tutorialText
     );
 
-    this.dialogue = true;
+    this.sceneThree = true;
   }
 
   endCutScene() {
@@ -195,19 +263,18 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.scene.stop();
   }
 
-  create({ player, enemy, camera }) {
+  create({ player, enemy, camera, deadNPC }) {
     this.player = player;
     this.enemy = enemy;
+    this.deadNPC = deadNPC;
     this.camera = camera;
 
-    const mainGame = this.scene.get('FgScene');
+    // const mainGame = this.scene.get('FgScene');
 
     this.cursors = this.input.keyboard.addKeys({
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
-    this.playPreDialogue();
+    this.playSceneOne();
   }
-
-  update(time, delta) {}
 }

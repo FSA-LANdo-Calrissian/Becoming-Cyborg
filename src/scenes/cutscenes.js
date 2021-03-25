@@ -148,6 +148,7 @@ export function playCutScene() {
     player: this.player,
     enemy: this.enemy,
     camera: this.cameras.main,
+    deadNPC: this.deadNPC,
   });
 }
 
