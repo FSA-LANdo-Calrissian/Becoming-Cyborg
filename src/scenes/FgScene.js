@@ -16,7 +16,7 @@ export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.finishedTutorial = false;
-    this.tutorialInProgress = false;
+    this.dialogueInProgress = false;
     this.initTutorial = false;
     this.upgradeOpened = false;
 
@@ -283,7 +283,7 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
-      this.tutorialInProgress = false;
+      this.dialogueInProgress = false;
       this.finishedTutorial = true;
       this.player.canMelee = true;
       this.player.shooting = false;
@@ -312,7 +312,7 @@ export default class FgScene extends Phaser.Scene {
     */
 
     return (
-      !this.tutorialInProgress &&
+      !this.dialogueInProgress &&
       !this.finishedTutorial &&
       Phaser.Math.Distance.Between(
         this.player.x,
@@ -324,14 +324,14 @@ export default class FgScene extends Phaser.Scene {
   }
 
   update(time) {
-    if (!this.finishedTutorial && !this.tutorialInProgress) {
+    if (!this.finishedTutorial && !this.dialogueInProgress) {
       this.enemy.body.moves = false;
     }
 
     // If player in 150 range of enemy, play initial cutscene
     if (this.tutorialHelper(150)) {
       if (!this.initTutorial) {
-        this.tutorialInProgress = true;
+        this.dialogueInProgress = true;
         // stop animations
         this.player.play(
           this.player.facingRight ? 'idleRight' : 'idleLeft',
@@ -351,7 +351,7 @@ export default class FgScene extends Phaser.Scene {
 
     // If player within 51 range, play tutorial scene.
     if (this.tutorialHelper(51)) {
-      this.tutorialInProgress = true;
+      this.dialogueInProgress = true;
       // stop animations
       this.player.play(
         this.player.facingRight ? 'idleRight' : 'idleLeft',
@@ -362,7 +362,7 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If not in dialogue, allow player to move with cursors.
-    if (!this.tutorialInProgress) {
+    if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
       // this.wolf.update(this.player);

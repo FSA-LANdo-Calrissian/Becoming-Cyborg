@@ -126,7 +126,7 @@ export function initCutScene() {
     this.camera.pan(400 + currX, 300 + currY, 3000);
   });
   this.time.delayedCall(8000, () => {
-    this.tutorialInProgress = false;
+    this.dialogueInProgress = false;
     this.camera.startFollow(this.player);
   });
 }

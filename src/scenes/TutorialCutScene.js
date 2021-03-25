@@ -20,7 +20,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     if (k > textLines.length - 1) {
       // Destroy bollow movement.
       textBox.destroy();
-      this.tutorialInProgress = false;
+      this.dialogueInProgress = false;
       this.finishedTutorial = true;
 
       this.input.keyboard.removeListener('keydown-SPACE');

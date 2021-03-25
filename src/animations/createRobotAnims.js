@@ -114,4 +114,13 @@ export default function createRobotAnims() {
     frameRate: 4,
     repeat: -1,
   });
+  this.anims.create({
+    key: 'death',
+    frames: this.anims.generateFrameNumbers('explode', {
+      start: 0,
+      end: 24,
+    }),
+    frameRate: 20,
+    repeat: 0,
+  });
 }
