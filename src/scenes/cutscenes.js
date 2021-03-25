@@ -234,6 +234,7 @@ export function robotKilled() {
 
 export function playDialogue() {
   freeze(this.player, this);
+
   this.scene.launch('Dialogue', {
     player: this.player,
   });

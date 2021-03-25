@@ -233,10 +233,10 @@ export default class FgScene extends Phaser.Scene {
       // Displays tooltip on overlap.
       npc.displayTooltip();
 
-      if (npc.body.touching.none) {
+      if (npc.body.touching.none && !this.dialogueInProgress) {
         this.input.keyboard.on('keydown-SPACE', () => {
-          npc.play('scaredTutorialNPC');
           playDialogue.call(this);
+          this.input.keyboard.removeListener('keydown-SPACE');
         });
       } else {
         return;
