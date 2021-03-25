@@ -184,6 +184,7 @@ export function initCutScene() {
   this.time.delayedCall(8000, () => {
     this.dialogueInProgress = false;
     this.camera.startFollow(this.player);
+    this.dialogueInProgress = false;
   });
 }
 

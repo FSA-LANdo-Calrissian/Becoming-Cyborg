@@ -238,10 +238,18 @@ export default class FgScene extends Phaser.Scene {
 
     this.physics.add.collider(this.enemiesGroup, this.worldLayer1);
 
+    // Adding world boundaries
+    this.boundaryX = 600;
+    this.boundaryY = 400;
+    // TODO: Fix world boundary when we finish tileset
+    this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
+    this.player.setCollideWorldBounds();
+    this.enemy.setCollideWorldBounds();
+
     // Camera logic
     this.camera = this.cameras.main;
     this.camera.setZoom(4.5);
-    this.camera.setBounds(0, 0, 1025, 768);
+    this.camera.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.camera.startFollow(this.player);
 
     // Keymapping
@@ -255,12 +263,6 @@ export default class FgScene extends Phaser.Scene {
       speed: Phaser.Input.Keyboard.KeyCodes.I,
       upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
-
-    // Adding world boundaries
-    // TODO: Fix world boundary when we finish tileset
-    this.physics.world.setBounds(0, 0, 1024, 768);
-    this.player.setCollideWorldBounds();
-    this.enemy.setCollideWorldBounds();
 
     // Event emitters
 

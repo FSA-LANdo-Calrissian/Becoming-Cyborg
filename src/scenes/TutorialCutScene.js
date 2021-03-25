@@ -216,6 +216,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Come, follow me.',
     ];
 
+    this.events.emit('TutorialCutScene');
     const nameTextLines = Array(textLines.length).fill('Dr. Dang');
 
     generateDialogueUI.call(this, textLines, nameTextLines);
