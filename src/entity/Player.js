@@ -80,35 +80,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    this.scene.input.on(
-      'pointerdown',
-      function (pointer) {
-        if (
-          this.currentLeftWeapon === 'none' ||
-          this.currentLeftWeapon === 'knife'
-        ) {
-          if (!this.isMelee && this.canAttack) {
-            this.melee();
-          }
-        } else {
-          let mouse = pointer;
-          let angle = Phaser.Math.Angle.Between(
-            this.x,
-            this.y,
-            mouse.x + this.scene.cameras.main.scrollX,
-            mouse.y + this.scene.cameras.main.scrollY
-          );
-          // Determines if cd is over or not
-          if (time > this.nextAttack) {
-            // We need to pass in the sprite to use here
-            this.fireWeapon(this.x, this.y, 'bigBlast', angle);
-            // Calculates the cd between shots
-            this.nextAttack += this.attackSpeed;
-          }
+    if (this.scene.input.activePointer.leftButtonDown()) {
+      if (
+        this.currentLeftWeapon === 'none' ||
+        this.currentLeftWeapon === 'knife'
+      ) {
+        if (!this.isMelee && this.canAttack) {
+          this.melee();
         }
-      },
-      this
-    );
+      } else {
+        let mouse = this.scene.input.activePointer;
+        let angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          mouse.x + this.scene.cameras.main.scrollX,
+          mouse.y + this.scene.cameras.main.scrollY
+        );
+        // Determines if cd is over or not
+        if (time > this.nextAttack) {
+          // We need to pass in the sprite to use here
+          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          // Calculates the cd between shots
+          this.nextAttack += this.attackSpeed;
+        }
+      }
+    }
   }
 
   pickUpItem(item) {
