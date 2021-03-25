@@ -16,14 +16,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       armor: 0,
     };
     this.inventory = {
-      iron: 10,
-      oil: 10,
-      gunAttachment: 0,
+      iron: 50,
+      oil: 50,
+      gunAttachment: 1,
       knifeAttachment: 1,
-      fireBallAttachment: 0,
-      gun: 0,
-      knife: 0,
-      fireball: 0,
+      fireBallAttachment: 1,
+      gun: 1,
+      knife: 1,
+      fireball: 1,
     };
     this.speed = 100 + this.upgrade.moveSpeed;
     this.armor = 0 + this.upgrade.armor;
@@ -38,7 +38,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.damage = 20 + this.upgrade.damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
-    this.currentWeapon = 'melee';
+    this.currentLeftWeapon = 'none';
     this.isMelee = false;
     this.canMelee = true;
     this.shooting = false;
@@ -70,8 +70,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.input.on(
       'pointerdown',
       function (pointer) {
-        if (this.currentWeapon === 'melee') {
-          if (this.isMelee === false && this.canMelee) {
+        if (
+          this.currentLeftWeapon === 'none' ||
+          this.currentLeftWeapon === 'knife'
+        ) {
+          if (!this.isMelee && this.canMelee) {
             this.melee();
           }
         } else {

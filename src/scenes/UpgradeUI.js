@@ -3,9 +3,14 @@ import Phaser from 'phaser';
 export default class UpgradeUI extends Phaser.Scene {
   constructor() {
     super('UpgradeUI');
-    this.upgrades = ['knife', 'gun', 'fireBall'];
-    this.leftUpgradeIdx = 0;
-    this.upgradeMaterials = {
+    this.weapons = ['knife', 'gun', 'fireBall'];
+    this.weaponStats = {
+      knife: { damage: 10, attackSpeed: 1000 },
+      gun: { damage: -15, attackSpeed: 2000 },
+      fireBall: { damage: 20, attackSpeed: 0 },
+    };
+    this.leftWeaponIdx = 0;
+    this.weaponMaterials = {
       knife: { iron: 5, oil: 5, knifeAttachment: 1 },
       gun: { iron: 10, oil: 10, gunAttachment: 1 },
       fireBall: { iron: 15, oil: 15, fireBallAttachment: 1 },
@@ -22,16 +27,16 @@ export default class UpgradeUI extends Phaser.Scene {
       Function to compare player materials to required materials for upgrade. If player has required materials, upgrade will be added to player's inventory and used materials will be subtracted from player's inventory. If player does not have required materials, alert will be displayed.
       Returns null
     */
-    const currUpgrade = this.upgrades[this.leftUpgradeIdx];
+    const currWeapon = this.weapons[this.leftWeaponIdx];
     if (
       this.player.inventory.iron >= this.currLeftIron &&
       this.player.inventory.oil >= this.currLeftOil &&
-      this.player.inventory[`${currUpgrade}Attachment`] >= this.currLeftPart
+      this.player.inventory[`${currWeapon}Attachment`] >= this.currLeftPart
     ) {
-      this.player.inventory[currUpgrade]++;
+      this.player.inventory[currWeapon]++;
       this.player.inventory.iron -= this.currLeftIron;
       this.player.inventory.oil -= this.currLeftOil;
-      this.player.inventory[`${currUpgrade}Attachment`] -= this.currLeftPart;
+      this.player.inventory[`${currWeapon}Attachment`] -= this.currLeftPart;
     } else {
       alert('You do not have the required materials for that upgrade.');
     }
@@ -43,7 +48,7 @@ export default class UpgradeUI extends Phaser.Scene {
       param inventory: object -> Comes from this.player.inventory. Will be used to check quantity of player's weapons
       Returns null
     */
-    if (inventory[this.upgrades[this.leftUpgradeIdx]]) {
+    if (inventory[this.weapons[this.leftWeaponIdx]]) {
       this.leftEquipText.setActive(true).setVisible(true);
       this.leftCreateText.setActive(false).setVisible(false);
     } else {
@@ -188,7 +193,7 @@ export default class UpgradeUI extends Phaser.Scene {
     );
 
     // For the top left upgrade area
-    const upgrade = this.add.image(168, 165, 'knife').setScale(0.19);
+    const weapon = this.add.image(168, 165, 'knife').setScale(0.19);
     const materials = this.add
       .text(85, 200, 'Iron: 5, Oil: 5, Part: 1')
       .setScale(0.7);
@@ -206,13 +211,13 @@ export default class UpgradeUI extends Phaser.Scene {
       .text(230, 235, 'next')
       .setInteractive()
       .on('pointerup', () => {
-        if (this.leftUpgradeIdx !== this.upgrades.length - 1) {
-          const nextUpgrade = this.upgrades[++this.leftUpgradeIdx];
-          upgrade.setTexture(nextUpgrade);
-          this.currLeftIron = this.upgradeMaterials[nextUpgrade].iron;
-          this.currLeftOil = this.upgradeMaterials[nextUpgrade].oil;
-          this.currLeftPart = this.upgradeMaterials[nextUpgrade][
-            `${nextUpgrade}Attachment`
+        if (this.leftWeaponIdx !== this.weapons.length - 1) {
+          const nextWeapon = this.weapons[++this.leftWeaponIdx];
+          weapon.setTexture(nextWeapon);
+          this.currLeftIron = this.weaponMaterials[nextWeapon].iron;
+          this.currLeftOil = this.weaponMaterials[nextWeapon].oil;
+          this.currLeftPart = this.weaponMaterials[nextWeapon][
+            `${nextWeapon}Attachment`
           ];
           materials.setText(
             `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
@@ -225,12 +230,12 @@ export default class UpgradeUI extends Phaser.Scene {
       .setInteractive()
       .on('pointerup', () => {
         if (this.leftUpgradeIdx !== 0) {
-          const prevUpgrade = this.upgrades[--this.leftUpgradeIdx];
-          upgrade.setTexture(prevUpgrade);
-          this.currLeftIron = this.upgradeMaterials[prevUpgrade].iron;
-          this.currLeftOil = this.upgradeMaterials[prevUpgrade].oil;
-          this.currLeftPart = this.upgradeMaterials[prevUpgrade][
-            `${prevUpgrade}Attachment`
+          const prevWeapon = this.upgrades[--this.leftUpgradeIdx];
+          weapon.setTexture(prevWeapon);
+          this.currLeftIron = this.weaponMaterials[prevWeapon].iron;
+          this.currLeftOil = this.weaponMaterials[prevWeapon].oil;
+          this.currLeftPart = this.weaponMaterials[prevWeapon][
+            `${prevWeapon}Attachment`
           ];
           materials.setText(
             `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
