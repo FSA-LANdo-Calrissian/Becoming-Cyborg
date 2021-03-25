@@ -284,7 +284,7 @@ export default class FgScene extends Phaser.Scene {
       this.scene.pause();
     });
 
-    this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
+    this.events.on('tutorialEnd', () => {
       this.dialogueInProgress = false;
       this.finishedTutorial = true;
       this.player.canMelee = true;
