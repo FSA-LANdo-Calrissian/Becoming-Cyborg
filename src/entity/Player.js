@@ -16,10 +16,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       armor: 0,
     };
     this.inventory = {
-      iron: 0,
-      oil: 0,
+      iron: 10,
+      oil: 10,
       gunAttachment: 0,
-      knifeAttachment: 0,
+      knifeAttachment: 1,
       fireBallAttachment: 0,
       gun: 0,
       knife: 0,
