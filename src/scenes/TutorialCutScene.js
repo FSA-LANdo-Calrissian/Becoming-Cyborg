@@ -9,6 +9,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.sceneThree = false;
     this.finalScene = false;
     this.finalPart1 = false;
+    this.finalPart2 = false;
   }
 
   addText(k, textLines, textBox, nameText, nameTextLines, tutorialText) {
@@ -40,30 +41,39 @@ export default class TutorialCutScene extends Phaser.Scene {
     /*
       Helper function to determine what to do next in cutscene
     */
-
-    // If scene one is done playing, start scene 2
-    if (this.sceneOne && !this.sceneTwo) {
-      this.enemy.play('tutorial1', true);
-      this.playSceneTwo();
-      this.time.delayedCall(1000, () => {
-        this.deadNPC.flipX = !this.deadNPC.flipX;
-        this.deadNPC.play('MacRIP');
-      });
-      this.time.delayedCall(2000, () => {
-        this.enemy.play('tutorial2', false);
-      });
-      // If scene 2 done, start 3
-    } else if (this.sceneTwo && !this.sceneThree) {
-      this.enemy.play(
-        this.enemy.x - this.player.x > 0
-          ? 'meleeRobotIdleLeft'
-          : 'meleeRobotIdleRight'
-      );
-      this.events.emit('tutorialPause');
-      this.playSceneThree();
-      // If scene 3 done, end cutscene.
-    } else if (this.sceneThree) {
-      this.endCutScene();
+    // If we're not in the final scene, play the first scene
+    if (!this.finalScene) {
+      // If scene one is done playing, start scene 2
+      if (this.sceneOne && !this.sceneTwo) {
+        this.enemy.play('tutorial1', true);
+        this.playSceneTwo();
+        this.time.delayedCall(1000, () => {
+          this.deadNPC.flipX = !this.deadNPC.flipX;
+          this.deadNPC.play('MacRIP');
+        });
+        this.time.delayedCall(2000, () => {
+          this.enemy.play('tutorial2', false);
+        });
+        // If scene 2 done, start 3
+      } else if (this.sceneTwo && !this.sceneThree) {
+        this.enemy.play(
+          this.enemy.x - this.player.x > 0
+            ? 'meleeRobotIdleLeft'
+            : 'meleeRobotIdleRight'
+        );
+        this.events.emit('tutorialPause');
+        this.playSceneThree();
+        // If scene 3 done, end cutscene.
+      } else if (this.sceneThree) {
+        this.endCutScene();
+      }
+    } else {
+      // Else play final scene logic here
+      if (this.finalPart1 && !this.finalPart2) {
+        this.playFinalScenePart2();
+      } else if (this.finalPart2) {
+        this.endCutScene();
+      }
     }
   }
 
@@ -165,7 +175,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Please do not resist....',
     ];
 
-    const nameTextLines = Array(20).fill('Mr. Robot');
+    const nameTextLines = Array(textLines.length).fill('Mr. Robot');
 
     generateDialogueUI.call(this, textLines, nameTextLines);
 
@@ -197,11 +207,16 @@ export default class TutorialCutScene extends Phaser.Scene {
       '...',
       '...',
       '*Ahem*',
-      'Anyway, I am Doctor Dang. I think I can help you',
+      'Why did you decide to help us?',
+      'You need to deliver a letter to the robot king?',
+      "I don't think the robots will take kindly to you",
+      '...wearing them...',
+      'You woke up like that?',
+      'I see. Well, I am Doctor Dang. I think I can help you',
       'Come, follow me.',
     ];
 
-    const nameTextLines = Array(this.textLines.length).fill('Dr. Dang');
+    const nameTextLines = Array(textLines.length).fill('Dr. Dang');
 
     generateDialogueUI.call(this, textLines, nameTextLines);
 
@@ -217,7 +232,48 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.nameTextLines,
       this.tutorialText
     );
+
     this.finalPart1 = true;
+  }
+
+  playFinalScenePart2() {
+    this.camera.fadeOut(1000);
+    this.player.setPosition(348, 275);
+    this.doctor.setPosition(365, 276);
+    this.camera.fadeIn(2000);
+
+    const textLines = [
+      'My house!!!!',
+      'Well, my modification machine is still in tact, at least...',
+      '...sigh. Anyway, this is a machine of my own creation',
+      "It's meant to upgrade our human capabilities so that we can become stronger.",
+      '...however, using it on a human seems to add too much stress to the body that they end up dying...',
+      "...you should be fine, though because you're part robot...probably.",
+      '...I hope',
+      'Just step onto the platform and you should see a display come up',
+      'From here, you can choose which stats you want to upgrade',
+      'And after you\'re done, you can return with the "Go Back" button.',
+      "And that's it! Simple, right? Try it out.",
+      "After you're done, follow the road. It'll take you to the robot king",
+    ];
+
+    const nameTextLines = Array(textLines.length).fill('Dr. Dang');
+
+    this.time.delayedCall(3000, () => {
+      generateDialogueUI.call(this, textLines, nameTextLines, 55, -100);
+
+      advanceDialogue.call(
+        this,
+        0,
+        this.textLines,
+        this.textBox,
+        this.nameText,
+        this.nameTextLines,
+        this.tutorialText
+      );
+    });
+
+    this.finalPart2 = true;
   }
 
   endCutScene() {
@@ -225,12 +281,13 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.scene.stop();
   }
 
-  create({ player, enemy, camera, deadNPC, finalScene }) {
+  create({ player, enemy, camera, deadNPC, finalScene, doctor }) {
     this.player = player;
     this.enemy = enemy;
     this.deadNPC = deadNPC;
     this.camera = camera;
     this.finalScene = finalScene || false;
+    this.doctor = doctor;
 
     // const mainGame = this.scene.get('FgScene');
 

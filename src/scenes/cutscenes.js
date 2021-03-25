@@ -18,7 +18,12 @@ function freeze(player, scene) {
   player.shooting = true;
 }
 
-export function generateDialogueUI(textLines, nameTextLines) {
+export function generateDialogueUI(
+  textLines,
+  nameTextLines,
+  Xoffset = 0,
+  Yoffset = 0
+) {
   /*
     Helper function to make the text box and place the text on screen.
     param textLines: array of strings -> The dialogue text in an array of strings.
@@ -27,8 +32,8 @@ export function generateDialogueUI(textLines, nameTextLines) {
 
   // Make the text box
   this.textBox = this.add.image(
-    this.player.x - 10,
-    this.player.y + 350,
+    this.player.x - 10 + Xoffset,
+    this.player.y + 330 + Yoffset,
     'textBox'
   );
   this.textBox.setScale(0.5);
@@ -208,6 +213,14 @@ export function robotKilled() {
 
   // Stop player movements
   freeze(this.player, this);
+
+  this.scene.launch('TutorialCutScene', {
+    player: this.player,
+    enemy: this.enemy,
+    camera: this.cameras.main,
+    finalScene: true,
+    doctor: this.doctor,
+  });
 }
 
 /*
