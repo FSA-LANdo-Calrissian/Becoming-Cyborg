@@ -365,7 +365,7 @@ export default class FgScene extends Phaser.Scene {
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
-      this.wolf.update(this.player);
+      // this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production
