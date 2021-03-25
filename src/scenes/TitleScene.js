@@ -96,7 +96,7 @@ export default class MainScene extends Phaser.Scene {
       'Spacebar to interact/advance dialogue',
       { fill: '#f00' }
     );
-    this.rightClick = this.add.text(300, 425, 'Right click to attack', {
+    this.rightClick = this.add.text(300, 425, 'Left click to attack', {
       fill: '#f00',
     });
   }
