@@ -19,8 +19,8 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-      frameWidth: 47,
-      frameHeight: 50,
+      frameWidth: 47.888,
+      frameHeight: 49,
     });
     this.load.spritesheet('meleeRobot', 'assets/sprites/Walk.png', {
       frameWidth: 46,

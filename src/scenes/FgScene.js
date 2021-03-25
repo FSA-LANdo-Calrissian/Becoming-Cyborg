@@ -310,7 +310,7 @@ export default class FgScene extends Phaser.Scene {
     this.events.on('tutorialEnd', () => {
       this.dialogueInProgress = false;
       this.finishedTutorial = true;
-      this.player.canMelee = true;
+      this.player.canAttack = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
       this.scene.resume();
@@ -413,6 +413,9 @@ export default class FgScene extends Phaser.Scene {
         console.log(`Current move speed: ${this.player.speed}`);
         console.log(`Current armor: ${this.player.armor}`);
         console.log(`Current regen: ${this.player.regen}`);
+        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+        console.log(`Current damage: ${this.player.damage}`);
+        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
         console.log(`Current player position: `, this.player.x, this.player.y);
         console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
         console.log(

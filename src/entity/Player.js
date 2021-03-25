@@ -7,6 +7,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
+    this.currentLeftWeapon = 'none';
     this.upgrade = {
       maxHealth: 0,
       damage: 0,
@@ -16,31 +17,40 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       armor: 0,
     };
     this.inventory = {
-      iron: 0,
-      oil: 0,
-      gunAttachment: 0,
-      knifeAttachment: 0,
-      fireBallAttachment: 0,
+      iron: 100,
+      oil: 100,
+      gunAttachment: 1,
+      knifeAttachment: 1,
+      fireBallAttachment: 1,
       gun: 0,
       knife: 0,
-      fireball: 0,
+      fireBall: 0,
     };
-    this.speed = 100 + this.upgrade.moveSpeed;
+    this.weaponStats = {
+      none: { damage: 0, attackSpeed: 0 },
+      knife: { damage: 10, attackSpeed: 1000 },
+      gun: { damage: -15, attackSpeed: 2000 },
+      fireBall: { damage: 20, attackSpeed: 0 },
+    };
     this.armor = 0 + this.upgrade.armor;
     this.regen = 0 + this.upgrade.regen;
     this.health = 100;
-    this.maxHealth = 100 + this.upgrade.maxHealth;
     this.stats = {
       kills: 50,
     };
     this.facingRight = false;
     this.lastHurt = 0;
-    this.damage = 20 + this.upgrade.damage;
-    this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
+    this.damage =
+      20 +
+      this.upgrade.damage +
+      this.weaponStats[this.currentLeftWeapon].damage;
+    this.attackSpeed =
+      2000 -
+      this.upgrade.attackSpeed -
+      this.weaponStats[this.currentLeftWeapon].attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
-    this.currentWeapon = 'melee';
     this.isMelee = false;
-    this.canMelee = true;
+    this.canAttack = true;
     this.shooting = false;
     // Helper function to fire weapon.
     this.fireWeapon = (x, y, sprite, angle) => {
@@ -53,11 +63,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.hitCooldown = false;
 
     // Bindings
+    this.updateStats = this.updateStats.bind(this);
     this.updateMovement = this.updateMovement.bind(this);
     this.takeDamage = this.takeDamage.bind(this);
     this.knockback = this.knockback.bind(this);
     this.playDamageAnimation = this.playDamageAnimation.bind(this);
     this.shoot = this.shoot.bind(this);
+
+    this.updateStats();
   }
 
   shoot(time) {
@@ -67,34 +80,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    this.scene.input.on(
-      'pointerdown',
-      function (pointer) {
-        if (!this.scene.dialogueInProgress) {
-          if (this.currentWeapon === 'melee') {
-            if (this.isMelee === false && this.canMelee) {
-              this.melee();
-            }
-          } else {
-            let mouse = pointer;
-            let angle = Phaser.Math.Angle.Between(
-              this.x,
-              this.y,
-              mouse.x + this.scene.cameras.main.scrollX,
-              mouse.y + this.scene.cameras.main.scrollY
-            );
-            // Determines if cd is over or not
-            if (time > this.nextAttack) {
-              // We need to pass in the sprite to use here
-              this.fireWeapon(this.x, this.y, 'bigBlast', angle);
-              // Calculates the cd between shots
-              this.nextAttack += this.attackSpeed;
-            }
-          }
+    if (this.scene.input.activePointer.leftButtonDown() && !this.scene.dialogueInProgress) {
+      if (
+        this.currentLeftWeapon === 'none' ||
+        this.currentLeftWeapon === 'knife'
+      ) {
+        if (!this.isMelee && this.canAttack) {
+          this.melee();
         }
-      },
-      this
-    );
+      } else {
+        let mouse = this.scene.input.activePointer;
+        let angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          mouse.x + this.scene.cameras.main.scrollX,
+          mouse.y + this.scene.cameras.main.scrollY
+        );
+        // Determines if cd is over or not
+        if (time > this.nextAttack) {
+          // We need to pass in the sprite to use here
+          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          // Calculates the cd between shots
+          this.nextAttack += this.attackSpeed;
+        }
+      }
+    }
   }
 
   pickUpItem(item) {
@@ -121,10 +131,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     /*
       Helper function to upgrade the stats after an upgrade was put in. This is because this.speed and all the other stats do not dynamically update as we update the "this.upgrade" object, so we reset it here.
     */
+    const { damage, attackSpeed } = this.weaponStats[this.currentLeftWeapon];
     this.speed = 100 + this.upgrade.moveSpeed;
     this.maxHealth = 100 + this.upgrade.maxHealth;
-    this.damage = 10 + this.upgrade.damage;
-    this.attackSpeed = 2000 - this.upgrade.attackSpeed;
+    this.damage = 10 + this.upgrade.damage + damage;
+    this.attackSpeed = 2000 - this.upgrade.attackSpeed - attackSpeed;
     this.armor = 0 + this.upgrade.armor;
     this.regen = 0 + this.upgrade.regen;
   }
@@ -241,8 +252,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   melee() {
-    //checks if player canMelee based on a timeout
-    if (this.canMelee) {
+    //checks if player canAttack based on a timeout
+    if (this.canAttack) {
       this.isMelee = true;
 
       // if player is facing right, melee in that direction else melee in other direction
@@ -251,8 +262,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       } else {
         this.play('punchLeft', true);
       }
-      // since player is actively meleeing, sets canMelee to false so the player cannot melee while he is meleeing
-      this.canMelee = false;
+      // since player is actively meleeing, sets canAttack to false so the player cannot melee while he is meleeing
+      this.canAttack = false;
 
       this.scene.time.delayedCall(400, () => {
         // this sets the melee attack duration
@@ -261,7 +272,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
       this.scene.time.delayedCall(2000, () => {
         // this is the cooldown for melee attack
-        this.canMelee = true;
+        this.canAttack = true;
       });
     }
   }
