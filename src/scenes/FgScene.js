@@ -139,14 +139,14 @@ export default class FgScene extends Phaser.Scene {
       .setSize(38, 35)
       .setOffset(5);
 
-    this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
-      .setScale(0.2)
-      .setSize(45, 45);
+    // this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
+    //   .setScale(0.2)
+    //   .setSize(45, 45);
 
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
-    this.deadNPC = new NPC(this, 453, 176, 'player').setScale(0.3);
-    this.deadNPC.flipX = !this.deadNPC.flipX;
+    this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -178,7 +178,7 @@ export default class FgScene extends Phaser.Scene {
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
     this.enemiesGroup.add(this.enemy);
-    this.enemiesGroup.add(this.wolf);
+    // this.enemiesGroup.add(this.wolf);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
@@ -273,14 +273,6 @@ export default class FgScene extends Phaser.Scene {
         case 'UpgradeUI':
           this.upgradeOpened = false;
           break;
-        case 'TutorialCutScene':
-          this.tutorialInProgress = false;
-          this.finishedTutorial = true;
-          this.player.body.moves = true;
-          this.player.canMelee = true;
-          this.player.shooting = false;
-          this.enemy.body.moves = true;
-          break;
         default:
           return;
       }
@@ -331,7 +323,7 @@ export default class FgScene extends Phaser.Scene {
     );
   }
 
-  update(time, delta) {
+  update(time) {
     if (!this.finishedTutorial && !this.tutorialInProgress) {
       this.enemy.body.moves = false;
     }
@@ -365,11 +357,7 @@ export default class FgScene extends Phaser.Scene {
         this.player.facingRight ? 'idleRight' : 'idleLeft',
         true
       );
-      this.enemy.play(
-        this.enemy.x - this.player.x > 0
-          ? 'meleeRobotIdleLeft'
-          : 'meleeRobotIdleRight'
-      );
+      this.enemy.play('tutorial');
       playCutScene.call(this);
     }
 
@@ -377,7 +365,7 @@ export default class FgScene extends Phaser.Scene {
     if (!this.tutorialInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
-      this.wolf.update(this.player);
+      // this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production

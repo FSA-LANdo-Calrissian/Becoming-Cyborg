@@ -72,7 +72,7 @@ export default class HUDScene extends Phaser.Scene {
     const mainGame = this.scene.get('FgScene');
     let player;
     // Need to wait for the FgScene to load first
-    const loadScene = new Promise((res, rej) => {
+    const loadScene = new Promise((res) => {
       this.time.delayedCall(1000, () => {
         res(console.log(`Loading scene info...`));
       });
