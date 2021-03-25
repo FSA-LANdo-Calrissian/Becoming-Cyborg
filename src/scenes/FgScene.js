@@ -139,9 +139,9 @@ export default class FgScene extends Phaser.Scene {
       .setSize(38, 35)
       .setOffset(5);
 
-    this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
-      .setScale(0.2)
-      .setSize(45, 45);
+    // this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
+    //   .setScale(0.2)
+    //   .setSize(45, 45);
 
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
@@ -178,7 +178,7 @@ export default class FgScene extends Phaser.Scene {
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
     this.enemiesGroup.add(this.enemy);
-    this.enemiesGroup.add(this.wolf);
+    // this.enemiesGroup.add(this.wolf);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
