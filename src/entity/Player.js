@@ -28,8 +28,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.weaponStats = {
       none: { damage: 0, attackSpeed: 0 },
-      knife: { damage: 10, attackSpeed: 1000 },
-      gun: { damage: -15, attackSpeed: 2000 },
+      knife: { damage: 0, attackSpeed: 1000 },
+      gun: { damage: -15, attackSpeed: 1500 },
       fireBall: { damage: 20, attackSpeed: 0 },
     };
     this.health = 100;
