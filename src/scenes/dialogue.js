@@ -61,8 +61,11 @@ export default class Dialogue extends Phaser.Scene {
     this.scene.stop();
   }
 
-  create({ player }) {
+  create({ player, npc }) {
     this.player = player;
+    if (npc.texture.key === 'tutorialNPC') {
+      npc.play('scaredTutorialNPC', true);
+    }
 
     // const mainGame = this.scene.get('FgScene');
 

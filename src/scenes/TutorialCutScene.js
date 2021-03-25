@@ -192,6 +192,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.dialogueText
     );
 
+    this.scene.get('FgScene').finishedTutorial = true;
     this.sceneThree = true;
   }
 

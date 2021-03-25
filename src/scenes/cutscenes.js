@@ -232,10 +232,11 @@ export function robotKilled() {
 ================================
 */
 
-export function playDialogue() {
+export function playDialogue(npc) {
   freeze(this.player, this);
 
   this.scene.launch('Dialogue', {
     player: this.player,
+    npc: npc,
   });
 }

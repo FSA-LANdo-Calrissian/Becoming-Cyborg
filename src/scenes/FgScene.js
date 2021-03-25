@@ -233,9 +233,13 @@ export default class FgScene extends Phaser.Scene {
       // Displays tooltip on overlap.
       npc.displayTooltip();
 
-      if (npc.body.touching.none && !this.dialogueInProgress) {
+      if (
+        npc.body.touching.none &&
+        !this.dialogueInProgress &&
+        npc.texture.key === 'tutorialNPC'
+      ) {
         this.input.keyboard.on('keydown-SPACE', () => {
-          playDialogue.call(this);
+          playDialogue.call(this, npc);
           this.input.keyboard.removeListener('keydown-SPACE');
         });
       } else {
@@ -309,7 +313,6 @@ export default class FgScene extends Phaser.Scene {
 
     this.events.on('tutorialEnd', () => {
       this.dialogueInProgress = false;
-      this.finishedTutorial = true;
       this.player.canAttack = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
