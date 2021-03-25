@@ -32,22 +32,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       gun: { damage: -15, attackSpeed: 2000 },
       fireBall: { damage: 20, attackSpeed: 0 },
     };
-    this.armor = 0 + this.upgrade.armor;
-    this.regen = 0 + this.upgrade.regen;
     this.health = 100;
     this.stats = {
       kills: 50,
     };
     this.facingRight = false;
     this.lastHurt = 0;
-    this.damage =
-      20 +
-      this.upgrade.damage +
-      this.weaponStats[this.currentLeftWeapon].damage;
-    this.attackSpeed =
-      2000 -
-      this.upgrade.attackSpeed -
-      this.weaponStats[this.currentLeftWeapon].attackSpeed; // This is the cooldown between hits
+
+    // This is the cooldown between hits
     this.nextAttack = 0;
     this.isMelee = false;
     this.canAttack = true;
@@ -80,7 +72,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    if (this.scene.input.activePointer.leftButtonDown() && !this.scene.dialogueInProgress) {
+    if (
+      this.scene.input.activePointer.leftButtonDown() &&
+      !this.scene.dialogueInProgress
+    ) {
       if (
         this.currentLeftWeapon === 'none' ||
         this.currentLeftWeapon === 'knife'
@@ -101,7 +96,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           // We need to pass in the sprite to use here
           this.fireWeapon(this.x, this.y, 'bigBlast', angle);
           // Calculates the cd between shots
-          this.nextAttack += this.attackSpeed;
+          this.nextAttack = time + this.attackSpeed;
         }
       }
     }
