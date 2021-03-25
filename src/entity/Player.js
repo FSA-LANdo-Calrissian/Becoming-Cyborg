@@ -70,24 +70,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.input.on(
       'pointerdown',
       function (pointer) {
-        if (this.currentWeapon === 'melee') {
-          if (this.isMelee === false && this.canMelee) {
-            this.melee();
-          }
-        } else {
-          let mouse = pointer;
-          let angle = Phaser.Math.Angle.Between(
-            this.x,
-            this.y,
-            mouse.x + this.scene.cameras.main.scrollX,
-            mouse.y + this.scene.cameras.main.scrollY
-          );
-          // Determines if cd is over or not
-          if (time > this.nextAttack) {
-            // We need to pass in the sprite to use here
-            this.fireWeapon(this.x, this.y, 'bigBlast', angle);
-            // Calculates the cd between shots
-            this.nextAttack += this.attackSpeed;
+        if (!this.scene.dialogueInProgress) {
+          if (this.currentWeapon === 'melee') {
+            if (this.isMelee === false && this.canMelee) {
+              this.melee();
+            }
+          } else {
+            let mouse = pointer;
+            let angle = Phaser.Math.Angle.Between(
+              this.x,
+              this.y,
+              mouse.x + this.scene.cameras.main.scrollX,
+              mouse.y + this.scene.cameras.main.scrollY
+            );
+            // Determines if cd is over or not
+            if (time > this.nextAttack) {
+              // We need to pass in the sprite to use here
+              this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+              // Calculates the cd between shots
+              this.nextAttack += this.attackSpeed;
+            }
           }
         }
       },
@@ -392,23 +394,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(cursors, time) {
-    this.updateMovement(cursors);
+    if (!this.scene.dialogueInProgress) {
+      this.updateMovement(cursors);
 
-    this.shoot(time);
+      this.shoot(time);
 
-    // Regen logic. Heal this.regen hp every 5 seconds
-    if (time > this.nextHeal) {
-      // Only when not at max health
-      if (this.health < this.maxHealth) {
-        // If regen pushes you over max health, set hp to max health
-        if (this.health + this.regen > this.maxHealth) {
-          this.health = this.maxHealth;
-        } else {
-          // Otherwise, add regen
-          this.health += this.regen;
+      // Regen logic. Heal this.regen hp every 5 seconds
+      if (time > this.nextHeal) {
+        // Only when not at max health
+        if (this.health < this.maxHealth) {
+          // If regen pushes you over max health, set hp to max health
+          if (this.health + this.regen > this.maxHealth) {
+            this.health = this.maxHealth;
+          } else {
+            // Otherwise, add regen
+            this.health += this.regen;
+          }
+          this.scene.events.emit('takeDamage', this.health, this.maxHealth);
+          this.nextHeal += this.regenCD;
         }
-        this.scene.events.emit('takeDamage', this.health, this.maxHealth);
-        this.nextHeal += this.regenCD;
       }
     }
   }
