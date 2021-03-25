@@ -8,4 +8,14 @@ export default function createNPCAnims() {
     frameRate: 7,
     repeat: 0,
   });
+
+  this.anims.create({
+    key: 'scaredTutorialNPC',
+    frames: this.anims.generateFrameNumbers('tutorialNPC', {
+      start: 152,
+      end: 152,
+    }),
+    frameRate: 7,
+    repeat: 0,
+  });
 }

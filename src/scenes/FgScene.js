@@ -146,6 +146,12 @@ export default class FgScene extends Phaser.Scene {
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
     this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
+    this.startingNPC = new NPC(
+      this,
+      this.player.x + 50,
+      this.player.y,
+      'tutorialNPC'
+    ).setScale(0.3);
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -177,6 +183,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
+    this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
     // this.enemiesGroup.add(this.wolf);
 
@@ -218,6 +225,15 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
       // Displays tooltip on overlap.
       npc.displayTooltip();
+
+      if (npc.body.touching.none) {
+        this.input.keyboard.on('keydown-SPACE', () => {
+          npc.displayDialog(this.player);
+        });
+      } else {
+        this.input.keyboard.removeListener('keydown-SPACE');
+        return;
+      }
     });
 
     this.physics.add.overlap(

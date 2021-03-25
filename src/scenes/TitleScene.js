@@ -57,6 +57,11 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 48,
     });
 
+    this.load.spritesheet('tutorialNPC', 'assets/sprites/camo.png', {
+      frameWidth: 48,
+      frameHeight: 49,
+    });
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
