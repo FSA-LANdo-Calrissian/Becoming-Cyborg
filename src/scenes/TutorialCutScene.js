@@ -43,6 +43,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.enemy.play('tutorial1', true);
       this.playSceneTwo();
       this.time.delayedCall(1000, () => {
+        this.deadNPC.flipX = !this.deadNPC.flipX;
         this.deadNPC.play('MacRIP');
       });
       this.time.delayedCall(2000, () => {
@@ -102,7 +103,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.tutorialText.setResolution(10);
     this.tutorialText.setScale(2.5).setOrigin(0.5);
     this.nameText = this.add
-      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
+      .text(this.textBox.x - 185, this.textBox.y - 45, this.nameTextLines[j], {
         fontSize: '.4',
       })
       .setResolution(10)
@@ -134,13 +135,14 @@ export default class TutorialCutScene extends Phaser.Scene {
       'AaaAaArRRggGGggGhHhHHh',
       '...',
       "You, human. You're guilty of not stopping him from scratching my beautiful metal. ",
-      'You will also perish here',
+      'You will also perish once my laser cools down',
       'Any last words?',
       '...',
     ];
 
     this.nameTextLines = [
       'Mac',
+      'Mr. Robot',
       'Mr. Robot',
       'Mr. Robot',
       'Mr. Robot',
@@ -164,7 +166,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.tutorialText.setResolution(10);
     this.tutorialText.setScale(2.5).setOrigin(0.5);
     this.nameText = this.add
-      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
+      .text(this.textBox.x - 185, this.textBox.y - 45, this.nameTextLines[j], {
         fontSize: '.4',
       })
       .setResolution(10)
@@ -219,7 +221,7 @@ export default class TutorialCutScene extends Phaser.Scene {
 
     // Initialize index.
     let i = 0;
-    console.log(`Under i line`);
+
     // Add text.
     this.tutorialText = this.add.text(
       this.textBox.x + 5,
