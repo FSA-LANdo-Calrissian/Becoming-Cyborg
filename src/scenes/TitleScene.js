@@ -16,6 +16,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('gun', 'assets/sprites/gun.png');
     this.load.image('knife', 'assets/sprites/knife.png');
     this.load.image('button', 'assets/sprites/button.png');
+    this.load.image('bullet', 'assets/sprites/bullet.png');
 
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {

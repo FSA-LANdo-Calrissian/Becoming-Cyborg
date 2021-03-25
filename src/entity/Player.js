@@ -102,7 +102,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Determines if cd is over or not
         if (time > this.nextAttack) {
           // We need to pass in the sprite to use here
-          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          if (this.currentLeftWeapon === 'fireBall') {
+            this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          } else if (this.currentLeftWeapon === 'gun') {
+            this.fireWeapon(this.x, this.y, 'bullet', angle);
+          }
           // Calculates the cd between shots
           this.nextAttack = time + this.attackSpeed;
         }
