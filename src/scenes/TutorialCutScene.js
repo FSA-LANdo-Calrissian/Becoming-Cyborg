@@ -12,7 +12,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.finalPart2 = false;
   }
 
-  addText(k, textLines, textBox, nameText, nameTextLines, tutorialText) {
+  addText(k, textLines, textBox, nameText, nameTextLines, dialogueText) {
     /*
       Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
       param i: int -> The current index of the dialogue.
@@ -27,13 +27,13 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.finishedTutorial = true;
 
       this.input.keyboard.removeListener('keydown-SPACE');
-      tutorialText.removeListener('pointerdown');
+      dialogueText.removeListener('pointerdown');
 
       this.endScene();
     }
     // Advance the dialogue (this will also allow
     // the text to be removed from screen)
-    tutorialText.setText(textLines[k]);
+    dialogueText.setText(textLines[k]);
     nameText.setText(nameTextLines[k]);
   }
 
@@ -107,7 +107,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.textBox,
       this.nameText,
       this.nameTextLines,
-      this.tutorialText
+      this.dialogueText
     );
 
     this.sceneOne = true;
@@ -145,7 +145,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.textBox,
       this.nameText,
       this.nameTextLines,
-      this.tutorialText
+      this.dialogueText
     );
 
     this.sceneTwo = true;
@@ -180,7 +180,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     generateDialogueUI.call(this, textLines, nameTextLines);
 
     // Add click area to advance text. Change the numbers after
-    // the tutorialText width/height in order to increase click
+    // the dialogueText width/height in order to increase click
     // area.
     advanceDialogue.call(
       this,
@@ -189,7 +189,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.textBox,
       this.nameText,
       this.nameTextLines,
-      this.tutorialText
+      this.dialogueText
     );
 
     this.sceneThree = true;
@@ -222,7 +222,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     generateDialogueUI.call(this, textLines, nameTextLines);
 
     // Add click area to advance text. Change the numbers after
-    // the tutorialText width/height in order to increase click
+    // the dialogueText width/height in order to increase click
     // area.
     advanceDialogue.call(
       this,
@@ -231,7 +231,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       this.textBox,
       this.nameText,
       this.nameTextLines,
-      this.tutorialText
+      this.dialogueText
     );
 
     this.finalPart1 = true;
@@ -270,7 +270,7 @@ export default class TutorialCutScene extends Phaser.Scene {
         this.textBox,
         this.nameText,
         this.nameTextLines,
-        this.tutorialText
+        this.dialogueText
       );
     });
 
@@ -278,7 +278,7 @@ export default class TutorialCutScene extends Phaser.Scene {
   }
 
   endCutScene() {
-    this.events.emit('tutorialEnd');
+    this.scene.get('FgScene').events.emit('tutorialEnd');
     this.scene.stop();
   }
 
