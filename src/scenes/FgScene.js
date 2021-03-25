@@ -10,7 +10,12 @@ import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
-import { initCutScene, playCutScene, robotKilled } from './cutscenes';
+import {
+  initCutScene,
+  playCutScene,
+  robotKilled,
+  playDialogue,
+} from './cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -229,7 +234,7 @@ export default class FgScene extends Phaser.Scene {
       if (npc.body.touching.none) {
         this.input.keyboard.on('keydown-SPACE', () => {
           npc.play('scaredTutorialNPC');
-          npc.displayDialog(this.player);
+          playDialogue.call(this);
         });
       } else {
         this.input.keyboard.removeListener('keydown-SPACE');
@@ -301,7 +306,7 @@ export default class FgScene extends Phaser.Scene {
       this.scene.pause();
     });
 
-    this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
+    this.events.on('tutorialEnd', () => {
       this.dialogueInProgress = false;
       this.finishedTutorial = true;
       this.player.canMelee = true;
