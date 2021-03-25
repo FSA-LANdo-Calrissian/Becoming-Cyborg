@@ -57,6 +57,11 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 48,
     });
 
+    this.load.spritesheet('explode', 'assets/sprites/fieryexplode.png', {
+      frameWidth: 128,
+      frameHeight: 123,
+    });
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
@@ -73,15 +78,27 @@ export default class MainScene extends Phaser.Scene {
   create(data) {
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
-      .text(350, 250, 'New Game')
+      .text(350, 200, 'New Game', { fill: '#0f0' })
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startNewGame());
 
     // Load game button. This just skips the pre-game scene for now.
     this.loadGame = this.add
-      .text(350, 350, 'Load Game')
+      .text(350, 300, 'Load Game', { fill: '#0f0' })
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startLoadGame());
+
+    this.controls = this.add.text(350, 350, 'Controls: ', { fill: '#f00' });
+    this.wasd = this.add.text(338, 375, 'WASD to move', { fill: '#f00' });
+    this.spacebar = this.add.text(
+      220,
+      400,
+      'Spacebar to interact/advance dialogue',
+      { fill: '#f00' }
+    );
+    this.rightClick = this.add.text(300, 425, 'Left click to attack', {
+      fill: '#f00',
+    });
   }
 
   startNewGame() {
