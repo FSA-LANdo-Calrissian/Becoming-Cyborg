@@ -79,7 +79,7 @@ export function initCutScene() {
   // Stop all movement
   this.player.setVelocityX(0);
   this.player.setVelocityY(0);
-  this.player.canMelee = false;
+  this.player.canAttack = false;
   this.player.shooting = true;
   this.enemy.body.moves = false;
   this.initTutorial = true;
@@ -140,7 +140,7 @@ export function playCutScene() {
     */
   this.player.setVelocityX(0);
   this.player.setVelocityY(0);
-  this.player.canMelee = false;
+  this.player.canAttack = false;
   this.player.shooting = true;
   this.enemy.body.moves = false;
 

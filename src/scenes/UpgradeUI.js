@@ -80,6 +80,7 @@ export default class UpgradeUI extends Phaser.Scene {
     */
     this.player.currentLeftWeapon = weapon;
     this.player.inventory[weapon]--;
+    this.player.updateStats();
   }
 
   unequipLeft(weapon) {
@@ -90,6 +91,7 @@ export default class UpgradeUI extends Phaser.Scene {
     */
     this.player.currentLeftWeapon = 'none';
     this.player.inventory[weapon]++;
+    this.player.updateStats();
   }
 
   returnToGame(player) {
@@ -260,8 +262,8 @@ export default class UpgradeUI extends Phaser.Scene {
       .text(70, 235, 'prev')
       .setInteractive()
       .on('pointerup', () => {
-        if (this.leftUpgradeIdx !== 0) {
-          const prevWeapon = this.upgrades[--this.leftUpgradeIdx];
+        if (this.leftWeaponIdx !== 0) {
+          const prevWeapon = this.weapons[--this.leftWeaponIdx];
           weapon.setTexture(prevWeapon);
           this.currLeftIron = this.weaponMaterials[prevWeapon].iron;
           this.currLeftOil = this.weaponMaterials[prevWeapon].oil;
@@ -335,6 +337,7 @@ export default class UpgradeUI extends Phaser.Scene {
     // Button to return to FgScene button
     const text = this.add.text(320, 103, 'Go Back!');
     text.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+      this.leftWeaponIdx = 0;
       this.returnToGame(player);
     });
 
