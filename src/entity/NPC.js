@@ -14,67 +14,87 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
   }
 
   displayDialog(player) {
-    this.inDialog = true;
-    player.body.moves = false;
+    if (!this.inDialog) {
+      this.inDialog = true;
+      player.body.moves = false;
+      player.play(player.facingRight ? 'idleRight' : 'idleLeft', true);
+      this.textBox = this.scene.add.image(
+        this.scene.camera.midPoint.x,
+        this.scene.camera.midPoint.y + 50,
+        'textBox'
+      );
+      this.textBox.setScale(0.1);
+      // Lines to display in conversation.
+      this.textLines = [
+        'Whoa whoa, dont hurt me!',
+        'Are you....',
+        'Are you a robot...or human?',
+        '...',
+        'Well whatever you are just be careful...',
+        'A robot just came through here and was wreaking all kinds of havoc',
+        'I saw it take two people down the road to the South of here...',
+        'You should stay away, something bad is going to happpen',
+      ];
 
-    this.textBox = this.scene.add.image(
-      this.scene.camera.midPoint.x,
-      this.scene.camera.midPoint.y + 50,
-      'textBox'
-    );
-    this.textBox.setScale(0.1);
-    // Lines to display in conversation.
-    this.textLines = [
-      'Halt human, stop right there!',
-      'Name...?',
-      'ID..?',
-      '...',
-      '"Just looking for directions" is not a valid response....',
-      'What is that you are wearing human....?',
-      'Please stand still as you are being scanned.....',
-      'Scan Complete....',
-      'Illegal Activity Detected...',
-      'Where did you get these parts, human...?',
-      'Come with me human you are being detained for questioning.....',
-      'Please do not resist....',
-    ];
+      this.nameTextLines = Array(this.textLines.length - 1).fill('Villager');
 
-    this.nameTextLines = Array(this.textLines.length - 1).fill('Villager');
+      // Initialize index.
+      let i = 0;
 
-    // Initialize index.
-    let i = 0;
+      // Add text.
+      this.dialogText = this.scene.add.text(
+        this.textBox.x,
+        this.textBox.y + 4,
+        this.textLines[i],
+        {
+          fontSize: '.4',
+          // fontFamily: 'Arial',
+          align: 'left',
+          wordWrap: { width: 199, useAdvancedWrap: true },
+        }
+      );
+      this.dialogText.setResolution(10);
+      this.dialogText.setScale(0.5).setOrigin(0.5);
+      this.nameText = this.scene.add
+        .text(this.textBox.x - 37, this.textBox.y - 9, 'Villager', {
+          fontSize: '.4',
+        })
+        .setResolution(10)
+        .setScale(0.4)
+        .setOrigin(0.5);
+      this.dialogText.setInteractive(
+        new Phaser.Geom.Rectangle(
+          0,
+          0,
+          this.dialogText.width + 15,
+          this.dialogText.height + 30
+        ),
+        Phaser.Geom.Rectangle.Contains
+      );
 
-    // Add text.
-    this.tutorialText = this.scene.add.text(
-      this.textBox.x,
-      this.textBox.y + 4,
-      this.textLines[i],
-      {
-        fontSize: '.4',
-        // fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: 199, useAdvancedWrap: true },
-      }
-    );
-    this.tutorialText.setResolution(10);
-    this.tutorialText.setScale(0.5).setOrigin(0.5);
-    this.nameText = this.scene.add
-      .text(this.textBox.x - 37, this.textBox.y - 9, 'Villager', {
-        fontSize: '.4',
-      })
-      .setResolution(10)
-      .setScale(0.4)
-      .setOrigin(0.5);
+      this.dialogText.on('pointerdown', () => {
+        if (i + 1 > this.textLines.length - 1) {
+          this.dialogText.destroy();
+          this.textBox.destroy();
+          this.nameText.destroy();
+          this.inDialog = false;
+          player.body.moves = true;
+          return;
+        }
+        this.dialogText.setText(this.textLines[i + 1]);
+        i++;
+      });
+    }
 
-    advanceDialogue.call(
-      this,
-      i,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.tutorialText
-    );
+    // advanceDialogue.call(
+    //   this,
+    //   0,
+    //   this.textLines,
+    //   this.textBox,
+    //   this.nameText,
+    //   this.nameTextLines,
+    //   this.dialogText
+    // );
   }
 
   displayTooltip() {

@@ -22,6 +22,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       robot: ['potion', 'iron'],
       animal: ['potion'],
     };
+    this.isDead = false;
     this.takeDamage = this.takeDamage.bind(this);
     this.dropItems = this.dropItems.bind(this);
   }
@@ -75,17 +76,22 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Subtract damage from health
     this.health -= damage;
-    const hitAnimation = this.playDamageAnimation();
 
     // Death logic.
     if (this.health <= 0) {
+      this.on('animationcomplete-death', () => {
+        this.setActive(false);
+        this.setVisible(false);
+        this.dropItems();
+      });
+      this.isDead = true;
       this.setVelocityX(0);
       this.setVelocityY(0);
-      this.setActive(false);
-      this.setVisible(false);
       this.body.enable = false;
-      this.dropItems();
+      this.play('death', true);
+      return;
     }
+    const hitAnimation = this.playDamageAnimation();
     this.scene.time.delayedCall(1000, () => {
       hitAnimation.stop();
       this.clearTint();
@@ -321,13 +327,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity.y = 0;
       this.body.velocity.x = 0;
 
-      if (this.scene.tutorialInProgress) {
-        return;
-      } else {
-        this.scene.time.delayedCall(6000, () => {
+      this.scene.time.delayedCall(6000, () => {
+        if (!this.scene.dialogueInProgress && !this.isDead) {
           this.randomPatrol(player, aggroRange);
-        });
-      }
+        }
+      });
     }
   }
 
@@ -385,6 +389,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(player) {
-    this.updateEnemyMovement(player);
+    if (!this.isDead && !this.scene.dialogueInProgress) {
+      this.updateEnemyMovement(player);
+    }
   }
 }

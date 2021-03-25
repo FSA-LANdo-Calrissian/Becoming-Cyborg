@@ -10,13 +10,13 @@ import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
-import { initCutScene, playCutScene } from './cutscenes';
+import { initCutScene, playCutScene, robotKilled } from './cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.finishedTutorial = false;
-    this.tutorialInProgress = false;
+    this.dialogueInProgress = false;
     this.initTutorial = false;
     this.upgradeOpened = false;
 
@@ -139,9 +139,9 @@ export default class FgScene extends Phaser.Scene {
       .setSize(38, 35)
       .setOffset(5);
 
-    // this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
-    //   .setScale(0.2)
-    //   .setSize(45, 45);
+    this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
+      .setScale(0.2)
+      .setSize(45, 45);
 
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
@@ -185,7 +185,7 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.doctor);
     this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
-    // this.enemiesGroup.add(this.wolf);
+    this.enemiesGroup.add(this.wolf);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
@@ -228,6 +228,7 @@ export default class FgScene extends Phaser.Scene {
 
       if (npc.body.touching.none) {
         this.input.keyboard.on('keydown-SPACE', () => {
+          npc.play('scaredTutorialNPC');
           npc.displayDialog(this.player);
         });
       } else {
@@ -254,10 +255,18 @@ export default class FgScene extends Phaser.Scene {
 
     this.physics.add.collider(this.enemiesGroup, this.worldLayer1);
 
+    // Adding world boundaries
+    this.boundaryX = 600;
+    this.boundaryY = 400;
+    // TODO: Fix world boundary when we finish tileset
+    this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
+    this.player.setCollideWorldBounds();
+    this.enemy.setCollideWorldBounds();
+
     // Camera logic
     this.camera = this.cameras.main;
     this.camera.setZoom(4.5);
-    this.camera.setBounds(0, 0, 1025, 768);
+    this.camera.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.camera.startFollow(this.player);
 
     // Keymapping
@@ -271,12 +280,6 @@ export default class FgScene extends Phaser.Scene {
       speed: Phaser.Input.Keyboard.KeyCodes.I,
       upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
-
-    // Adding world boundaries
-    // TODO: Fix world boundary when we finish tileset
-    this.physics.world.setBounds(0, 0, 1024, 768);
-    this.player.setCollideWorldBounds();
-    this.enemy.setCollideWorldBounds();
 
     // Event emitters
 
@@ -299,12 +302,20 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.scene.get('TutorialCutScene').events.on('tutorialEnd', () => {
-      this.tutorialInProgress = false;
+      this.dialogueInProgress = false;
       this.finishedTutorial = true;
       this.player.canMelee = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
       this.scene.resume();
+    });
+
+    this.enemy.on('animationcomplete-death', () => {
+      console.log(`Enemy has died. Running end tutorial cutscene`);
+      this.cameras.main.fadeOut(1000);
+      this.player.setPosition(450, 189);
+      this.cameras.main.fadeIn(1000);
+      robotKilled.call(this);
     });
 
     // data.choice is only available when player restarts game.
@@ -328,7 +339,7 @@ export default class FgScene extends Phaser.Scene {
     */
 
     return (
-      !this.tutorialInProgress &&
+      !this.dialogueInProgress &&
       !this.finishedTutorial &&
       Phaser.Math.Distance.Between(
         this.player.x,
@@ -340,14 +351,14 @@ export default class FgScene extends Phaser.Scene {
   }
 
   update(time) {
-    if (!this.finishedTutorial && !this.tutorialInProgress) {
+    if (!this.finishedTutorial && !this.dialogueInProgress) {
       this.enemy.body.moves = false;
     }
 
     // If player in 150 range of enemy, play initial cutscene
     if (this.tutorialHelper(150)) {
       if (!this.initTutorial) {
-        this.tutorialInProgress = true;
+        this.dialogueInProgress = true;
         // stop animations
         this.player.play(
           this.player.facingRight ? 'idleRight' : 'idleLeft',
@@ -367,7 +378,7 @@ export default class FgScene extends Phaser.Scene {
 
     // If player within 51 range, play tutorial scene.
     if (this.tutorialHelper(51)) {
-      this.tutorialInProgress = true;
+      this.dialogueInProgress = true;
       // stop animations
       this.player.play(
         this.player.facingRight ? 'idleRight' : 'idleLeft',
@@ -378,10 +389,10 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If not in dialogue, allow player to move with cursors.
-    if (!this.tutorialInProgress) {
+    if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
       this.enemy.update(this.player);
-      // this.wolf.update(this.player);
+      this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production

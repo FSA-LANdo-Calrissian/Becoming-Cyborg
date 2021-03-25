@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue } from './cutscenes';
+import { advanceDialogue, generateDialogueUI } from './cutscenes';
 
 export default class TutorialCutScene extends Phaser.Scene {
   constructor() {
@@ -7,6 +7,9 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.sceneOne = false;
     this.sceneTwo = false;
     this.sceneThree = false;
+    this.finalScene = false;
+    this.finalPart1 = false;
+    this.finalPart2 = false;
   }
 
   addText(k, textLines, textBox, nameText, nameTextLines, tutorialText) {
@@ -20,7 +23,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     if (k > textLines.length - 1) {
       // Destroy bollow movement.
       textBox.destroy();
-      this.tutorialInProgress = false;
+      this.dialogueInProgress = false;
       this.finishedTutorial = true;
 
       this.input.keyboard.removeListener('keydown-SPACE');
@@ -38,27 +41,39 @@ export default class TutorialCutScene extends Phaser.Scene {
     /*
       Helper function to determine what to do next in cutscene
     */
-
-    if (this.sceneOne && !this.sceneTwo) {
-      this.enemy.play('tutorial1', true);
-      this.playSceneTwo();
-      this.time.delayedCall(1000, () => {
-        this.deadNPC.flipX = !this.deadNPC.flipX;
-        this.deadNPC.play('MacRIP');
-      });
-      this.time.delayedCall(2000, () => {
-        this.enemy.play('tutorial2', false);
-      });
-    } else if (this.sceneTwo && !this.sceneThree) {
-      this.enemy.play(
-        this.enemy.x - this.player.x > 0
-          ? 'meleeRobotIdleLeft'
-          : 'meleeRobotIdleRight'
-      );
-      this.events.emit('tutorialPause');
-      this.playSceneThree();
-    } else if (this.sceneThree) {
-      this.endCutScene();
+    // If we're not in the final scene, play the first scene
+    if (!this.finalScene) {
+      // If scene one is done playing, start scene 2
+      if (this.sceneOne && !this.sceneTwo) {
+        this.enemy.play('tutorial1', true);
+        this.playSceneTwo();
+        this.time.delayedCall(1000, () => {
+          this.deadNPC.flipX = !this.deadNPC.flipX;
+          this.deadNPC.play('MacRIP');
+        });
+        this.time.delayedCall(2000, () => {
+          this.enemy.play('tutorial2', false);
+        });
+        // If scene 2 done, start 3
+      } else if (this.sceneTwo && !this.sceneThree) {
+        this.enemy.play(
+          this.enemy.x - this.player.x > 0
+            ? 'meleeRobotIdleLeft'
+            : 'meleeRobotIdleRight'
+        );
+        this.events.emit('tutorialPause');
+        this.playSceneThree();
+        // If scene 3 done, end cutscene.
+      } else if (this.sceneThree) {
+        this.endCutScene();
+      }
+    } else {
+      // Else play final scene logic here
+      if (this.finalPart1 && !this.finalPart2) {
+        this.playFinalScenePart2();
+      } else if (this.finalPart2) {
+        this.endCutScene();
+      }
     }
   }
 
@@ -66,11 +81,8 @@ export default class TutorialCutScene extends Phaser.Scene {
     /*
       Scene before the killing
     */
-    this.textBox = this.add
-      .image(this.player.x - 10, this.player.y + 350, 'textBox')
-      .setScale(0.5);
 
-    this.textLines = [
+    const textLines = [
       "Human, you've been found guilty of scratching my metallic hull",
       'I will now sentence you to death',
       'Any last words?',
@@ -78,7 +90,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Weird choice of final words. Die, human',
     ];
 
-    this.nameTextLines = [
+    const nameTextLines = [
       'Mr. Robot',
       'Mr. Robot',
       'Mr. Robot',
@@ -86,33 +98,11 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Mr. Robot',
     ];
 
-    let j = 0;
-
-    this.tutorialText = this.add.text(
-      this.textBox.x + 5,
-      this.textBox.y + 15,
-      this.textLines[j],
-      {
-        fontSize: '.4',
-        // fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: 199, useAdvancedWrap: true },
-      }
-    );
-
-    this.tutorialText.setResolution(10);
-    this.tutorialText.setScale(2.5).setOrigin(0.5);
-    this.nameText = this.add
-      .text(this.textBox.x - 185, this.textBox.y - 45, this.nameTextLines[j], {
-        fontSize: '.4',
-      })
-      .setResolution(10)
-      .setScale(2.5)
-      .setOrigin(0.5);
+    generateDialogueUI.call(this, textLines, nameTextLines);
 
     advanceDialogue.call(
       this,
-      j,
+      0,
       this.textLines,
       this.textBox,
       this.nameText,
@@ -127,11 +117,8 @@ export default class TutorialCutScene extends Phaser.Scene {
     /*
       Post killing scene
     */
-    this.textBox = this.add
-      .image(this.player.x - 10, this.player.y + 350, 'textBox')
-      .setScale(0.5);
 
-    this.textLines = [
+    const textLines = [
       'AaaAaArRRggGGggGhHhHHh',
       '...',
       "You, human. You're guilty of not stopping him from scratching my beautiful metal. ",
@@ -140,7 +127,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       '...',
     ];
 
-    this.nameTextLines = [
+    const nameTextLines = [
       'Mac',
       'Mr. Robot',
       'Mr. Robot',
@@ -149,33 +136,11 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Dr. Dang',
     ];
 
-    let j = 0;
-
-    this.tutorialText = this.add.text(
-      this.textBox.x + 5,
-      this.textBox.y + 15,
-      this.textLines[j],
-      {
-        fontSize: '.4',
-        // fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: 199, useAdvancedWrap: true },
-      }
-    );
-
-    this.tutorialText.setResolution(10);
-    this.tutorialText.setScale(2.5).setOrigin(0.5);
-    this.nameText = this.add
-      .text(this.textBox.x - 185, this.textBox.y - 45, this.nameTextLines[j], {
-        fontSize: '.4',
-      })
-      .setResolution(10)
-      .setScale(2.5)
-      .setOrigin(0.5);
+    generateDialogueUI.call(this, textLines, nameTextLines);
 
     advanceDialogue.call(
       this,
-      j,
+      0,
       this.textLines,
       this.textBox,
       this.nameText,
@@ -194,15 +159,8 @@ export default class TutorialCutScene extends Phaser.Scene {
       Returns null.
     */
 
-    // Make the text box
-    this.textBox = this.add.image(
-      this.player.x - 10,
-      this.player.y + 350,
-      'textBox'
-    );
-    this.textBox.setScale(0.5);
     // Lines to display in conversation.
-    this.textLines = [
+    const textLines = [
       'Halt human, stop right there!',
       'Name...?',
       'ID..?',
@@ -217,39 +175,16 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Please do not resist....',
     ];
 
-    this.nameTextLines = Array(20).fill('Mr. Robot');
+    const nameTextLines = Array(textLines.length).fill('Mr. Robot');
 
-    // Initialize index.
-    let i = 0;
-
-    // Add text.
-    this.tutorialText = this.add.text(
-      this.textBox.x + 5,
-      this.textBox.y + 15,
-      this.textLines[i],
-      {
-        fontSize: '.4',
-        // fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: 199, useAdvancedWrap: true },
-      }
-    );
-    this.tutorialText.setResolution(10);
-    this.tutorialText.setScale(2.5).setOrigin(0.5);
-    this.nameText = this.add
-      .text(this.textBox.x - 185, this.textBox.y - 45, 'Mr. Robot', {
-        fontSize: '.4',
-      })
-      .setResolution(10)
-      .setScale(2.5)
-      .setOrigin(0.5);
+    generateDialogueUI.call(this, textLines, nameTextLines);
 
     // Add click area to advance text. Change the numbers after
     // the tutorialText width/height in order to increase click
     // area.
     advanceDialogue.call(
       this,
-      i,
+      0,
       this.textLines,
       this.textBox,
       this.nameText,
@@ -260,23 +195,110 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.sceneThree = true;
   }
 
+  playFinalScenePart1() {
+    // Lines to display in conversation.
+    const textLines = [
+      'Y-y-you killed it??',
+      'How did you manage to do that?!',
+      "You don't know?",
+      '...',
+      'You have a metal arm? That is awesome, dude!',
+      'I guess you really came at him with an entire ARMy',
+      '...',
+      '...',
+      '*Ahem*',
+      'Why did you decide to help us?',
+      'You need to deliver a letter to the robot king?',
+      "I don't think the robots will take kindly to you",
+      '...wearing them...',
+      'You woke up like that?',
+      'I see. Well, I am Doctor Dang. I think I can help you',
+      'Come, follow me.',
+    ];
+
+    this.events.emit('TutorialCutScene');
+    const nameTextLines = Array(textLines.length).fill('Dr. Dang');
+
+    generateDialogueUI.call(this, textLines, nameTextLines);
+
+    // Add click area to advance text. Change the numbers after
+    // the tutorialText width/height in order to increase click
+    // area.
+    advanceDialogue.call(
+      this,
+      0,
+      this.textLines,
+      this.textBox,
+      this.nameText,
+      this.nameTextLines,
+      this.tutorialText
+    );
+
+    this.finalPart1 = true;
+  }
+
+  playFinalScenePart2() {
+    this.camera.fadeOut(1000);
+    this.player.setPosition(348, 275);
+    this.doctor.setPosition(365, 276);
+    this.camera.fadeIn(2000);
+
+    const textLines = [
+      'My house!!!!',
+      'Well, my modification machine is still in tact, at least...',
+      '...sigh. Anyway, this is a machine of my own creation',
+      "It's meant to upgrade our human capabilities so that we can become stronger.",
+      '...however, using it on a human seems to add too much stress to the body that they end up dying...',
+      "...you should be fine, though because you're part robot...probably.",
+      '...I hope',
+      'Just step onto the platform and you should see a display come up',
+      'From here, you can choose which stats you want to upgrade',
+      'And after you\'re done, you can return with the "Go Back" button.',
+      "And that's it! Simple, right? Try it out.",
+      "After you're done, follow the road. It'll take you to the robot king",
+    ];
+
+    const nameTextLines = Array(textLines.length).fill('Dr. Dang');
+
+    this.time.delayedCall(3000, () => {
+      generateDialogueUI.call(this, textLines, nameTextLines, 55, -100);
+
+      advanceDialogue.call(
+        this,
+        0,
+        this.textLines,
+        this.textBox,
+        this.nameText,
+        this.nameTextLines,
+        this.tutorialText
+      );
+    });
+
+    this.finalPart2 = true;
+  }
+
   endCutScene() {
     this.events.emit('tutorialEnd');
     this.scene.stop();
   }
 
-  create({ player, enemy, camera, deadNPC }) {
+  create({ player, enemy, camera, deadNPC, finalScene, doctor }) {
     this.player = player;
     this.enemy = enemy;
     this.deadNPC = deadNPC;
     this.camera = camera;
+    this.finalScene = finalScene || false;
+    this.doctor = doctor;
 
     // const mainGame = this.scene.get('FgScene');
 
     this.cursors = this.input.keyboard.addKeys({
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
-
-    this.playSceneOne();
+    if (!this.finalScene) {
+      this.playSceneOne();
+    } else {
+      this.playFinalScenePart1();
+    }
   }
 }

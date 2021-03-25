@@ -97,7 +97,7 @@ export default class PreGameScene extends Phaser.Scene {
         }
       },
       repeat: length - 1,
-      delay: 1000,
+      delay: 100,
     });
   }
 
