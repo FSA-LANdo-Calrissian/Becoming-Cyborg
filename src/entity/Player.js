@@ -28,8 +28,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.weaponStats = {
       none: { damage: 0, attackSpeed: 0 },
-      knife: { damage: 10, attackSpeed: 1000 },
-      gun: { damage: -15, attackSpeed: 2000 },
+      knife: { damage: 0, attackSpeed: 1000 },
+      gun: { damage: -15, attackSpeed: 1500 },
       fireBall: { damage: 20, attackSpeed: 0 },
     };
     this.armor = 0 + this.upgrade.armor;
@@ -80,7 +80,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       param time: int -> Current game time.
       returns null
     */
-    if (this.scene.input.activePointer.leftButtonDown() && !this.scene.dialogueInProgress) {
+    if (
+      this.scene.input.activePointer.leftButtonDown() &&
+      !this.scene.dialogueInProgress
+    ) {
       if (
         this.currentLeftWeapon === 'none' ||
         this.currentLeftWeapon === 'knife'
@@ -99,9 +102,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Determines if cd is over or not
         if (time > this.nextAttack) {
           // We need to pass in the sprite to use here
-          this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          if (this.currentLeftWeapon === 'fireBall') {
+            this.fireWeapon(this.x, this.y, 'bigBlast', angle);
+          } else if (this.currentLeftWeapon === 'gun') {
+            this.fireWeapon(this.x, this.y, 'bullet', angle);
+          }
           // Calculates the cd between shots
-          this.nextAttack += this.attackSpeed;
+          this.nextAttack = time + this.attackSpeed;
         }
       }
     }

@@ -31,6 +31,7 @@ export default class FgScene extends Phaser.Scene {
       No params
       returns null.
     */
+    this.dialogueInProgress = true;
     this.scene.transition({
       target: 'UpgradeUI',
       sleep: true,
@@ -274,6 +275,10 @@ export default class FgScene extends Phaser.Scene {
       switch (fromScene.scene.key) {
         case 'UpgradeUI':
           this.upgradeOpened = false;
+          // Waiting to set dialogue in progress to false so you don't shoot when pressing Go Back
+          this.time.delayedCall(500, () => {
+            this.dialogueInProgress = false;
+          });
           break;
         default:
           return;
