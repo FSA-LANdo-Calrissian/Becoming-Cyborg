@@ -6,7 +6,7 @@ import Phaser from 'phaser';
 ================================
 */
 
-function freeze(player, scene) {
+export function freeze(player, scene) {
   /*
     Helper function to stop all player movements
   */
@@ -231,3 +231,12 @@ export function robotKilled() {
 ~~~~Non-tutorial cutscenes~~~~~~
 ================================
 */
+
+export function playDialogue(npc) {
+  freeze(this.player, this);
+
+  this.scene.launch('Dialogue', {
+    player: this.player,
+    npc: npc,
+  });
+}

@@ -58,6 +58,10 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 48,
     });
 
+    this.load.spritesheet('tutorialNPC', 'assets/sprites/camo.png', {
+      frameWidth: 48,
+      frameHeight: 49,
+    });
     this.load.spritesheet('explode', 'assets/sprites/fieryexplode.png', {
       frameWidth: 128,
       frameHeight: 123,
