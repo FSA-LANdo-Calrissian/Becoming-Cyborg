@@ -4,11 +4,6 @@ export default class UpgradeUI extends Phaser.Scene {
   constructor() {
     super('UpgradeUI');
     this.weapons = ['knife', 'gun', 'fireBall'];
-    this.weaponStats = {
-      knife: { damage: 10, attackSpeed: 1000 },
-      gun: { damage: -15, attackSpeed: 2000 },
-      fireBall: { damage: 20, attackSpeed: 0 },
-    };
     this.leftWeaponIdx = 0;
     this.weaponMaterials = {
       knife: { iron: 5, oil: 5, knifeAttachment: 1 },
@@ -44,16 +39,22 @@ export default class UpgradeUI extends Phaser.Scene {
 
   updateUpgradeButtons(inventory) {
     /*
-      Function to update text on upgrades to either set createButton or equipButton as visible and active depending on if characcter has weapon in inventory.
+      Function to update text on upgrades to either set createButton, equipButton, or unequipButton as visible and active depending on if characcter has weapon in inventory.
       param inventory: object -> Comes from this.player.inventory. Will be used to check quantity of player's weapons
       Returns null
     */
-    if (inventory[this.weapons[this.leftWeaponIdx]]) {
+    if (this.player.currentLeftWeapon === this.weapons[this.leftWeaponIdx]) {
+      this.leftUnequipText.setActive(true).setVisible(true);
+      this.leftCreateText.setActive(false).setVisible(false);
+      this.leftEquipText.setActive(false).setVisible(false);
+    } else if (inventory[this.weapons[this.leftWeaponIdx]]) {
       this.leftEquipText.setActive(true).setVisible(true);
       this.leftCreateText.setActive(false).setVisible(false);
+      this.leftUnequipText.setActive(false).setVisible(false);
     } else {
-      this.leftEquipText.setActive(false).setVisible(false);
       this.leftCreateText.setActive(true).setVisible(true);
+      this.leftEquipText.setActive(false).setVisible(false);
+      this.leftUnequipText.setActive(false).setVisible(false);
     }
   }
 
@@ -71,11 +72,24 @@ export default class UpgradeUI extends Phaser.Scene {
     );
   }
 
-  equipLeft() {
+  equipLeft(weapon) {
     /*
-      Function to equip left arm weapon
+      Function to equip left arm weapon as this.player.currentLeftWeapon and subtract weapon from player inventory
+      param weapon: string -> The weapon name of the current weapon the player is trying to equip
       returns null
     */
+    this.player.currentLeftWeapon = weapon;
+    this.player.inventory[weapon]--;
+  }
+
+  unequipLeft(weapon) {
+    /*
+      Function to unequip left arm weapon as this.player.currentLeftWeapon (setting to none) and add weapon to player inventory
+      param weapon: string -> The weapon name of the current weapon the player is trying to equip
+      returns null
+    */
+    this.player.currentLeftWeapon = 'none';
+    this.player.inventory[weapon]++;
   }
 
   returnToGame(player) {
@@ -205,7 +219,24 @@ export default class UpgradeUI extends Phaser.Scene {
     this.leftEquipText = this.add
       .text(135, 235, 'equip')
       .setInteractive()
-      .on('pointerup', this.equipLeft);
+      .on(
+        'pointerup',
+        () => {
+          this.equipLeft(this.weapons[this.leftWeaponIdx]);
+        },
+        this
+      );
+    this.leftUnequipText = this.add
+      .text(135, 235, 'unequip')
+      .setInteractive()
+      .on(
+        'pointerup',
+        () => {
+          this.unequipLeft(this.weapons[this.leftWeaponIdx]);
+        },
+        null,
+        this
+      );
     const nextButton = this.add.sprite(250, 240, 'button').setScale(0.2);
     const nextText = this.add
       .text(230, 235, 'next')

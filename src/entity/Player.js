@@ -7,6 +7,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
+    this.currentLeftWeapon = 'none';
     this.upgrade = {
       maxHealth: 0,
       damage: 0,
@@ -25,6 +26,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       knife: 1,
       fireball: 1,
     };
+    this.weaponStats = {
+      none: { damage: 0, attackSpeed: 0 },
+      knife: { damage: 10, attackSpeed: 1000 },
+      gun: { damage: -15, attackSpeed: 2000 },
+      fireBall: { damage: 20, attackSpeed: 0 },
+    };
     this.speed = 100 + this.upgrade.moveSpeed;
     this.armor = 0 + this.upgrade.armor;
     this.regen = 0 + this.upgrade.regen;
@@ -36,9 +43,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.facingRight = false;
     this.lastHurt = 0;
     this.damage = 20 + this.upgrade.damage;
-    this.attackSpeed = 2000 - this.upgrade.attackSpeed; // This is the cooldown between hits
+    this.attackSpeed =
+      2000 -
+      this.upgrade.attackSpeed -
+      this.weaponStats[this.currentLeftWeapon].attackSpeed; // This is the cooldown between hits
     this.nextAttack = 0;
-    this.currentLeftWeapon = 'none';
     this.isMelee = false;
     this.canMelee = true;
     this.shooting = false;
