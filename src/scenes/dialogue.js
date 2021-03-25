@@ -5,7 +5,30 @@ export default class Dialogue extends Phaser.Scene {
   constructor() {
     super('Dialogue');
   }
+  addText(k, textLines, textBox, nameText, nameTextLines, dialogueText) {
+    /*
+      Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
+      param i: int -> The current index of the dialogue.
+      returns null
+    */
 
+    // If the dialogue is over (index higher than length)
+    if (k > textLines.length - 1) {
+      // Destroy bollow movement.
+      textBox.destroy();
+      this.dialogueInProgress = false;
+      this.finishedTutorial = true;
+
+      this.input.keyboard.removeListener('keydown-SPACE');
+      dialogueText.removeListener('pointerdown');
+
+      this.endScene();
+    }
+    // Advance the dialogue (this will also allow
+    // the text to be removed from screen)
+    dialogueText.setText(textLines[k]);
+    nameText.setText(nameTextLines[k]);
+  }
   playDialogue() {
     const textLines = [
       'Whoa whoa, dont hurt me!',
@@ -20,7 +43,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length - 1).fill('Villager');
 
-    generateDialogueUI.call(this, textLines, nameTextLines, 50, 50);
+    generateDialogueUI.call(this, textLines, nameTextLines, 300, 200);
 
     advanceDialogue.call(
       this,
@@ -33,7 +56,7 @@ export default class Dialogue extends Phaser.Scene {
     );
   }
 
-  endCutScene() {
+  endScene() {
     this.scene.get('FgScene').events.emit('tutorialEnd');
     this.scene.stop();
   }

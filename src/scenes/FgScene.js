@@ -156,7 +156,9 @@ export default class FgScene extends Phaser.Scene {
       this.player.x + 50,
       this.player.y,
       'tutorialNPC'
-    ).setScale(0.3);
+    )
+      .setScale(0.3)
+      .setDepth(1);
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -237,7 +239,6 @@ export default class FgScene extends Phaser.Scene {
           playDialogue.call(this);
         });
       } else {
-        this.input.keyboard.removeListener('keydown-SPACE');
         return;
       }
     });
