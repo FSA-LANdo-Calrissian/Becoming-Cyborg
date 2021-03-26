@@ -31,7 +31,15 @@ export default class FgScene extends Phaser.Scene {
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
   }
-
+  openInventory() {
+    this.dialogueInProgress = true;
+    this.scene.transition({
+      target: 'Inventory',
+      sleep: true,
+      duration: 10,
+      data: { player: this.player, camera: this.camera },
+    });
+  }
   openUpgrade() {
     /*
       Opens up the upgrade window for the player. Should only be accessed when player is at a workbench.
@@ -280,6 +288,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Keymapping
     this.cursors = this.input.keyboard.addKeys({
+      inventory: Phaser.Input.Keyboard.KeyCodes.ESC,
       interact: Phaser.Input.Keyboard.KeyCodes.SPACE,
       up: Phaser.Input.Keyboard.KeyCodes.W,
       left: Phaser.Input.Keyboard.KeyCodes.A,
@@ -366,6 +375,10 @@ export default class FgScene extends Phaser.Scene {
   }
 
   update(time) {
+    if (this.cursors.inventory.isDown) {
+      console.log('open inventory');
+      this.openInventory();
+    }
     if (!this.finishedTutorial && !this.dialogueInProgress) {
       this.enemy.body.moves = false;
     }
