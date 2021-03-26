@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { advanceDialogue } from '../scenes/cutscenes';
 
 export default class NPC extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {

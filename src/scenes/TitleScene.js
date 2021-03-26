@@ -80,7 +80,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
   }
 
-  create(data) {
+  create() {
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
       .text(350, 200, 'New Game', { fill: '#0f0' })
