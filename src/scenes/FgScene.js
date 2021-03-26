@@ -10,7 +10,12 @@ import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
-import { initCutScene, playCutScene, robotKilled } from './cutscenes';
+import {
+  initCutScene,
+  playCutScene,
+  robotKilled,
+  playDialogue,
+} from './cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -31,6 +36,7 @@ export default class FgScene extends Phaser.Scene {
       No params
       returns null.
     */
+    this.dialogueInProgress = true;
     this.scene.transition({
       target: 'UpgradeUI',
       sleep: true,
@@ -146,6 +152,14 @@ export default class FgScene extends Phaser.Scene {
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
     this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
+    this.startingNPC = new NPC(
+      this,
+      this.player.x + 50,
+      this.player.y,
+      'tutorialNPC'
+    )
+      .setScale(0.3)
+      .setDepth(1);
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -177,6 +191,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
+    this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
     this.enemiesGroup.add(this.wolf);
 
@@ -218,6 +233,19 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
       // Displays tooltip on overlap.
       npc.displayTooltip();
+
+      if (
+        npc.body.touching.none &&
+        !this.dialogueInProgress &&
+        npc.texture.key === 'tutorialNPC'
+      ) {
+        this.input.keyboard.on('keydown-SPACE', () => {
+          playDialogue.call(this, npc);
+          this.input.keyboard.removeListener('keydown-SPACE');
+        });
+      } else {
+        return;
+      }
     });
 
     this.physics.add.overlap(
@@ -274,6 +302,10 @@ export default class FgScene extends Phaser.Scene {
       switch (fromScene.scene.key) {
         case 'UpgradeUI':
           this.upgradeOpened = false;
+          // Waiting to set dialogue in progress to false so you don't shoot when pressing Go Back
+          this.time.delayedCall(500, () => {
+            this.dialogueInProgress = false;
+          });
           break;
         default:
           return;
@@ -286,7 +318,6 @@ export default class FgScene extends Phaser.Scene {
 
     this.events.on('tutorialEnd', () => {
       this.dialogueInProgress = false;
-      this.finishedTutorial = true;
       this.player.canAttack = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;

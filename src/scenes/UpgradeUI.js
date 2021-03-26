@@ -78,6 +78,9 @@ export default class UpgradeUI extends Phaser.Scene {
       param weapon: string -> The weapon name of the current weapon the player is trying to equip
       returns null
     */
+    if (this.player.currentLeftWeapon !== 'none') {
+      this.unequipLeft(this.player.currentLeftWeapon);
+    }
     this.player.currentLeftWeapon = weapon;
     this.player.inventory[weapon]--;
     this.player.updateStats();

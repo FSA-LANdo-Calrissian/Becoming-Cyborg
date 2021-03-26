@@ -16,6 +16,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('gun', 'assets/sprites/gun.png');
     this.load.image('knife', 'assets/sprites/knife.png');
     this.load.image('button', 'assets/sprites/button.png');
+    this.load.image('bullet', 'assets/sprites/bullet.png');
 
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
@@ -57,6 +58,10 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 48,
     });
 
+    this.load.spritesheet('tutorialNPC', 'assets/sprites/camo.png', {
+      frameWidth: 48,
+      frameHeight: 49,
+    });
     this.load.spritesheet('explode', 'assets/sprites/fieryexplode.png', {
       frameWidth: 128,
       frameHeight: 123,

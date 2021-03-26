@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { advanceDialogue } from '../scenes/cutscenes';
 
 export default class NPC extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -9,6 +10,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     this.body.setAllowGravity(false);
     this.messageDisplayed = false;
     this.touching = false;
+    this.inDialog = false;
   }
 
   displayTooltip() {
@@ -17,15 +19,18 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     */
     if (!this.messageDisplayed) {
       this.messageDisplayed = true;
-      // this.scene.dialogueText = this.scene.add.text(
-      //   this.x - 10,
-      //   this.y - 10,
-      //   'Hit spacebar to interact',
-      //   { fontSize: 8, wordWrap: { width: 60 } }
-      // );
-      this.scene.dialogueText = this.scene.add
-        .image(this.x - 10, this.y - 10, 'interact')
-        .setScale(0.3);
+      this.scene.tutorialText = this.scene.add
+        .text(this.x - 10, this.y - 20, 'Hit spacebar to interact', {
+          fontSize: 8,
+          strokeThickness: 0.5,
+          wordWrap: { width: 60 },
+        })
+        .setResolution(10)
+        .setScale(0.5);
+
+      // this.scene.tutorialText = this.scene.add
+      //   .image(this.x - 10, this.y - 10, 'interact')
+      //   .setScale(0.3);
       this.scene.events.emit('dialogue');
     }
   }
@@ -36,7 +41,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
 
     if (!touching && wasTouching && this.messageDisplayed) {
       // Destroys tooltip when no more overlap
-      this.scene.dialogueText.destroy();
+      this.scene.tutorialText.destroy();
       this.messageDisplayed = false;
     }
   }
