@@ -212,7 +212,7 @@ export default class UpgradeUI extends Phaser.Scene {
     );
 
     // For the top left upgrade area
-    const weapon = this.add.image(168, 165, 'knife').setScale(0.19);
+    const weapon = this.add.image(168, 165, 'knife').setScale(0.15);
     const materials = this.add
       .text(85, 200, 'Iron: 5, Oil: 5, Part: 1')
       .setScale(0.7);
