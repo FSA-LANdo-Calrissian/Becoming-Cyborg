@@ -24,8 +24,8 @@ export default class FgScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.initTutorial = false;
     this.upgradeOpened = false;
-    this.npcListenerAdded = false;
     this.npcTouching = false;
+    this.allowUpgrade = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -133,12 +133,12 @@ export default class FgScene extends Phaser.Scene {
     this.worldLayer1.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldLayer1.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldLayer1.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
@@ -155,19 +155,14 @@ export default class FgScene extends Phaser.Scene {
       .setSize(38, 35)
       .setOffset(5);
 
-    this.wolf = new Enemy(this, 38, 200, 'wolf', 'animal')
+    this.wolf = new Enemy(this, 38, 388, 'wolf', 'animal')
       .setScale(0.2)
       .setSize(45, 45);
 
     this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
 
     this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
-    this.startingNPC = new NPC(
-      this,
-      this.player.x + 50,
-      this.player.y,
-      'tutorialNPC'
-    )
+    this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
       .setScale(0.3)
       .setDepth(1);
 
@@ -261,12 +256,14 @@ export default class FgScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
-      this.upgradeStation.playAnim();
-      if (!this.upgradeOpened) {
-        this.upgradeOpened = true;
-        this.time.delayedCall(4000, () => {
-          this.openUpgrade();
-        });
+      if (this.allowUpgrade) {
+        this.upgradeStation.playAnim();
+        if (!this.upgradeOpened) {
+          this.upgradeOpened = true;
+          this.time.delayedCall(4000, () => {
+            this.openUpgrade();
+          });
+        }
       }
     });
 
@@ -335,7 +332,6 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.enemy.on('animationcomplete-death', () => {
-      console.log(`Enemy has died. Running end tutorial cutscene`);
       this.cameras.main.fadeOut(1000);
       this.player.setPosition(450, 189);
       this.cameras.main.fadeIn(1000);
@@ -350,9 +346,9 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // For debugging purposes to see pointer position
-    this.input.on('pointerdown', (pointer) => {
-      console.log(`pointer position: `, pointer.x, pointer.y);
-    });
+    //   this.input.on('pointerdown', (pointer) => {
+    //     console.log(`pointer position: `, pointer.x, pointer.y);
+    //   });
   }
 
   tutorialHelper(distance) {
@@ -422,30 +418,30 @@ export default class FgScene extends Phaser.Scene {
       this.enemy.update(this.player);
       this.wolf.update(this.player);
 
-      if (this.cursors.upgrade.isDown) {
-        // TODO: Remove this for production
-        this.openUpgrade();
-      }
-      if (this.cursors.hp.isDown) {
-        // Press h button to see stats.
-        // TODO: Remove this for production
-        console.log(
-          `Current health: ${this.player.health}/${this.player.maxHealth}`
-        );
-        console.log(`Current move speed: ${this.player.speed}`);
-        console.log(`Current armor: ${this.player.armor}`);
-        console.log(`Current regen: ${this.player.regen}`);
-        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
-        console.log(`Current damage: ${this.player.damage}`);
-        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
-        console.log(`Current player position: `, this.player.x, this.player.y);
-        console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
-        console.log(
-          `Current camera position: `,
-          this.cameras.main.scrollX,
-          this.cameras.main.scrollY
-        );
-      }
+      // if (this.cursors.upgrade.isDown) {
+      //   // TODO: Remove this for production
+      //   this.openUpgrade();
+      // }
+      // if (this.cursors.hp.isDown) {
+      //   // Press h button to see stats.
+      //   // TODO: Remove this for production
+      //   console.log(
+      //     `Current health: ${this.player.health}/${this.player.maxHealth}`
+      //   );
+      //   console.log(`Current move speed: ${this.player.speed}`);
+      //   console.log(`Current armor: ${this.player.armor}`);
+      //   console.log(`Current regen: ${this.player.regen}`);
+      //   console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      //   console.log(`Current damage: ${this.player.damage}`);
+      //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      //   console.log(`Current player position: `, this.player.x, this.player.y);
+      //   console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+      //   console.log(
+      //     `Current camera position: `,
+      //     this.cameras.main.scrollX,
+      //     this.cameras.main.scrollY
+      //   );
+      // }
     }
   }
 }

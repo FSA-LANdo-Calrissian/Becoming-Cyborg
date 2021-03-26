@@ -12,6 +12,12 @@ export function freeze(player, scene) {
   */
 
   scene.dialogueInProgress = true;
+  scene.enemiesGroup.getChildren().forEach((enemy) => {
+    if (enemy.active) {
+      enemy.setVelocityX(0);
+      enemy.setVelocityY(0);
+    }
+  });
   player.setVelocityX(0);
   player.setVelocityY(0);
   player.canMelee = false;
@@ -216,6 +222,7 @@ export function robotKilled() {
 
   // Stop player movements
   freeze(this.player, this);
+  this.allowUpgrade = true;
 
   this.scene.launch('TutorialCutScene', {
     player: this.player,

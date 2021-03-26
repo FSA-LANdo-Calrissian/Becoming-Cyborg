@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { advanceDialogue } from '../scenes/cutscenes';
 
 export default class NPC extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -19,7 +18,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     */
     if (!this.messageDisplayed) {
       this.messageDisplayed = true;
-      this.scene.tutorialText = this.scene.add
+      this.scene.tooltip = this.scene.add
         .text(this.x - 10, this.y - 20, 'Hit spacebar to interact', {
           fontSize: 8,
           strokeThickness: 0.5,
@@ -28,9 +27,6 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
         .setResolution(10)
         .setScale(0.5);
 
-      // this.scene.tutorialText = this.scene.add
-      //   .image(this.x - 10, this.y - 10, 'interact')
-      //   .setScale(0.3);
       this.scene.events.emit('dialogue');
     }
   }
@@ -40,9 +36,8 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     let wasTouching = !this.body.wasTouching.none;
 
     if (!touching && wasTouching && this.messageDisplayed) {
-      console.log(touching, wasTouching);
       // Destroys tooltip when no more overlap
-      this.scene.tutorialText.destroy();
+      this.scene.tooltip.destroy();
       this.messageDisplayed = false;
     }
   }

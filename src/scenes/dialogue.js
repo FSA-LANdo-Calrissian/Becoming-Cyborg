@@ -43,7 +43,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Villager');
 
-    generateDialogueUI.call(this, textLines, nameTextLines, 300, 165);
+    generateDialogueUI.call(this, textLines, nameTextLines, 220, 25);
 
     advanceDialogue.call(
       this,
