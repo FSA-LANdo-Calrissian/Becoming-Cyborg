@@ -124,6 +124,9 @@ export default class HUDScene extends Phaser.Scene {
         if (mainGame.nameText) {
           minimapCam.ignore(mainGame.nameText);
         }
+        if (mainGame.tooltip) {
+          minimapCam.ignore(mainGame.tooltip);
+        }
       });
     });
   }
