@@ -12,9 +12,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
     this.load.image('forest', 'assets/backgrounds/forest.png');
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-    this.load.image('fireBall', 'assets/sprites/fireBall.png');
-    this.load.image('gun', 'assets/sprites/gun.png');
-    this.load.image('knife', 'assets/sprites/knife.png');
+    this.load.image('fireBall', 'assets/sprites/fireBallArm.png');
+    this.load.image('gun', 'assets/sprites/gunArm.png');
+    this.load.image('knife', 'assets/sprites/knifeArm.png');
     this.load.image('button', 'assets/sprites/button.png');
     this.load.image('bullet', 'assets/sprites/bullet.png');
 
@@ -25,6 +25,10 @@ export default class MainScene extends Phaser.Scene {
     });
     this.load.spritesheet('meleeRobot', 'assets/sprites/Walk.png', {
       frameWidth: 46,
+      frameHeight: 48,
+    });
+    this.load.spritesheet('drDang', 'assets/sprites/drDang.png', {
+      frameWidth: 48,
       frameHeight: 48,
     });
     this.load.spritesheet(
