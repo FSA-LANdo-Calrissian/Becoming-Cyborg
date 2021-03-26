@@ -24,6 +24,8 @@ export default class FgScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.initTutorial = false;
     this.upgradeOpened = false;
+    this.npcListenerAdded = false;
+    this.npcTouching = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -231,20 +233,16 @@ export default class FgScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(this.player, this.npcGroup, (player, npc) => {
-      // Displays tooltip on overlap.
       npc.displayTooltip();
 
+      // Displays tooltip on overlap.
       if (
         npc.body.touching.none &&
         !this.dialogueInProgress &&
-        npc.texture.key === 'tutorialNPC'
+        npc.texture.key === 'tutorialNPC' &&
+        this.cursors.interact.isDown
       ) {
-        this.input.keyboard.on('keydown-SPACE', () => {
-          playDialogue.call(this, npc);
-          this.input.keyboard.removeListener('keydown-SPACE');
-        });
-      } else {
-        return;
+        playDialogue.call(this, npc);
       }
     });
 
@@ -282,6 +280,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Keymapping
     this.cursors = this.input.keyboard.addKeys({
+      interact: Phaser.Input.Keyboard.KeyCodes.SPACE,
       up: Phaser.Input.Keyboard.KeyCodes.W,
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -317,7 +316,9 @@ export default class FgScene extends Phaser.Scene {
     });
 
     this.events.on('tutorialEnd', () => {
-      this.dialogueInProgress = false;
+      this.time.delayedCall(500, () => {
+        this.dialogueInProgress = false;
+      });
       this.player.canAttack = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;

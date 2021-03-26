@@ -41,9 +41,9 @@ export default class Dialogue extends Phaser.Scene {
       'You should stay away, something bad is going to happpen',
     ];
 
-    let nameTextLines = Array(textLines.length - 1).fill('Villager');
+    let nameTextLines = Array(textLines.length).fill('Villager');
 
-    generateDialogueUI.call(this, textLines, nameTextLines, 300, 200);
+    generateDialogueUI.call(this, textLines, nameTextLines, 300, 165);
 
     advanceDialogue.call(
       this,
