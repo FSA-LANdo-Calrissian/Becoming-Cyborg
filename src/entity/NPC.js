@@ -40,6 +40,7 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     let wasTouching = !this.body.wasTouching.none;
 
     if (!touching && wasTouching && this.messageDisplayed) {
+      console.log(touching, wasTouching);
       // Destroys tooltip when no more overlap
       this.scene.tutorialText.destroy();
       this.messageDisplayed = false;

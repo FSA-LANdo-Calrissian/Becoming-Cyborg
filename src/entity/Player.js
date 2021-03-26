@@ -32,22 +32,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       gun: { damage: -15, attackSpeed: 1500 },
       fireBall: { damage: 20, attackSpeed: 0 },
     };
-    this.armor = 0 + this.upgrade.armor;
-    this.regen = 0 + this.upgrade.regen;
     this.health = 100;
     this.stats = {
       kills: 50,
     };
     this.facingRight = false;
     this.lastHurt = 0;
-    this.damage =
-      20 +
-      this.upgrade.damage +
-      this.weaponStats[this.currentLeftWeapon].damage;
-    this.attackSpeed =
-      2000 -
-      this.upgrade.attackSpeed -
-      this.weaponStats[this.currentLeftWeapon].attackSpeed; // This is the cooldown between hits
+
+    // This is the cooldown between hits
     this.nextAttack = 0;
     this.isMelee = false;
     this.canAttack = true;
