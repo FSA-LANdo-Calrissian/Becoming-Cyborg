@@ -61,6 +61,8 @@ export default class FgScene extends Phaser.Scene {
 
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
+    console.log(bullet);
+    console.log(sprite);
     // If none found, create it.
     if (!bullet) {
       bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
@@ -151,7 +153,7 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.2)
       .setSize(45, 45);
 
-    this.doctor = new NPC(this, 473, 190, 'player').setScale(0.3);
+    this.doctor = new NPC(this, 473, 190, 'drDang').setScale(0.3);
 
     this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
     this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
