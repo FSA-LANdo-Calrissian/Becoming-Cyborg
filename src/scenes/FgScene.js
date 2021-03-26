@@ -274,7 +274,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Camera logic
     this.camera = this.cameras.main;
-    this.camera.setZoom(4.5);
+    this.camera.setZoom(4.4);
     this.camera.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.camera.startFollow(this.player);
 

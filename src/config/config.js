@@ -8,6 +8,7 @@ export default {
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
+  render: { pixelArt: true },
   autoRound: false,
   physics: {
     default: 'arcade',
