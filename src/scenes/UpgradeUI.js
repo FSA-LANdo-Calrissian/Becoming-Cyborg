@@ -355,9 +355,9 @@ export default class UpgradeUI extends Phaser.Scene {
     // This is just for debugging purposes. Shows pointer
     // position for easier x,y coordinate selection when making
     // the UI
-    this.input.on('pointerdown', (pointer) => {
-      console.log(`Pointer position: `, pointer.x, pointer.y);
-    });
+    // this.input.on('pointerdown', (pointer) => {
+    //   console.log(`Pointer position: `, pointer.x, pointer.y);
+    // });
 
     this.events.on('transitioncomplete', () => {
       this.player.y += 20;

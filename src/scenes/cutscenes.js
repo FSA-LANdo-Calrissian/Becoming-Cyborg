@@ -216,6 +216,7 @@ export function robotKilled() {
 
   // Stop player movements
   freeze(this.player, this);
+  this.allowUpgrade = true;
 
   this.scene.launch('TutorialCutScene', {
     player: this.player,
