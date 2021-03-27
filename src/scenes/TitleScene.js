@@ -82,6 +82,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('minimap', 'assets/backgrounds/minimap.png');
     this.load.image('?', 'assets/backgrounds/question.png');
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
+    this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
+    this.load.image('none', 'assets/sprites/robotArmClosed.png');
   }
 
   create() {
