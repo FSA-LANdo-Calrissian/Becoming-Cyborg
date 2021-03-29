@@ -9,6 +9,8 @@ export default class HUDScene extends Phaser.Scene {
       width: 150,
       height: 10,
     };
+
+    this.updateBottomHUD = this.updateBottomHUD.bind(this);
   }
 
   draw(newHealth, maxHealth) {
@@ -64,26 +66,38 @@ export default class HUDScene extends Phaser.Scene {
     }
   }
 
-  updateBottomHUD(mainGame) {
+  updateBottomHUD() {
     /*
       Function to create the weaponHUD at bottom of HUDScene. Includes player's current weapons and quantity of iron and oil.
       param mainGame: obj -> mainGame scene so weaponHUD has access to player inventory.
       returns null.
     */
-    this.add.image(400, 650, 'weaponHUD').setScale(0.3);
 
-    this.leftWeapon = this.add
-      .image(330, 560, `${mainGame.player.currentLeftWeapon}`)
-      .setScale(0.18);
-    this.leftWeapon.flipX = true;
+    if (this.mainGame.dialogueInProgress) {
+      console.log('hello?');
+      this.weaponBackground.setVisible(false);
+      this.weaponBackground.setActive(false);
+      this.leftWeapon.setVisible(false);
+      this.rightWeapon.setVisible(false);
+      this.inventory.setVisible(false);
+    } else {
+      this.weaponBackground = this.add
+        .image(400, 650, 'weaponHUD')
+        .setScale(0.3);
 
-    this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
+      this.leftWeapon = this.add
+        .image(330, 560, `${this.mainGame.player.currentLeftWeapon}`)
+        .setScale(0.18);
+      this.leftWeapon.flipX = true;
 
-    this.inventory = this.add.text(
-      530,
-      540,
-      `Iron: ${mainGame.player.inventory.iron}\nOil: ${mainGame.player.inventory.oil}`
-    );
+      this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
+
+      this.inventory = this.add.text(
+        530,
+        540,
+        `Iron: ${this.mainGame.player.inventory.iron}\nOil: ${this.mainGame.player.inventory.oil}`
+      );
+    }
   }
 
   create() {
@@ -91,7 +105,7 @@ export default class HUDScene extends Phaser.Scene {
     this.bar = this.add.graphics();
 
     // This is to grab our main scene
-    const mainGame = this.scene.get('FgScene');
+    this.mainGame = this.scene.get('FgScene');
     let player;
     // Need to wait for the FgScene to load first
     const loadScene = new Promise((res) => {
@@ -102,10 +116,10 @@ export default class HUDScene extends Phaser.Scene {
 
     // After FgScene "loads" (we really just wait one second)
     loadScene.then(() => {
-      player = mainGame.player;
+      player = this.mainGame.player;
     });
     // Event listener to see when to update the health bar
-    mainGame.events.on('takeDamage', (newHealth, maxHealth) => {
+    this.mainGame.events.on('takeDamage', (newHealth, maxHealth) => {
       this.draw(newHealth, maxHealth);
     });
 
@@ -118,7 +132,7 @@ export default class HUDScene extends Phaser.Scene {
     loadScene.then(() => {
       // Make the cameras
 
-      const minimapCam = mainGame.cameras
+      const minimapCam = this.mainGame.cameras
         .add(640, 10, 150, 150)
         .setZoom(0.6)
         .setBounds(0, 0, 3000, 1000)
@@ -136,25 +150,31 @@ export default class HUDScene extends Phaser.Scene {
       console.log(`Fully loaded!`);
 
       // If in dialogue, ignore the text box and texts.
-      mainGame.events.on('dialogue', () => {
-        if (mainGame.textBox) {
-          minimapCam.ignore(mainGame.textBox);
+      this.mainGame.events.on('dialogue', () => {
+        if (this.mainGame.textBox) {
+          minimapCam.ignore(this.mainGame.textBox);
         }
-        if (mainGame.dialogueText) {
-          minimapCam.ignore(mainGame.dialogueText);
+        if (this.mainGame.dialogueText) {
+          minimapCam.ignore(this.mainGame.dialogueText);
         }
-        if (mainGame.nameText) {
-          minimapCam.ignore(mainGame.nameText);
+        if (this.mainGame.nameText) {
+          minimapCam.ignore(this.mainGame.nameText);
         }
-        if (mainGame.tooltip) {
-          minimapCam.ignore(mainGame.tooltip);
+        if (this.mainGame.tooltip) {
+          minimapCam.ignore(this.mainGame.tooltip);
         }
       });
     });
     loadScene.then(() => {
       // Make the weapon HUD frame
 
-      this.updateBottomHUD(mainGame);
+      this.createBottomHUD();
     });
+  }
+
+  update() {
+    if (this.mainGame.dialogueInProgress) {
+      this.time.delayedCall(500, this.updateBottomHUD);
+    }
   }
 }
