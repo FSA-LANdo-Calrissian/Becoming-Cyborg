@@ -9,6 +9,7 @@ import UpgradeUI from './scenes/UpgradeUI';
 import TitleScene from './scenes/TitleScene';
 import TutorialCutScene from './scenes/TutorialCutScene';
 import Dialogue from './scenes/dialogue';
+import Inventory from './scenes/Inventory';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -25,6 +26,7 @@ export default class Game extends Phaser.Game {
     this.scene.add('HUDScene', HUDScene);
     this.scene.add('UpgradeUI', UpgradeUI);
     this.scene.add('GameOver', GameOverScene);
+    this.scene.add('Inventory', Inventory);
     this.scene.bringToTop('HUDScene');
 
     // Then start the game by calling the main scene - or the very first one

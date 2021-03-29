@@ -39,9 +39,12 @@ export function generateDialogueUI(
   */
 
   // Make the text box
+  console.log(`camera midpoint`, this.cameras.main.midPoint);
   this.textBox = this.add.image(
-    this.player.x - 10 + Xoffset,
-    this.player.y + 330 + Yoffset,
+    // this.player.x - 10 + Xoffset,
+    // this.player.y + 330 + Yoffset,
+    this.cameras.main.midPoint.x + Xoffset,
+    this.cameras.main.midPoint.y + 220 + Yoffset,
     'textBox'
   );
   this.textBox.setScale(0.5);

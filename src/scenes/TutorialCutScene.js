@@ -262,7 +262,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     const nameTextLines = Array(textLines.length).fill('Dr. Dang');
 
     this.time.delayedCall(3000, () => {
-      generateDialogueUI.call(this, textLines, nameTextLines, 55, -100);
+      generateDialogueUI.call(this, textLines, nameTextLines);
 
       advanceDialogue.call(
         this,
