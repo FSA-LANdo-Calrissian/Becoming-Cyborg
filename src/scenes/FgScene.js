@@ -24,7 +24,6 @@ export default class FgScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.initTutorial = false;
     this.upgradeOpened = false;
-    this.npcTouching = false;
     this.allowUpgrade = false;
 
     // Bindings
@@ -109,6 +108,10 @@ export default class FgScene extends Phaser.Scene {
 
     // Initializing the game.
     this.finishedTutorial = false;
+    this.dialogueInProgress = false;
+    this.initTutorial = false;
+    this.upgradeOpened = false;
+    this.allowUpgrade = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     this.gg = this.sound.add('gg');
 
