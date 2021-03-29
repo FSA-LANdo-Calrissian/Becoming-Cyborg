@@ -69,8 +69,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
-    console.log(bullet);
-    console.log(sprite);
+
     // If none found, create it.
     if (!bullet) {
       bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
@@ -135,12 +134,12 @@ export default class FgScene extends Phaser.Scene {
     this.worldLayer1.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    // const debugGraphics = this.add.graphics().setAlpha(0.75);
-    // this.worldLayer1.renderDebug(debugGraphics, {
-    //   tileColor: null, // Color of non-colliding tiles
-    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    // });
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    this.worldLayer1.renderDebug(debugGraphics, {
+      tileColor: null, // Color of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    });
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')

@@ -39,7 +39,7 @@ export function generateDialogueUI(
   */
 
   // Make the text box
-  console.log(`camera midpoint`, this.cameras.main.midPoint);
+
   this.textBox = this.add.image(
     // this.player.x - 10 + Xoffset,
     // this.player.y + 330 + Yoffset,
