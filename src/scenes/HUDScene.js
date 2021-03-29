@@ -70,6 +70,7 @@ export default class HUDScene extends Phaser.Scene {
       param mainGame: obj -> mainGame scene so weaponHUD has access to player inventory.
       returns null.
     */
+
     this.add.image(400, 650, 'weaponHUD').setScale(0.3);
 
     this.leftWeapon = this.add
