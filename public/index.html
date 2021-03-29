@@ -8,5 +8,29 @@
     <script src="bundle.js" defer></script>
     <!-- <script src="../src/index.js" defer></script> -->
   </head>
-  <body></body>
+  <body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: 'AIzaSyAfjCRxl4oK94jpLDd6jjf5Kigu4M0Zt6g',
+        authDomain: 'robotsurvivalgame.firebaseapp.com',
+        projectId: 'robotsurvivalgame',
+        storageBucket: 'robotsurvivalgame.appspot.com',
+        messagingSenderId: '220924732099',
+        appId: '1:220924732099:web:5694806fb4f7ba0c6d7876',
+        measurementId: 'G-14F3BJ331H',
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+  </body>
 </html>

@@ -72,11 +72,12 @@ export default class HUDScene extends Phaser.Scene {
       returns null.
     */
     this.weaponBackground = this.add.image(400, 650, 'weaponHUD').setScale(0.3);
-
+    console.log(`Creating left weapon HUD`);
     this.leftWeapon = this.add
       .image(330, 560, `${this.mainGame.player.currentLeftWeapon}`)
       .setScale(0.18);
     this.leftWeapon.flipX = true;
+    console.log(`Left weapon: `, this.leftWeapon);
 
     this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
 
@@ -112,6 +113,7 @@ export default class HUDScene extends Phaser.Scene {
 
   create() {
     // Create the bar
+    this.fullyLoaded = false;
     this.bar = this.add.graphics();
 
     // This is to grab our main scene
@@ -179,10 +181,13 @@ export default class HUDScene extends Phaser.Scene {
       // Make the weapon HUD frame
 
       this.createBottomHUD();
+      this.fullyLoaded = true;
     });
   }
 
   update() {
-    this.updateBottomHUD();
+    if (this.fullyLoaded) {
+      this.updateBottomHUD();
+    }
   }
 }
