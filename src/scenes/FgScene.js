@@ -319,6 +319,23 @@ export default class FgScene extends Phaser.Scene {
       }
     });
 
+    this.events.on('transitioncomplete', (fromScene) => {
+      this.scene.wake();
+      // If we're coming from the upgrade UI
+      // Set upgradeOpened to false so we can get back into it
+      switch (fromScene.scene.key) {
+        case 'Inventory':
+          this.upgradeOpened = false;
+          // Waiting to set dialogue in progress to false so you don't shoot when pressing Go Back
+          this.time.delayedCall(500, () => {
+            this.dialogueInProgress = false;
+          });
+          break;
+        default:
+          return;
+      }
+    });
+
     this.scene.get('TutorialCutScene').events.on('tutorialPause', () => {
       this.scene.pause();
     });

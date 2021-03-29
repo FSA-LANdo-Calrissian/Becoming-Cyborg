@@ -129,9 +129,6 @@ export default class Inventory extends Phaser.Scene {
 
     // For the top left upgrade area
     const weapon = this.add.image(168, 165, 'knife').setScale(0.19);
-    const materials = this.add
-      .text(85, 200, 'Iron: 5, Oil: 5, Part: 1')
-      .setScale(0.7);
 
     this.leftEquipText = this.add
       .text(135, 235, 'equip')
@@ -169,9 +166,6 @@ export default class Inventory extends Phaser.Scene {
           this.currLeftPart = this.weaponMaterials[nextWeapon][
             `${nextWeapon}Attachment`
           ];
-          materials.setText(
-            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
-          );
         }
       });
     const prevButton = this.add.sprite(90, 240, 'button').setScale(0.2);
@@ -187,9 +181,6 @@ export default class Inventory extends Phaser.Scene {
           this.currLeftPart = this.weaponMaterials[prevWeapon][
             `${prevWeapon}Attachment`
           ];
-          materials.setText(
-            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
-          );
         }
       });
 
