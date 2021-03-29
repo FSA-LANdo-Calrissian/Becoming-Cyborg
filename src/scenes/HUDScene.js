@@ -66,35 +66,45 @@ export default class HUDScene extends Phaser.Scene {
     }
   }
 
-  updateBottomHUD() {
+  createBottomHUD() {
     /*
       Function to create the weaponHUD at bottom of HUDScene. Includes player's current weapons and quantity of iron and oil.
-      param mainGame: obj -> mainGame scene so weaponHUD has access to player inventory.
+      returns null.
+    */
+    this.weaponBackground = this.add.image(400, 650, 'weaponHUD').setScale(0.3);
+
+    this.leftWeapon = this.add
+      .image(330, 560, `${this.mainGame.player.currentLeftWeapon}`)
+      .setScale(0.18);
+    this.leftWeapon.flipX = true;
+
+    this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
+
+    this.inventory = this.add.text(
+      530,
+      540,
+      `Iron: ${this.mainGame.player.inventory.iron}\nOil: ${this.mainGame.player.inventory.oil}`
+    );
+  }
+
+  updateBottomHUD() {
+    /*
+      Function to update the weaponHUD at bottom of HUDScene. Includes player's current weapons and quantity of iron and oil.
       returns null.
     */
 
     if (this.mainGame.dialogueInProgress) {
-      console.log('hello?');
       this.weaponBackground.setVisible(false);
-      this.weaponBackground.setActive(false);
       this.leftWeapon.setVisible(false);
       this.rightWeapon.setVisible(false);
       this.inventory.setVisible(false);
-    } else {
-      this.weaponBackground = this.add
-        .image(400, 650, 'weaponHUD')
-        .setScale(0.3);
-
-      this.leftWeapon = this.add
-        .image(330, 560, `${this.mainGame.player.currentLeftWeapon}`)
-        .setScale(0.18);
-      this.leftWeapon.flipX = true;
-
-      this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
-
-      this.inventory = this.add.text(
-        530,
-        540,
+    } else if (this.weaponBackground) {
+      this.weaponBackground.setVisible(true);
+      this.leftWeapon.setVisible(true);
+      this.leftWeapon.setTexture(this.mainGame.player.currentLeftWeapon);
+      this.rightWeapon.setVisible(true);
+      this.inventory.setVisible(true);
+      this.inventory.setText(
         `Iron: ${this.mainGame.player.inventory.iron}\nOil: ${this.mainGame.player.inventory.oil}`
       );
     }
@@ -173,8 +183,6 @@ export default class HUDScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.mainGame.dialogueInProgress) {
-      this.time.delayedCall(500, this.updateBottomHUD);
-    }
+    this.updateBottomHUD();
   }
 }
