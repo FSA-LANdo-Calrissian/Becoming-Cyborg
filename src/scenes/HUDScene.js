@@ -72,12 +72,10 @@ export default class HUDScene extends Phaser.Scene {
       returns null.
     */
     this.weaponBackground = this.add.image(400, 650, 'weaponHUD').setScale(0.3);
-    console.log(`Creating left weapon HUD`);
     this.leftWeapon = this.add
       .image(330, 560, `${this.mainGame.player.currentLeftWeapon}`)
       .setScale(0.18);
     this.leftWeapon.flipX = true;
-    console.log(`Left weapon: `, this.leftWeapon);
 
     this.rightWeapon = this.add.image(470, 560, 'none').setScale(0.18);
 
