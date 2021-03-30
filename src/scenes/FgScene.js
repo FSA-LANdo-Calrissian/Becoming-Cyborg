@@ -120,27 +120,93 @@ export default class FgScene extends Phaser.Scene {
     //Load in map stuff
     this.map = this.make.tilemap({ key: 'map' });
 
-    this.darkGrass = this.map.addTilesetImage('forest', 'forest');
+    this.terrainTiles = this.map.addTilesetImage('terrain', 'terrain');
 
-    this.grassAndBuildings = this.map.addTilesetImage(
-      'apocalypse',
-      'apocalypse'
-    );
+    this.worldTiles = this.map.addTilesetImage('worldTileset', 'worldTileset');
 
-    this.belowLayer1 = this.map.createLayer('ground', this.darkGrass, 0, 0);
-
-    this.worldLayer1 = this.map.createLayer(
-      'above-ground',
-      this.grassAndBuildings,
+    this.groundBottom = this.map.createLayer(
+      'ground-layers/ground-bottom',
+      this.terrainTiles,
       0,
       0
     );
 
-    this.worldLayer1.setCollisionByProperty({ collides: true });
+    this.street = this.map.createLayer(
+      'ground-layers/street',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    this.groundMid = this.map.createLayer(
+      'ground-layers/ground-mid',
+      this.terrainTiles,
+      0,
+      0
+    );
+
+    this.groundTop = this.map.createLayer(
+      'ground-layers/ground-top',
+      this.terrainTiles,
+      0,
+      0
+    );
+
+    this.groundAbove = this.map.createLayer(
+      'ground-layers/ground-above',
+      this.terrainTiles,
+      0,
+      0
+    );
+
+    this.worldBottom = this.map.createLayer(
+      'world-layers/world-bottom',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    this.worldMid = this.map.createLayer(
+      'world-layers/world-mid',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    this.worldTop = this.map.createLayer(
+      'world-layers/world-top',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    //Moved to bottom of create/ TODO: use depth instead
+    // this.worldAbove = this.map.createLayer(
+    //   'world-layers/world-above',
+    //   this.worldTiles,
+    //   0,
+    //   0
+    // );
+
+    // this.worldAboveExtra = this.map.createLayer(
+    //   'world-layers/world-above-extra',
+    //   this.worldTiles,
+    //   0,
+    //   0
+    // );
+
+    this.worldCollision = this.map.createLayer(
+      'collision',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
     const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldLayer1.renderDebug(debugGraphics, {
+    this.worldCollision.renderDebug(debugGraphics, {
       tileColor: null, // Color of non-colliding tiles
       collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
       faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
@@ -151,8 +217,8 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setSize(10, 10);
 
-    this.player = new Player(this, 38, 23, 'player', this.loadBullet)
-      .setScale(0.3)
+    this.player = new Player(this, 1104, 1104, 'player', this.loadBullet)
+      .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
 
@@ -219,7 +285,7 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.questNPC2);
 
     // Collision logic
-    this.physics.add.collider(this.player, this.worldLayer1);
+    this.physics.add.collider(this.player, this.worldCollision);
     this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
       // If player full on health, don't pick up potions.
       if (
@@ -305,11 +371,11 @@ export default class FgScene extends Phaser.Scene {
       }
     });
 
-    this.physics.add.collider(this.enemiesGroup, this.worldLayer1);
+    this.physics.add.collider(this.enemiesGroup, this.worldCollision);
 
     // Adding world boundaries
-    this.boundaryX = 600;
-    this.boundaryY = 400;
+    this.boundaryX = 2400;
+    this.boundaryY = 2160;
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.player.setCollideWorldBounds();
@@ -317,7 +383,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Camera logic
     this.camera = this.cameras.main;
-    this.camera.setZoom(4.4);
+    this.camera.setZoom(3);
     this.camera.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.camera.startFollow(this.player);
 
@@ -404,6 +470,20 @@ export default class FgScene extends Phaser.Scene {
     //   this.input.on('pointerdown', (pointer) => {
     //     console.log(`pointer position: `, pointer.x, pointer.y);
     //   });
+
+    this.worldAbove = this.map.createLayer(
+      'world-layers/world-above',
+      this.worldTiles,
+      0,
+      0
+    );
+
+    this.worldAboveExtra = this.map.createLayer(
+      'world-layers/world-above-extra',
+      this.worldTiles,
+      0,
+      0
+    );
   }
 
   tutorialHelper(distance) {
