@@ -23,6 +23,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       animal: ['potion'],
     };
     this.isDead = false;
+
+    // Bindings
+
     this.takeDamage = this.takeDamage.bind(this);
     this.dropItems = this.dropItems.bind(this);
   }
@@ -388,9 +391,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update(player) {
+  update() {
+    const player1 = this.scene.player;
     if (!this.isDead && !this.scene.dialogueInProgress) {
-      this.updateEnemyMovement(player);
+      this.updateEnemyMovement(player1);
     }
   }
 }

@@ -23,7 +23,7 @@ async function addTestData() {
   await saveState.set({
     location: ['73.55', '78.46'],
     playerData: {
-      [this.player]: 'playerStatsHere',
+      ['this.player']: 'playerStatsHere',
       questsCompleted: 'someCompletedQuests',
       born: 1912,
     },
