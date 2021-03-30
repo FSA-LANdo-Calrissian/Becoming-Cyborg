@@ -176,7 +176,11 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setSize(30, 35)
       .setOffset(10, 12)
-      .setName('questNPC');
+      .setName('testQuest');
+
+    this.questNPC2 = new NPC(this, 150, 30, 'mac')
+      .setScale(0.3)
+      .setName('secondTestQuest');
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -212,6 +216,7 @@ export default class FgScene extends Phaser.Scene {
     this.enemiesGroup.add(this.enemy);
     this.enemiesGroup.add(this.wolf);
     this.npcGroup.add(this.questNPC);
+    this.npcGroup.add(this.questNPC2);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
@@ -261,19 +266,22 @@ export default class FgScene extends Phaser.Scene {
           // BUG: Find out how to play dialogue based on NPC.
           // Or make list of generic text to pick from.
           playDialogue.call(this, npc, 'Dialogue');
-        } else if (npc.name === 'questNPC') {
-          if (!quests.testQuest.isStarted) {
-            playDialogue.call(this, npc, 'testQuest');
-            console.log(`Starting new quest here`);
-            this.testQuest = new Quest(this, 'testQuest');
-            this.testQuest.startQuest();
+        } else {
+          if (!quests[npc.name].isStarted) {
+            playDialogue.call(this, npc, npc.name);
+
+            this[npc.name] = new Quest(this, npc.name, npc);
+            this.events.on('startQuest', () => {
+              this[npc.name].startQuest();
+              this.events.removeListener('startQuest');
+            });
           } else if (
-            quests.testQuest.isStarted &&
-            !quests.testQuest.isCompleted
+            quests[npc.name].isStarted &&
+            !quests[npc.name].isCompleted
           ) {
-            this.testQuest.completeQuest();
+            this[npc.name].completeQuest();
           } else {
-            console.log(`You've already handed in the quest`);
+            playDialogue.call(this, npc, npc.name);
           }
         }
       }
@@ -419,7 +427,6 @@ export default class FgScene extends Phaser.Scene {
 
   update(time, delta) {
     if (this.cursors.inventory.isDown) {
-      console.log('open inventory');
       this.openInventory();
     }
     if (!this.finishedTutorial && !this.dialogueInProgress) {
@@ -486,7 +493,6 @@ export default class FgScene extends Phaser.Scene {
           this.cameras.main.scrollX,
           this.cameras.main.scrollY
         );
-        console.log('this.wolf1: ', this.wolf1);
       }
     }
   }
