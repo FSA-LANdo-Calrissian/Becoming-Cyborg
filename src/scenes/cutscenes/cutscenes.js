@@ -242,10 +242,10 @@ export function robotKilled() {
 ================================
 */
 
-export function playDialogue(npc) {
+export function playDialogue(npc, dialogueKey) {
   freeze(this.player, this);
 
-  this.scene.launch('Dialogue', {
+  this.scene.launch(dialogueKey, {
     player: this.player,
     npc: npc,
   });

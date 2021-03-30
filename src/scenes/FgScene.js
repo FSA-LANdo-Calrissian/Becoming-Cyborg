@@ -10,12 +10,14 @@ import createWorldAnims from '../animations/createWorldAnims';
 import NPC from '../entity/NPC';
 import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
+import Quest from '../entity/Quest';
+import quests from '../quests/quests';
 import {
   initCutScene,
   playCutScene,
   robotKilled,
   playDialogue,
-} from './cutscenes';
+} from './cutscenes/cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -170,6 +172,12 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setDepth(1);
 
+    this.questNPC = new NPC(this, 90, 30, 'player')
+      .setScale(0.3)
+      .setSize(30, 35)
+      .setOffset(10, 12)
+      .setName('questNPC');
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -203,6 +211,7 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
     this.enemiesGroup.add(this.wolf);
+    this.npcGroup.add(this.questNPC);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldLayer1);
@@ -246,10 +255,27 @@ export default class FgScene extends Phaser.Scene {
       if (
         npc.body.touching.none &&
         !this.dialogueInProgress &&
-        npc.texture.key === 'tutorialNPC' &&
         this.cursors.interact.isDown
       ) {
-        playDialogue.call(this, npc);
+        if (npc.name === '') {
+          // BUG: Find out how to play dialogue based on NPC.
+          // Or make list of generic text to pick from.
+          playDialogue.call(this, npc, 'Dialogue');
+        } else if (npc.name === 'questNPC') {
+          if (!quests.testQuest.isStarted) {
+            playDialogue.call(this, npc, 'testQuest');
+            console.log(`Starting new quest here`);
+            this.testQuest = new Quest(this, 'testQuest');
+            this.testQuest.startQuest();
+          } else if (
+            quests.testQuest.isStarted &&
+            !quests.testQuest.isCompleted
+          ) {
+            this.testQuest.completeQuest();
+          } else {
+            console.log(`You've already handed in the quest`);
+          }
+        }
       }
     });
 
@@ -391,7 +417,7 @@ export default class FgScene extends Phaser.Scene {
     );
   }
 
-  update(time) {
+  update(time, delta) {
     if (this.cursors.inventory.isDown) {
       console.log('open inventory');
       this.openInventory();
@@ -436,8 +462,6 @@ export default class FgScene extends Phaser.Scene {
     // If not in dialogue, allow player to move with cursors.
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
-      this.enemy.update(this.player);
-      this.wolf.update(this.player);
 
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production
@@ -462,6 +486,7 @@ export default class FgScene extends Phaser.Scene {
           this.cameras.main.scrollX,
           this.cameras.main.scrollY
         );
+        console.log('this.wolf1: ', this.wolf1);
       }
     }
   }

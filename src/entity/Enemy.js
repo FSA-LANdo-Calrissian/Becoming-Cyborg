@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, classType) {
+  constructor(scene, x, y, spriteKey, classType, quest = false) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
@@ -17,14 +17,30 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.isMelee = false;
     this.canMelee = true;
     this.goingLeft = false;
+    this.quest = quest;
     this.goingRight = false;
     this.dropTable = {
       robot: ['potion', 'iron'],
       animal: ['potion'],
     };
     this.isDead = false;
+
+    // Bindings
+
     this.takeDamage = this.takeDamage.bind(this);
     this.dropItems = this.dropItems.bind(this);
+    this.questEmitter = this.questEmitter.bind(this);
+
+    this.questEmitter();
+  }
+
+  questEmitter() {
+    if (this.quest) {
+      this.on('animationcomplete-death', () => {
+        this.scene.events.emit('updateQuest');
+        this.removeAllListeners();
+      });
+    }
   }
 
   dropItems() {
@@ -388,9 +404,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update(player) {
+  update() {
+    const player1 = this.scene.player;
     if (!this.isDead && !this.scene.dialogueInProgress) {
-      this.updateEnemyMovement(player);
+      this.updateEnemyMovement(player1);
     }
   }
 }

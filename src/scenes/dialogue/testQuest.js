@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from './cutscenes';
+import { advanceDialogue, generateDialogueUI } from '../cutscenes/cutscenes';
 
 export default class Dialogue extends Phaser.Scene {
   constructor() {
-    super('Dialogue');
+    super('testQuest');
   }
+
   addText(k, textLines, textBox, nameText, nameTextLines, dialogueText) {
     /*
       Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
@@ -29,19 +30,18 @@ export default class Dialogue extends Phaser.Scene {
     dialogueText.setText(textLines[k]);
     nameText.setText(nameTextLines[k]);
   }
+
   playDialogue() {
     const textLines = [
-      'Whoa whoa, dont hurt me!',
-      'Are you....',
-      'Are you a robot...or human?',
-      '...',
-      'Well whatever you are just be careful...',
-      'A robot just came through here and was wreaking all kinds of havoc',
-      'I saw it take two people down the road to the South of here...',
-      'You should stay away, something bad is going to happpen',
+      "I've got a quest for you",
+      'I want to go to the market',
+      'My brothers went to the market but I just stayed home',
+      'and one of my brothers ran home crying weee weee weee',
+      'Turns out, a wolf ate the rest of my brothers',
+      'Kill wolves pls',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Villager');
+    let nameTextLines = Array(textLines.length).fill('Little Piggy');
 
     generateDialogueUI.call(this, textLines, nameTextLines);
 
@@ -63,11 +63,6 @@ export default class Dialogue extends Phaser.Scene {
 
   create({ player, npc }) {
     this.player = player;
-    if (npc.texture.key === 'tutorialNPC') {
-      npc.play('scaredTutorialNPC', true);
-    }
-
-    // const mainGame = this.scene.get('FgScene');
 
     this.cursors = this.input.keyboard.addKeys({
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
