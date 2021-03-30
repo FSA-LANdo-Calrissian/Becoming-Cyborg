@@ -129,7 +129,7 @@ export default class Inventory extends Phaser.Scene {
 
     // For the top left upgrade area
     const weapon = this.add.image(168, 165, 'knife').setScale(0.19);
-
+    const createButton = this.add.sprite(168, 240, 'button').setScale(0.2);
     this.leftEquipText = this.add
       .text(135, 235, 'equip')
       .setInteractive()
