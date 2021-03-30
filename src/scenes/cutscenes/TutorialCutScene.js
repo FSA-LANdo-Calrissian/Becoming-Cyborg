@@ -12,31 +12,6 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.finalPart2 = false;
   }
 
-  addText(k, textLines, textBox, nameText, nameTextLines, dialogueText) {
-    /*
-      Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
-      param i: int -> The current index of the dialogue.
-      returns null
-    */
-
-    // If the dialogue is over (index higher than length)
-    if (k > textLines.length - 1) {
-      // Destroy bollow movement.
-      textBox.destroy();
-      this.dialogueInProgress = false;
-      this.finishedTutorial = true;
-
-      this.input.keyboard.removeListener('keydown-SPACE');
-      dialogueText.removeListener('pointerdown');
-
-      this.endScene();
-    }
-    // Advance the dialogue (this will also allow
-    // the text to be removed from screen)
-    dialogueText.setText(textLines[k]);
-    nameText.setText(nameTextLines[k]);
-  }
-
   endScene() {
     /*
       Helper function to determine what to do next in cutscene

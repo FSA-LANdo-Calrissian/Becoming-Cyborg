@@ -24,6 +24,38 @@ export function freeze(player, scene) {
   player.shooting = true;
 }
 
+export function addText(
+  k,
+  textLines,
+  textBox,
+  nameText,
+  nameTextLines,
+  dialogueText
+) {
+  /*
+      Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
+      param i: int -> The current index of the dialogue.
+      returns null
+    */
+
+  // If the dialogue is over (index higher than length)
+  if (k > textLines.length - 1) {
+    // Destroy bollow movement.
+    textBox.destroy();
+    this.dialogueInProgress = false;
+    this.finishedTutorial = true;
+
+    this.input.keyboard.removeListener('keydown-SPACE');
+    dialogueText.removeListener('pointerdown');
+
+    this.endScene();
+  }
+  // Advance the dialogue (this will also allow
+  // the text to be removed from screen)
+  dialogueText.setText(textLines[k]);
+  nameText.setText(nameTextLines[k]);
+}
+
 export function generateDialogueUI(
   textLines,
   nameTextLines,
@@ -109,7 +141,8 @@ export function advanceDialogue(
   );
 
   this.input.keyboard.on('keydown-SPACE', () => {
-    this.addText(
+    addText.call(
+      this,
       i + 1,
       textLines,
       textBox,
@@ -125,7 +158,8 @@ export function advanceDialogue(
 
   // Add the listener for mouse click.
   this.dialogueText.on('pointerdown', () => {
-    this.addText(
+    addText.call(
+      this,
       i + 1,
       textLines,
       textBox,
@@ -242,11 +276,12 @@ export function robotKilled() {
 ================================
 */
 
-export function playDialogue(npc) {
+export function playDialogue(npc, dialogueKey, data = {}) {
   freeze(this.player, this);
 
-  this.scene.launch('Dialogue', {
+  this.scene.launch(dialogueKey, {
     player: this.player,
-    npc: npc,
+    npc,
+    data,
   });
 }
