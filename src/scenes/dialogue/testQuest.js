@@ -130,10 +130,13 @@ export default class Dialogue extends Phaser.Scene {
     });
 
     if (!quests[npc.name].isStarted) {
+      // If quest hasn't started yet, play start dialogue.
       this.playDialogue();
     } else if (quests[npc.name].isStarted && !quests[npc.name].isCompleted) {
+      // If it's started, but not yet handed in, play this one.
       this.playIncomplete();
     } else {
+      // If it's been handed in, play this one.
       this.playQuestOver();
     }
   }
