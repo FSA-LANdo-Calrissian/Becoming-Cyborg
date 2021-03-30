@@ -277,6 +277,12 @@ export function robotKilled() {
 */
 
 export function playDialogue(npc, dialogueKey, data = {}) {
+  /*
+    This function is a helper function to launch a certain dialogue scene when talking to an NPC.
+    param npc: object -> The npc you are interacting with
+    param dialogueKey: string -> The key for the dialogue you want to start
+    param data: object -> Optional parameter for any other things you want to  pass into the dialogue.
+  */
   freeze(this.player, this);
 
   this.scene.launch(dialogueKey, {
