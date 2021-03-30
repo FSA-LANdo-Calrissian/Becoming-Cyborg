@@ -11,7 +11,8 @@ export default class Quest {
 
   startQuest() {
     /*
-      This currently runs the instant you talk to the npc -  before dialogue is over
+      This currently runs the instant you talk to the npc -  before dialogue is over. This function starts the quest. It's based on the setUp array in the quest object, meaning the setup is user defined.
+      Takes nothing, returns nothing.
     */
 
     this.quest.setUp.forEach((func) => {
@@ -24,6 +25,10 @@ export default class Quest {
   }
 
   objectiveChecker() {
+    /*
+      Checks to see if all the requirements in objectiveReqs key of the quest object is set to true. If one is false, will return false, indicating that the quest isn't done yet.
+      Takes nothing, returns bool
+    */
     for (let keys of Object.keys(this.quest.objectiveReqs)) {
       if (!this.quest.objectiveReqs[keys]) {
         return false;
@@ -33,6 +38,9 @@ export default class Quest {
   }
 
   completeQuest() {
+    /*
+      Checks to see if quest is completed. If it is, calls the completion scene and gives you your reward. If not, plays the quest incomplete cutscene.
+    */
     const isCleared = this.objectiveChecker();
     if (isCleared) {
       playDialogue.call(this.scene, this.npc, this.npc.name);
@@ -45,6 +53,10 @@ export default class Quest {
   }
 
   giveReward() {
+    /*
+      Loops through the reward key in your quest object and gives player those rewards. Currently only iron and potion are implemented. Others will need to be added on themselves.
+      Takes nothing, returns nothing.
+    */
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
@@ -73,6 +85,9 @@ export default class Quest {
   }
 
   updateReq() {
+    /*
+      Updates your quest based on your update key in the quest object. Runs every function in that array.
+    */
     this.quest.update.forEach((func) => {
       func.call(this);
     });

@@ -333,20 +333,32 @@ export default class FgScene extends Phaser.Scene {
           // Or make list of generic text to pick from.
           playDialogue.call(this, npc, 'Dialogue');
         } else {
+          // This else statement only runs if the npc was given a name.
+          // NPCs are only given names if they're used for quests. So far.
+          // If the quest hasn't been started yet
           if (!quests[npc.name].isStarted) {
+            // Call the dialogue to start the quest
             playDialogue.call(this, npc, npc.name);
 
+            // and initialize the quest.
             this[npc.name] = new Quest(this, npc.name, npc);
+
+            // Start quest when dialogue is over.
             this.events.on('startQuest', () => {
               this[npc.name].startQuest();
               this.events.removeListener('startQuest');
             });
+            // Otherwise, if quest is started, but reward hasn't been grabbed
+            // yet...
           } else if (
             quests[npc.name].isStarted &&
             !quests[npc.name].isCompleted
           ) {
+            // It will call the complete quest method for that quest.
             this[npc.name].completeQuest();
           } else {
+            // If the reward was already grabbed, it will play the final
+            // dialogue
             playDialogue.call(this, npc, npc.name);
           }
         }
