@@ -8,6 +8,9 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playDialogue() {
+    /*
+      Function for the initializing the quest dialogue.
+    */
     const textLines = [
       "I've got a quest for you",
       'I want to go to the market',
@@ -33,6 +36,9 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playIncomplete() {
+    /*
+      Function for quest not yet complete dialogue.
+    */
     const textLines = [
       `You've only killed ${this.killed} ${
         this.killed === 1 ? 'wolf' : 'wolves'
@@ -59,6 +65,9 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playQuestOver() {
+    /*
+      Function for after the quest has been handed in
+    */
     const textLines = [
       'Thanks for everything!',
       'I feel safe to go to the market now',
@@ -80,6 +89,9 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endScene() {
+    /*
+      Function to handle any animations or emitting you'll need in between dialogue. In this case, I only need to emit the startQuest event. I made the else if and the else in case I wanted to add more, but ended up not needing it, so it can be done with a simple else statement.
+    */
     if (!quests[this.npc.name].isStarted) {
       const mainGame = this.scene.get('FgScene');
       mainGame.events.emit('startQuest');
@@ -95,11 +107,17 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endCutScene() {
+    /*
+      Finish and exit out of the cutscene.
+    */
     this.scene.get('FgScene').events.emit('tutorialEnd');
     this.scene.stop();
   }
 
   create({ player, npc, data }) {
+    /*
+      Initialize all necessary variables and send to correct cutscene.
+    */
     this.player = player;
     this.npc = npc;
 
