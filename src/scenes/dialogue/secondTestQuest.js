@@ -10,9 +10,9 @@ export default class Dialogue extends Phaser.Scene {
   playDialogue() {
     const textLines = ['Moo'];
 
-    let nameTextLines = Array(textLines.length).fill('Big Piggy');
+    const nameTextLines = Array(textLines.length).fill('Big Piggy');
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playIncomplete() {
@@ -26,9 +26,9 @@ export default class Dialogue extends Phaser.Scene {
       'Please hurry before they huff and puff',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playQuestOver() {
@@ -37,9 +37,9 @@ export default class Dialogue extends Phaser.Scene {
       'I feel safe to go to the market now',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   endScene() {

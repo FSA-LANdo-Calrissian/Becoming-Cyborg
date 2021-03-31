@@ -20,7 +20,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Villager');
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   endScene() {

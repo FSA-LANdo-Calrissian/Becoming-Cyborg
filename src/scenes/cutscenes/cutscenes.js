@@ -165,9 +165,9 @@ function advanceDialogue(
 }
 
 export function dialogueHelper(
-  i,
   textLines,
   nameTextLines,
+  i = 0,
   Xoffset = 0,
   Yoffset = 0
 ) {

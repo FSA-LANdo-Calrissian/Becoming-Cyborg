@@ -73,7 +73,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Mr. Robot',
     ];
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
 
     this.sceneOne = true;
   }
@@ -101,7 +101,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Dr. Dang',
     ];
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
 
     this.sceneTwo = true;
   }
@@ -132,7 +132,7 @@ export default class TutorialCutScene extends Phaser.Scene {
 
     const nameTextLines = Array(textLines.length).fill('Mr. Robot');
 
-    dialogueHelper.call(this, 0, textLines, nameTextLines);
+    dialogueHelper.call(this, textLines, nameTextLines);
 
     this.scene.get('FgScene').finishedTutorial = true;
     this.sceneThree = true;
@@ -162,20 +162,7 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.events.emit('TutorialCutScene');
     const nameTextLines = Array(textLines.length).fill('Dr. Dang');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    // Add click area to advance text. Change the numbers after
-    // the dialogueText width/height in order to increase click
-    // area.
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
 
     this.finalPart1 = true;
   }
@@ -203,18 +190,8 @@ export default class TutorialCutScene extends Phaser.Scene {
 
     const nameTextLines = Array(textLines.length).fill('Dr. Dang');
 
-    this.time.delayedCall(3000, () => {
-      generateDialogueUI.call(this, textLines, nameTextLines);
-
-      advanceDialogue.call(
-        this,
-        0,
-        this.textLines,
-        this.textBox,
-        this.nameText,
-        this.nameTextLines,
-        this.dialogueText
-      );
+    this.time.delayedCall(2000, () => {
+      dialogueHelper.call(this, textLines, nameTextLines);
     });
 
     this.finalPart2 = true;
