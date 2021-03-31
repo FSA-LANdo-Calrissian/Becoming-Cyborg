@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from '../cutscenes/cutscenes';
+import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
 
 export default class Dialogue extends Phaser.Scene {
@@ -10,19 +10,9 @@ export default class Dialogue extends Phaser.Scene {
   playDialogue() {
     const textLines = ['Moo'];
 
-    let nameTextLines = Array(textLines.length).fill('Big Piggy');
+    const nameTextLines = Array(textLines.length).fill('Big Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playIncomplete() {
@@ -36,19 +26,9 @@ export default class Dialogue extends Phaser.Scene {
       'Please hurry before they huff and puff',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playQuestOver() {
@@ -57,19 +37,9 @@ export default class Dialogue extends Phaser.Scene {
       'I feel safe to go to the market now',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   endScene() {

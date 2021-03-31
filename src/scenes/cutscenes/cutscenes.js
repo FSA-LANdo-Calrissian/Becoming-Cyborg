@@ -24,14 +24,7 @@ export function freeze(player, scene) {
   player.shooting = true;
 }
 
-export function addText(
-  k,
-  textLines,
-  textBox,
-  nameText,
-  nameTextLines,
-  dialogueText
-) {
+function addText(k, textLines, textBox, nameText, nameTextLines, dialogueText) {
   /*
       Function to advance the current dialogue. Destroys the dialogue box and allows player to move again on completion of dialogue.
       param i: int -> The current index of the dialogue.
@@ -56,7 +49,7 @@ export function addText(
   nameText.setText(nameTextLines[k]);
 }
 
-export function generateDialogueUI(
+function generateDialogueUI(
   textLines,
   nameTextLines,
   Xoffset = 0,
@@ -109,7 +102,7 @@ export function generateDialogueUI(
     .setOrigin(0.5);
 }
 
-export function advanceDialogue(
+function advanceDialogue(
   i,
   textLines,
   textBox,
@@ -170,6 +163,27 @@ export function advanceDialogue(
     i++;
   });
 }
+
+export function dialogueHelper(
+  textLines,
+  nameTextLines,
+  i = 0,
+  Xoffset = 0,
+  Yoffset = 0
+) {
+  generateDialogueUI.call(this, textLines, nameTextLines, Xoffset, Yoffset);
+
+  advanceDialogue.call(
+    this,
+    i,
+    this.textLines,
+    this.textBox,
+    this.nameText,
+    this.nameTextLines,
+    this.dialogueText
+  );
+}
+
 /*
 ================================
 ~~~~~~~Tutorial cutscenes~~~~~~~

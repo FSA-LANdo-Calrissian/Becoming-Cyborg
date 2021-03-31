@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from '../cutscenes/cutscenes';
+import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
 
 export default class Dialogue extends Phaser.Scene {
@@ -8,6 +8,9 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playDialogue() {
+    /*
+      Function for the initializing the quest dialogue.
+    */
     const textLines = [
       "I've got a quest for you",
       'I want to go to the market',
@@ -17,22 +20,15 @@ export default class Dialogue extends Phaser.Scene {
       'Kill wolves pls',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playIncomplete() {
+    /*
+      Function for quest not yet complete dialogue.
+    */
     const textLines = [
       `You've only killed ${this.killed} ${
         this.killed === 1 ? 'wolf' : 'wolves'
@@ -43,43 +39,29 @@ export default class Dialogue extends Phaser.Scene {
       'Please hurry before they huff and puff',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   playQuestOver() {
+    /*
+      Function for after the quest has been handed in
+    */
     const textLines = [
       'Thanks for everything!',
       'I feel safe to go to the market now',
     ];
 
-    let nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, textLines, nameTextLines);
   }
 
   endScene() {
+    /*
+      Function to handle any animations or emitting you'll need in between dialogue. In this case, I only need to emit the startQuest event. I made the else if and the else in case I wanted to add more, but ended up not needing it, so it can be done with a simple else statement.
+    */
     if (!quests[this.npc.name].isStarted) {
       const mainGame = this.scene.get('FgScene');
       mainGame.events.emit('startQuest');
@@ -95,11 +77,17 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endCutScene() {
+    /*
+      Finish and exit out of the cutscene.
+    */
     this.scene.get('FgScene').events.emit('tutorialEnd');
     this.scene.stop();
   }
 
   create({ player, npc, data }) {
+    /*
+      Initialize all necessary variables and send to correct cutscene.
+    */
     this.player = player;
     this.npc = npc;
 
@@ -112,10 +100,13 @@ export default class Dialogue extends Phaser.Scene {
     });
 
     if (!quests[npc.name].isStarted) {
+      // If quest hasn't started yet, play start dialogue.
       this.playDialogue();
     } else if (quests[npc.name].isStarted && !quests[npc.name].isCompleted) {
+      // If it's started, but not yet handed in, play this one.
       this.playIncomplete();
     } else {
+      // If it's been handed in, play this one.
       this.playQuestOver();
     }
   }
