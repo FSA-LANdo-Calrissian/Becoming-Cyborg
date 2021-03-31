@@ -29,6 +29,7 @@ export default class RobotCityCutScene extends Phaser.Scene {
     this.time.delayedCall(
       1000,
       () => {
+        this.doctor.play('stacyWalk', true);
         this.mainScene.physics.moveTo(
           this.doctor,
           this.player.x + 25,
@@ -40,6 +41,7 @@ export default class RobotCityCutScene extends Phaser.Scene {
           2000,
           () => {
             this.doctor.body.stop();
+            this.doctor.play('stacyIdle', true);
             dialogueHelper.call(this, textLines, nameTextLines);
           },
           null,
