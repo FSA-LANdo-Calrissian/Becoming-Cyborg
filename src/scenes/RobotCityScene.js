@@ -19,14 +19,13 @@ import {
   playDialogue,
 } from './cutscenes/cutscenes';
 
-export default class TutorialScene extends Phaser.Scene {
+export default class RobotCityScene extends Phaser.Scene {
   constructor() {
-    super('TutorialScene');
-    this.finishedTutorial = false;
+    super('RobotCityScene');
     this.dialogueInProgress = false;
-    this.initTutorial = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
+    this.initTutorial = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -109,9 +108,7 @@ export default class TutorialScene extends Phaser.Scene {
     createAnimalAnims.call(this);
 
     // Initializing the game.
-    this.finishedTutorial = false;
     this.dialogueInProgress = false;
-    this.initTutorial = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
@@ -203,36 +200,13 @@ export default class TutorialScene extends Phaser.Scene {
       .setScale(0.3)
       .setSize(10, 10);
 
-    this.player = new Player(this, 1104, 1104, 'player', this.loadBullet)
+    this.player = new Player(this, 880, 1744, 'player', this.loadBullet)
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
 
-    this.enemy = new Enemy(this, 473, 176, 'meleeRobot', 'robot')
-      .setScale(0.4)
-      .setSize(38, 35)
-      .setOffset(5);
-
-    this.wolf = new Enemy(this, 38, 388, 'wolf', 'animal')
-      .setScale(0.2)
-      .setSize(45, 45);
-
-    this.doctor = new NPC(this, 473, 190, 'drDang').setScale(0.3);
-
-    this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
-    this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
-      .setScale(0.3)
-      .setDepth(1);
-
-    this.questNPC = new NPC(this, 90, 30, 'player')
-      .setScale(0.3)
-      .setSize(30, 35)
-      .setOffset(10, 12)
-      .setName('testQuest');
-
-    this.questNPC2 = new NPC(this, 150, 30, 'mac')
-      .setScale(0.3)
-      .setName('secondTestQuest');
+    this.doctor = new NPC(this, 1184, 1552, 'drDang').setScale(0.3);
+    this.doctor.name = 'Stacy';
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -264,11 +238,6 @@ export default class TutorialScene extends Phaser.Scene {
 
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
-    this.npcGroup.add(this.startingNPC);
-    this.enemiesGroup.add(this.enemy);
-    this.enemiesGroup.add(this.wolf);
-    this.npcGroup.add(this.questNPC);
-    this.npcGroup.add(this.questNPC2);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
@@ -365,7 +334,6 @@ export default class TutorialScene extends Phaser.Scene {
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.player.setCollideWorldBounds();
-    this.enemy.setCollideWorldBounds();
 
     // Camera logic
     this.camera = this.cameras.main;
@@ -424,7 +392,7 @@ export default class TutorialScene extends Phaser.Scene {
       }
     });
 
-    this.scene.get('TutorialCutScene').events.on('tutorialPause', () => {
+    this.scene.get('RobotCityCutScene').events.on('mainQuestPause', () => {
       this.scene.pause();
     });
 
@@ -432,17 +400,10 @@ export default class TutorialScene extends Phaser.Scene {
       this.time.delayedCall(500, () => {
         this.dialogueInProgress = false;
       });
+      this.initTutorial = true;
       this.player.canAttack = true;
       this.player.shooting = false;
-      this.enemy.body.moves = true;
       this.scene.resume();
-    });
-
-    this.enemy.on('animationcomplete-death', () => {
-      this.cameras.main.fadeOut(1000);
-      this.player.setPosition(450, 189);
-      this.cameras.main.fadeIn(1000);
-      robotKilled.call(this);
     });
 
     // data.choice is only available when player restarts game.
@@ -451,11 +412,6 @@ export default class TutorialScene extends Phaser.Scene {
       const main = this.scene.get('MainScene');
       main.scene.restart({ choice: false });
     }
-
-    // For debugging purposes to see pointer position
-    //   this.input.on('pointerdown', (pointer) => {
-    //     console.log(`pointer position: `, pointer.x, pointer.y);
-    //   });
 
     this.worldAbove = this.map.createLayer(
       'world-layers/world-above',
@@ -472,7 +428,7 @@ export default class TutorialScene extends Phaser.Scene {
     );
   }
 
-  tutorialHelper(distance) {
+  cutSceneHelper(distance) {
     /*
       Method to help check whether or not to run tutorial.
       param distance: int -> Range to start check
@@ -481,12 +437,11 @@ export default class TutorialScene extends Phaser.Scene {
 
     return (
       !this.dialogueInProgress &&
-      !this.finishedTutorial &&
       Phaser.Math.Distance.Between(
         this.player.x,
         this.player.y,
-        this.enemy.x,
-        this.enemy.y
+        this.doctor.x,
+        this.doctor.y
       ) < distance
     );
   }
@@ -495,12 +450,9 @@ export default class TutorialScene extends Phaser.Scene {
     if (this.cursors.inventory.isDown) {
       this.openInventory();
     }
-    if (!this.finishedTutorial && !this.dialogueInProgress) {
-      this.enemy.body.moves = false;
-    }
 
-    // If player in 150 range of enemy, play initial cutscene
-    if (this.tutorialHelper(150)) {
+    // If player in 160 range of doctor, play cutscene
+    if (this.cutSceneHelper(90)) {
       if (!this.initTutorial) {
         this.dialogueInProgress = true;
         // stop animations
@@ -508,29 +460,28 @@ export default class TutorialScene extends Phaser.Scene {
           this.player.facingRight ? 'idleRight' : 'idleLeft',
           true
         );
-        this.enemy.play('meleeRobotIdleLeft');
         const huh = this.add
-          .sprite(this.player.x + 8, this.player.y - 8, '?')
+          .sprite(this.doctor.x + 8, this.doctor.y - 8, '?')
           .setScale(0.015)
           .setAlpha(1, 1, 1, 1);
         this.time.delayedCall(1000, () => {
           huh.destroy();
         });
-        initCutScene.call(this);
+        playCutScene.call(this, 'RobotCityCutScene');
       }
     }
 
-    // If player within 51 range, play tutorial scene.
-    if (this.tutorialHelper(51)) {
-      this.dialogueInProgress = true;
-      // stop animations
-      this.player.play(
-        this.player.facingRight ? 'idleRight' : 'idleLeft',
-        true
-      );
-      this.enemy.play('tutorial');
-      playCutScene.call(this);
-    }
+    // // If player within 51 range, play tutorial scene.
+    // if (this.cutSceneHelper(51)) {
+    //   this.dialogueInProgress = true;
+    //   // stop animations
+    //   this.player.play(
+    //     this.player.facingRight ? 'idleRight' : 'idleLeft',
+    //     true
+    //   );
+    //   this.enemy.play('tutorial');
+    //   playCutScene.call(this);
+    // }
 
     // If not in dialogue, allow player to move with cursors.
     if (!this.dialogueInProgress) {
