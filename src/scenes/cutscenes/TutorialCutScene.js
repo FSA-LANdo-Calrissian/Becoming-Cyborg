@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from './cutscenes';
+import { dialogueHelper } from './cutscenes';
 
 export default class TutorialCutScene extends Phaser.Scene {
   constructor() {
@@ -73,17 +73,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Mr. Robot',
     ];
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
 
     this.sceneOne = true;
   }
@@ -111,17 +101,7 @@ export default class TutorialCutScene extends Phaser.Scene {
       'Dr. Dang',
     ];
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
 
     this.sceneTwo = true;
   }
@@ -152,20 +132,7 @@ export default class TutorialCutScene extends Phaser.Scene {
 
     const nameTextLines = Array(textLines.length).fill('Mr. Robot');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    // Add click area to advance text. Change the numbers after
-    // the dialogueText width/height in order to increase click
-    // area.
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
 
     this.scene.get('FgScene').finishedTutorial = true;
     this.sceneThree = true;

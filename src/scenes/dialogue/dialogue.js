@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from '../cutscenes/cutscenes';
+import { dialogueHelper } from '../cutscenes/cutscenes';
 
 export default class Dialogue extends Phaser.Scene {
   constructor() {
@@ -20,17 +20,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Villager');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
   }
 
   endScene() {

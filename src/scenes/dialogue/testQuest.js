@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { advanceDialogue, generateDialogueUI } from '../cutscenes/cutscenes';
+import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
 
 export default class Dialogue extends Phaser.Scene {
@@ -22,17 +22,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
   }
 
   playIncomplete() {
@@ -51,17 +41,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
   }
 
   playQuestOver() {
@@ -75,17 +55,7 @@ export default class Dialogue extends Phaser.Scene {
 
     let nameTextLines = Array(textLines.length).fill('Little Piggy');
 
-    generateDialogueUI.call(this, textLines, nameTextLines);
-
-    advanceDialogue.call(
-      this,
-      0,
-      this.textLines,
-      this.textBox,
-      this.nameText,
-      this.nameTextLines,
-      this.dialogueText
-    );
+    dialogueHelper.call(this, 0, textLines, nameTextLines);
   }
 
   endScene() {
