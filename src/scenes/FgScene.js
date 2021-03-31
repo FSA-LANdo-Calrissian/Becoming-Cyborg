@@ -375,7 +375,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Adding world boundaries
     this.boundaryX = 2400;
-    this.boundaryY = 2160;
+    this.boundaryY = 2400;
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.player.setCollideWorldBounds();
