@@ -25,7 +25,7 @@ export default class RobotCityScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
-    this.initTutorial = false;
+    this.initCutScene;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -452,7 +452,7 @@ export default class RobotCityScene extends Phaser.Scene {
 
     // If player in 160 range of doctor, play cutscene
     if (this.cutSceneHelper(90)) {
-      if (!this.initTutorial) {
+      if (!this.initCutScene) {
         this.dialogueInProgress = true;
         // stop animations
         this.player.play(
