@@ -299,6 +299,7 @@ export default class FgScene extends Phaser.Scene {
       // And make it disappear from screen.
       item.lifespan = 0;
     });
+
     this.physics.add.overlap(
       this.player,
       this.enemiesGroup,

@@ -1,6 +1,10 @@
 const admin = require('firebase-admin');
-
-const { serviceAccount } = require('../../secrets');
+let serviceAccount;
+if (process.env.NODE_ENV === 'development') {
+  serviceAccount = require('../../secrets').serviceAccount;
+} else {
+  serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
