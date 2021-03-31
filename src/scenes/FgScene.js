@@ -541,7 +541,7 @@ export default class FgScene extends Phaser.Scene {
         true
       );
       this.enemy.play('tutorial');
-      playCutScene.call(this);
+      playCutScene.call(this, 'TutorialCutScene');
     }
 
     // If not in dialogue, allow player to move with cursors.
