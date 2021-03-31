@@ -164,7 +164,15 @@ export default class RobotCityCutScene extends Phaser.Scene {
     } else if (this.sceneTwo && !this.sceneThree) {
       this.playSceneThree();
     } else if (this.sceneThree) {
-      this.endCutScene();
+      this.camera.fadeOut(500);
+      this.time.delayedCall(500, () => {
+        this.doctor.x = 1232;
+        this.doctor.y = 1408;
+        this.camera.fadeIn(500);
+        this.time.delayedCall(500, () => {
+          this.endCutScene();
+        });
+      });
     }
   }
 
