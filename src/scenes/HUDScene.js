@@ -109,13 +109,17 @@ export default class HUDScene extends Phaser.Scene {
     }
   }
 
+  init(data) {
+    this.mainGame = this.scene.get(data.mainScene);
+  }
+
   create() {
     // Create the bar
     this.fullyLoaded = false;
     this.bar = this.add.graphics();
 
     // This is to grab our main scene
-    this.mainGame = this.scene.get('FgScene');
+    // this.mainGame = this.scene.get('FgScene');
     let player;
     // Need to wait for the FgScene to load first
     const loadScene = new Promise((res) => {
@@ -145,7 +149,7 @@ export default class HUDScene extends Phaser.Scene {
       const minimapCam = this.mainGame.cameras
         .add(640, 10, 150, 150)
         .setZoom(0.6)
-        .setBounds(0, 0, 2400, 2400)
+        .setBounds(0, 0, this.mainGame.boundaryX, this.mainGame.boundaryY)
         .setName('minimap')
         .setBackgroundColor(0x000000)
         .startFollow(player);
