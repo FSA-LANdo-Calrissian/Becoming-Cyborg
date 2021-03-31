@@ -19,9 +19,9 @@ import {
   playDialogue,
 } from './cutscenes/cutscenes';
 
-export default class FgScene extends Phaser.Scene {
+export default class TutorialScene extends Phaser.Scene {
   constructor() {
-    super('FgScene');
+    super('TutorialScene');
     this.finishedTutorial = false;
     this.dialogueInProgress = false;
     this.initTutorial = false;
