@@ -11,13 +11,14 @@ export default class RobotCityCutScene extends Phaser.Scene {
     this.camera = camera;
     this.doctor = doctor;
     this.mainScene = this.scene.get('RobotCityScene');
+    this.sceneTwo = false;
 
     this.playSceneOne();
   }
 
   playSceneOne() {
     /*
-      First meeting other doctor
+      First meeting other doctor/Stacy
     */
     const textLines = [
       "Hey!!! Where do you think you're going?!",
@@ -51,25 +52,44 @@ export default class RobotCityCutScene extends Phaser.Scene {
       null,
       this
     );
+    this.mainScene.initTutorial = true;
+  }
 
-    // const collider = this.mainScene.physics.add.overlap(
-    //   this.doctor,
-    //   this.player,
-    //   (doc) => {
-    //     doc.body.stop();
-    //     this.physics.world.removeCollider(collider);
-    //   },
-    //   null,
-    //   this
-    // );
-    // dialogueHelper.call(this, textLines, nameTextLines);
+  playSceneTwo() {
+    /*
+      Panning up to city then cutting back
+    */
+    this.sceneTwo = true;
+    this.camera = this.mainScene.cameras.main;
+    this.camera.stopFollow();
+
+    const currX = this.camera.scrollX;
+    const currY = this.camera.scrollY;
+
+    this.camera.setZoom(2);
+    this.camera.pan(1168, 832, 4000);
+    this.time.delayedCall(5000, () => {
+      this.camera.fadeOut(1000);
+      this.time.delayedCall(1000, () => {
+        this.camera.startFollow(this.player);
+        this.camera.setZoom(3);
+        this.camera.fadeIn(1000);
+        this.time.delayedCall(1000, () => {
+          this.endScene();
+        });
+      });
+    });
   }
 
   endScene() {
     /*
       Helper function to determine what to do next in cutscene
     */
-    this.endCutScene();
+    if (this.mainScene.initTutorial && !this.sceneTwo) {
+      this.playSceneTwo();
+    } else if (this.sceneTwo) {
+      this.endCutScene();
+    }
   }
 
   endCutScene() {

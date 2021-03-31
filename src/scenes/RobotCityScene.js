@@ -400,7 +400,6 @@ export default class RobotCityScene extends Phaser.Scene {
       this.time.delayedCall(500, () => {
         this.dialogueInProgress = false;
       });
-      this.initTutorial = true;
       this.player.canAttack = true;
       this.player.shooting = false;
       this.scene.resume();
