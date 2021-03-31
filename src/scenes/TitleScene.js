@@ -71,6 +71,11 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 123,
     });
 
+    this.load.spritesheet('fakeBot', 'assets/sprites/brittabot.png', {
+      frameWidth: 40,
+      frameHeight: 50,
+    });
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
