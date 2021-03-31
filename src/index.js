@@ -12,6 +12,7 @@ import Dialogue from './scenes/dialogue/dialogue';
 import Inventory from './scenes/Inventory';
 import testQuest from './scenes/dialogue/testQuest';
 import secondTestQuest from './scenes/dialogue/secondTestQuest';
+import TutorialScene from './scenes/TutorialScene';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -21,6 +22,7 @@ export default class Game extends Phaser.Game {
 
     this.scene.add('TitleScene', TitleScene);
     this.scene.add('PreGameScene', PreGameScene);
+    this.scene.add('TutorialScene', TutorialScene);
     this.scene.add('FgScene', FgScene);
     this.scene.add('MainScene', MainScene);
     this.scene.add('TutorialCutScene', TutorialCutScene);
