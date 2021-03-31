@@ -9,8 +9,8 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //Preloading all game assets
-    this.load.image('apocalypse', 'assets/backgrounds/apocalypse.png');
-    this.load.image('forest', 'assets/backgrounds/forest.png');
+    this.load.image('terrain', 'assets/backgrounds/terrain.png');
+    this.load.image('worldTileset', 'assets/backgrounds/worldTileset.png');
     this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
     this.load.image('fireBall', 'assets/sprites/fireBallArm.png');
     this.load.image('gun', 'assets/sprites/gunArm.png');
@@ -18,7 +18,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('button', 'assets/sprites/button.png');
     this.load.image('bullet', 'assets/sprites/bullet.png');
 
-    this.load.tilemapTiledJSON('map', 'assets/backgrounds/robot-test-map.json');
+    this.load.tilemapTiledJSON('map', 'assets/backgrounds/FgSceneMap.json');
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
       frameWidth: 47.888,
       frameHeight: 49,
