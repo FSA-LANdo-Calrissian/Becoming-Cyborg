@@ -19,6 +19,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bullet', 'assets/sprites/bullet.png');
 
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/FgSceneMap.json');
+    this.load.tilemapTiledJSON('bossMap', 'assets/backgrounds/bossRoom.json');
+
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
       frameWidth: 47.888,
       frameHeight: 49,

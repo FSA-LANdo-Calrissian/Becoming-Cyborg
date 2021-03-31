@@ -32,6 +32,7 @@ export default class FgScene extends Phaser.Scene {
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
   }
+
   openInventory() {
     this.dialogueInProgress = true;
     this.scene.transition({
@@ -41,6 +42,7 @@ export default class FgScene extends Phaser.Scene {
       data: { player: this.player, camera: this.camera },
     });
   }
+
   openUpgrade() {
     /*
       Opens up the upgrade window for the player. Should only be accessed when player is at a workbench.
@@ -285,6 +287,7 @@ export default class FgScene extends Phaser.Scene {
       // And make it disappear from screen.
       item.lifespan = 0;
     });
+
     this.physics.add.overlap(
       this.player,
       this.enemiesGroup,
