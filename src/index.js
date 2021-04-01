@@ -12,15 +12,10 @@ import Dialogue from './scenes/dialogue/dialogue';
 import Inventory from './scenes/Inventory';
 import testQuest from './scenes/dialogue/testQuest';
 import secondTestQuest from './scenes/dialogue/secondTestQuest';
-
-import gunQuest from './scenes/dialogue/gunQuest';
-import fireballQuest from './scenes/dialogue/fireballQuest';
-
 import BossScene from './scenes/BossScene';
 import RobotCityScene from './scenes/RobotCityScene';
 import RobotCityCutScene from './scenes/cutscenes/RobotCityCutScene';
 import stacyQuest from './scenes/dialogue/stacyQuest';
-
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -44,8 +39,6 @@ export default class Game extends Phaser.Game {
     this.scene.add('Inventory', Inventory);
     this.scene.add('testQuest', testQuest);
     this.scene.add('secondTestQuest', secondTestQuest);
-    this.scene.add('gunQuest', gunQuest);
-    this.scene.add('fireballQuest', fireballQuest);
     this.scene.bringToTop('HUDScene');
 
     // Then start the game by calling the main scene - or the very first one
