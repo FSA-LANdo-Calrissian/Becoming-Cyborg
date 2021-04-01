@@ -203,8 +203,7 @@ export function stacyQuestUpdate() {
     Stacy quest update function. Increases the kill tracker on big robot death. Once 10 are killed, objective will be completed.
   */
   this.enemiesKilled++;
-
-  if (this.eneimesKilled >= 10) {
+  if (this.enemiesKilled >= 10) {
     this.quest.objectiveReqs.enemiesCleared = true;
   }
 }

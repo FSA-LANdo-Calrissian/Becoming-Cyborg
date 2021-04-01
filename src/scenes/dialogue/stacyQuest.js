@@ -14,6 +14,8 @@ export default class stacyQuest extends Phaser.Scene {
 
     if (data.killed) {
       this.killed = data.killed;
+    } else {
+      this.killed = 0;
     }
 
     this.cursors = this.input.keyboard.addKeys({
@@ -38,8 +40,8 @@ export default class stacyQuest extends Phaser.Scene {
       `You've only killed ${this.killed} ${
         this.killed === 1 ? 'robot' : 'robots'
       }`,
-      `You still have ${5 - this.killed} ${
-        5 - this.killed === 1 ? 'robot' : 'robots'
+      `You still have ${10 - this.killed} ${
+        10 - this.killed === 1 ? 'robot' : 'robots'
       } left to kill!`,
       'Please hurry before they come after me.',
     ];
