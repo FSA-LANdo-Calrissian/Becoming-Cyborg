@@ -37,7 +37,7 @@ export default class FgScene extends Phaser.Scene {
     bullet.shoot(x, y, angle);
   }
 
-  create() {
+  create({ player }) {
     createPlayerAnims.call(this);
 
     this.map = this.make.tilemap({ key: 'bossMap' });
