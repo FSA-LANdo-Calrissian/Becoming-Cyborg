@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import Player from '../entity/Player';
+import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
 
 export default class FgScene extends Phaser.Scene {
@@ -28,6 +29,8 @@ export default class FgScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
 
+    this.boss = new Boss(this, 750, 200, 'boss').setScale(2);
+
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
 
@@ -40,10 +43,37 @@ export default class FgScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
+      hp: Phaser.Input.Keyboard.KeyCodes.H,
     });
   }
 
   update(time, delta) {
     this.player.update(this.cursors, time);
+
+    if (this.cursors.upgrade.isDown) {
+      // TODO: Remove this for production
+      this.player.upgradeStats('msUp');
+    }
+
+    if (this.cursors.hp.isDown) {
+      // Press h button to see stats.
+      // TODO: Remove this for production
+      console.log(
+        `Current health: ${this.player.health}/${this.player.maxHealth}`
+      );
+      console.log(`Current move speed: ${this.player.speed}`);
+      console.log(`Current armor: ${this.player.armor}`);
+      console.log(`Current regen: ${this.player.regen}`);
+      console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      console.log(`Current damage: ${this.player.damage}`);
+      console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      console.log(`Current player position: `, this.player.x, this.player.y);
+      console.log(
+        `Current camera position: `,
+        this.cameras.main.scrollX,
+        this.cameras.main.scrollY
+      );
+    }
   }
 }
