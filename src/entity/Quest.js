@@ -78,6 +78,10 @@ export default class Quest {
           this.scene.itemsGroup.add(drop);
           drop.reset();
         }
+      } else if (item === 'oil') {
+        player.inventory.oil += 50;
+      } else if (item === 'clearanceChip') {
+        player.inventory.clearanceChip += 1;
       }
     });
 

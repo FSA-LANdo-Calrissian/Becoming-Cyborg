@@ -91,4 +91,5 @@ export function secondTestUpdate() {
   if (this.enemiesKilled === 5) {
     this.quest.objectiveReqs.enemiesCleared = true;
   }
+  console.log(this.quest.objectiveReqs.enemiesCleared);
 }
