@@ -72,6 +72,10 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 123,
     });
+    this.load.spritesheet('stacy', 'assets/sprites/headnurse.png', {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
 
     this.load.spritesheet('boss', 'assets/sprites/bossidle.png', {
       frameWidth: 426,

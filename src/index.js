@@ -13,6 +13,8 @@ import Inventory from './scenes/Inventory';
 import testQuest from './scenes/dialogue/testQuest';
 import secondTestQuest from './scenes/dialogue/secondTestQuest';
 import BossScene from './scenes/BossScene';
+import RobotCityScene from './scenes/RobotCityScene';
+import RobotCityCutScene from './scenes/cutscenes/RobotCityCutScene';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -22,10 +24,12 @@ export default class Game extends Phaser.Game {
 
     this.scene.add('TitleScene', TitleScene);
     this.scene.add('PreGameScene', PreGameScene);
+    this.scene.add('RobotCityScene', RobotCityScene);
     this.scene.add('FgScene', FgScene);
     this.scene.add('BossScene', BossScene);
     this.scene.add('MainScene', MainScene);
     this.scene.add('TutorialCutScene', TutorialCutScene);
+    this.scene.add('RobotCityCutScene', RobotCityCutScene);
     this.scene.add('Dialogue', Dialogue);
     this.scene.add('HUDScene', HUDScene);
     this.scene.add('UpgradeUI', UpgradeUI);
