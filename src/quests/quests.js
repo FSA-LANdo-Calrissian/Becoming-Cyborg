@@ -40,6 +40,22 @@ const quests = {
     isCompleted: false,
     requirements: false,
   },
+
+  stacyQuest: {
+    key: 'stacyQuest',
+    title: 'Kill 10 Big Robots',
+    reward: ['iron', 'oil', 'clearanceChip'],
+    description:
+      "Kill 10 Big Robots in Robot City to save your dad and Stacy and get a clearance chip to the robot king's lair",
+    objectiveReqs: {
+      enemiesCleared: false,
+    },
+    isStarted: false,
+    setUp: [stacyQuestSetUp],
+    update: [stacyQuestUpdate],
+    isCompleted: false,
+    requirements: false,
+  },
 };
 
 export default quests;

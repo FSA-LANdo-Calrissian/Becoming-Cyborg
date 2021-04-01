@@ -200,8 +200,9 @@ export default class RobotCityScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
 
-    this.doctor = new NPC(this, 1168, 1552, 'stacy').setScale(0.5);
-    this.doctor.name = 'Stacy';
+    this.doctor = new NPC(this, 1168, 1552, 'stacy')
+      .setScale(0.5)
+      .setName('stacyQuest');
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
