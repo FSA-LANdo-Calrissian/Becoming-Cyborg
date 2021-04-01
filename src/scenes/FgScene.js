@@ -193,12 +193,12 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
@@ -236,6 +236,58 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setName('secondTestQuest');
 
+    this.gunQuestNPC = new NPC(
+      this,
+      1699.000000000027,
+      1760.4166666666963,
+      'fakeBot'
+    )
+      .setScale(0.4)
+      .setName('gunQuest');
+
+    this.fireballQuestNPC = new NPC(this, 1815.472, 1675.25, 'packLeader')
+      .setScale(0.6)
+      .setName('fireballQuest');
+
+    this.scene.wolf4 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 10,
+      this.fireballQuestNPC.y + 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf5 = new Enemy(
+      this,
+      this.fireballQuestNPC.x - 10,
+      this.fireballQuestNPC.y - 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf6 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 20,
+      this.fireballQuestNPC.y + 20,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    // this.gunQuestNPC = new NPC(
+    //   this,
+    //   this.player.x + 50,
+    //   this.player.y + 50,
+    //   'fakeBot'
+    // )
+    //   .setScale(0.3)
+    //   .setName('gunQuest');
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -271,6 +323,8 @@ export default class FgScene extends Phaser.Scene {
     this.enemiesGroup.add(this.wolf);
     this.npcGroup.add(this.questNPC);
     this.npcGroup.add(this.questNPC2);
+    this.npcGroup.add(this.gunQuestNPC);
+    this.npcGroup.add(this.fireballQuestNPC);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);

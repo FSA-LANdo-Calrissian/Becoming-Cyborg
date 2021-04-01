@@ -60,24 +60,34 @@ export default class Quest {
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
-    rewards.forEach((item) => {
-      if (item === 'iron') {
-        player.inventory.iron += 50;
-      } else if (item === 'potion') {
-        if (missingHealth > 10) {
-          player.health += 10;
-        } else if (missingHealth <= 10 && missingHealth !== 0) {
-          player.health = player.maxHealth;
-        } else {
-          const drop = new Item(
-            this.scene,
-            player.x + Math.random() * 5,
-            player.y + Math.random() * 5,
-            'potion'
-          ).setScale(0.1);
-          this.scene.itemsGroup.add(drop);
-          drop.reset();
+    if (rewards === 'fireballAttachment') {
+      player.inventory.fireballAttachment += 1;
+    } else if (rewards === 'gunAttachment') {
+      player.inventory.gunAttachment += 1;
+      this.quest.isCompleted = true;
+    } else {
+      rewards.forEach((item) => {
+        if (item === 'iron') {
+          player.inventory.iron += 50;
+        } else if (item === 'potion') {
+          if (missingHealth > 10) {
+            player.health += 10;
+          } else if (missingHealth <= 10 && missingHealth !== 0) {
+            player.health = player.maxHealth;
+          } else {
+            const drop = new Item(
+              this.scene,
+              player.x + Math.random() * 5,
+              player.y + Math.random() * 5,
+              'potion'
+            ).setScale(0.1);
+            this.scene.itemsGroup.add(drop);
+            drop.reset();
+          }
         }
+
+      });
+
       } else if (item === 'oil') {
         player.inventory.oil += 50;
       } else if (item === 'clearanceChip') {
@@ -85,7 +95,9 @@ export default class Quest {
       }
     });
 
-    this.quest.isCompleted = true;
+
+      this.quest.isCompleted = true;
+    }
   }
 
   updateReq() {

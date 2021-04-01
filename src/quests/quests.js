@@ -1,6 +1,11 @@
 import { testFunc, testFunc1 } from './testQuest';
 import { secondTestSetUp, secondTestUpdate } from './secondTestQuest';
+
+import { gunQuestSetup, gunQuestUpdate } from './gunQuest';
+import { fireballQuestSetup, fireballQuestUpdate } from './fireballQuest';
+
 import { stacyQuestSetUp, stacyQuestUpdate } from './stacyQuest';
+
 
 /*
   This quests object is a giant object of key: object pairs. The key needs to be the key for your quest. This is what is grabbed and used throughout the quest logic - including the name of your NPC, so it must be unique.
@@ -42,18 +47,46 @@ const quests = {
     requirements: false,
   },
 
+
+  gunQuest: {
+    key: 'gunQuest',
+    title: "I'm gun-a need a hand",
+    reward: 'gunAttachment',
+    description: 'Idk. Just testing',
+
   stacyQuest: {
     key: 'stacyQuest',
     title: 'Kill 10 Big Robots',
     reward: ['iron', 'oil', 'clearanceChip'],
     description:
       "Kill 10 Big Robots in Robot City to save your dad and Stacy and get a clearance chip to the robot king's lair",
+
     objectiveReqs: {
       enemiesCleared: false,
     },
     isStarted: false,
+
+    setUp: [gunQuestSetup],
+    update: [gunQuestUpdate],
+    isCompleted: false,
+    requirements: false,
+  },
+
+  fireballQuest: {
+    key: 'fireballQuest',
+    title: 'Where-Wolf',
+    reward: 'fireballAttachment',
+    description: 'Idk. Just testing',
+    objectiveReqs: {
+      enemiesCleared: false,
+    },
+    isStarted: false,
+    setUp: [fireballQuestSetup],
+    update: [fireballQuestUpdate],
+
     setUp: [stacyQuestSetUp],
     update: [stacyQuestUpdate],
+
     isCompleted: false,
     requirements: false,
   },
