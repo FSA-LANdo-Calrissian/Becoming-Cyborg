@@ -6,7 +6,6 @@ export default class RobotCityCutScene extends Phaser.Scene {
     super('RobotCityCutScene');
   }
   create({ player, camera, doctor }) {
-    console.log(player);
     this.player = player;
     this.camera = camera;
     this.doctor = doctor;
@@ -14,6 +13,8 @@ export default class RobotCityCutScene extends Phaser.Scene {
     this.sceneOne = false;
     this.sceneTwo = false;
     this.sceneThree = false;
+    this.sceneFour = false;
+    this.sceneFive = false;
 
     this.playSceneOne();
   }
@@ -90,8 +91,10 @@ export default class RobotCityCutScene extends Phaser.Scene {
       "Oh my God! They destroyed your town!? I'm so sorry.",
       'Did anything else happen?',
       '...',
-      'You KILLED one?!?',
-      "Normally I'd scold you, but I'm desperate right now.",
+      "You KILLED one?!? And now you're trying to get to the robot king!?",
+      "That's going to be pretty difficult since the robot king's lair...",
+      "isn't accessible without a clearance chip programmed into your body.",
+      "Normally I'd tell you it's impossible, but I'm desperate right now too.",
       'I need you to kill some robots for me.',
       'Their demands are becoming too aggressive.',
       "They're forcing your dad and me to spy on other humans.",
@@ -101,21 +104,17 @@ export default class RobotCityCutScene extends Phaser.Scene {
       'To save your dad, me, and the rest of the humans...',
       "you'll have to kill most of the robot hoard in the city.",
       "I'd say 10 should be more than enough.",
+      "And if you bring me their clearance chips, I'll be able to make one for you.",
       "But you'll die if you go there with only that knife.",
       'The last group of humans strong enough to hold out against the robots...',
-      'is located South-East of here.',
+      'that your dad and I have been spying on is located South-East of here.',
       'They sometimes have spare weapon parts.',
       'Go there and get some better weapon attachments.',
       'To get there, follow the street North and make the first right.',
       "When the street ends, you'll see a path that will lead you to the encampment.",
-      "Come talk to me again once you've killed the robots.",
-      "I'll be waiting by my house just behind me.",
-      'And feel free to use the upgrade station outside my house.',
-      'Good luck.',
     ];
 
     const nameTextLines = [
-      'Stacy',
       'Stacy',
       'Stacy',
       'Stacy',
@@ -155,6 +154,48 @@ export default class RobotCityCutScene extends Phaser.Scene {
     dialogueHelper.call(this, textLines, nameTextLines);
   }
 
+  playSceneFour() {
+    /*
+      Panning to path so directions are more clear
+    */
+    this.sceneFour = true;
+    this.camera.stopFollow();
+
+    this.camera.setZoom(2);
+    this.camera.pan(1120, 1312, 1500);
+    this.time.delayedCall(1600, () => {
+      this.camera.pan(1952, 1312, 4000);
+      this.time.delayedCall(5000, () => {
+        this.camera.fadeOut(1000);
+        this.time.delayedCall(1000, () => {
+          this.camera.startFollow(this.player);
+          this.camera.setZoom(3);
+          this.camera.fadeIn(1000);
+          this.time.delayedCall(1000, () => {
+            this.endScene();
+          });
+        });
+      });
+    });
+  }
+
+  playSceneFive() {
+    /*
+      Stacy finishing up the backstory/quest details and ending the cutscene
+    */
+    this.sceneFive = true;
+    const textLines = [
+      "Come talk to me again once you've killed the robots.",
+      "I'll be waiting by my house just behind me.",
+      'And feel free to use the upgrade station outside my house.',
+      'Good luck.',
+    ];
+
+    const nameTextLines = ['Stacy', 'Stacy', 'Stacy', 'Stacy'];
+
+    dialogueHelper.call(this, textLines, nameTextLines);
+  }
+
   endScene() {
     /*
       Helper function to determine what to do next in cutscene
@@ -163,7 +204,11 @@ export default class RobotCityCutScene extends Phaser.Scene {
       this.playSceneTwo();
     } else if (this.sceneTwo && !this.sceneThree) {
       this.playSceneThree();
-    } else if (this.sceneThree) {
+    } else if (this.sceneThree && !this.sceneFour) {
+      this.playSceneFour();
+    } else if (this.sceneFour && !this.sceneFive) {
+      this.playSceneFive();
+    } else if (this.sceneFive) {
       this.camera.fadeOut(500);
       this.time.delayedCall(500, () => {
         this.doctor.x = 1232;
@@ -177,7 +222,7 @@ export default class RobotCityCutScene extends Phaser.Scene {
   }
 
   endCutScene() {
-    this.scene.get('RobotCityScene').events.emit('tutorialEnd');
+    this.scene.get('RobotCityScene').events.emit('cutSceneEnd');
     this.scene.stop();
   }
 }

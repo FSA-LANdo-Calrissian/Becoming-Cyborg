@@ -15,6 +15,7 @@ import secondTestQuest from './scenes/dialogue/secondTestQuest';
 import BossScene from './scenes/BossScene';
 import RobotCityScene from './scenes/RobotCityScene';
 import RobotCityCutScene from './scenes/cutscenes/RobotCityCutScene';
+import stacyQuest from './scenes/dialogue/stacyQuest';
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -25,6 +26,7 @@ export default class Game extends Phaser.Game {
     this.scene.add('TitleScene', TitleScene);
     this.scene.add('PreGameScene', PreGameScene);
     this.scene.add('RobotCityScene', RobotCityScene);
+    this.scene.add('stacyQuest', stacyQuest);
     this.scene.add('FgScene', FgScene);
     this.scene.add('BossScene', BossScene);
     this.scene.add('MainScene', MainScene);
