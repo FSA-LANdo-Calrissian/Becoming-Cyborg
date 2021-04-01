@@ -11,7 +11,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.attackCD = 5000;
   }
 
-  startFight() {}
+  startFight() {
+    this.play('unarmed');
+  }
 
   attack() {}
 

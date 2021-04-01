@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
 import Projectile from '../entity/Projectile';
 import Player from '../entity/Player';
+import Enemy from '../entity/Enemy';
 import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
+import createBossAnims from '../animations/createBossAnims';
+import { playDialogue } from './cutscenes/cutscenes';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -38,8 +41,11 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create({ player }) {
+    // Create animations
     createPlayerAnims.call(this);
+    createBossAnims.call(this);
 
+    // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
 
     this.terrainTiles = this.map.addTilesetImage('allGround', 'terrain');
@@ -53,6 +59,7 @@ export default class FgScene extends Phaser.Scene {
     this.world = this.map.createLayer('world', this.worldTiles);
     this.world.setCollisionByProperty({ collides: true });
 
+    // Create the entities
     this.player = new Player(this, 658, 1455, 'player', this.loadBullet)
       .setScale(0.5)
       .setSize(30, 35)
@@ -60,11 +67,20 @@ export default class FgScene extends Phaser.Scene {
 
     this.boss = new Boss(this, 750, 200, 'boss').setScale(1);
 
+    // Make the groups
+    this.enemiesGroup = this.physics.add.group({
+      classType: Enemy,
+      runChildUpdate: true,
+    });
+
+    // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
 
-    this.cameras.main.startFollow(this.player);
+    // Init camera
+    this.cameras.main.startFollow(this.player).setZoom(0.8);
 
+    // Init cursors
     this.cursors = this.input.keyboard.addKeys({
       inventory: Phaser.Input.Keyboard.KeyCodes.ESC,
       interact: Phaser.Input.Keyboard.KeyCodes.SPACE,
@@ -75,13 +91,39 @@ export default class FgScene extends Phaser.Scene {
       upgrade: Phaser.Input.Keyboard.KeyCodes.U,
       hp: Phaser.Input.Keyboard.KeyCodes.H,
     });
+
+    // Make event listeners
+    this.events.on('dialogueEnd', () => {
+      this.time.delayedCall(500, () => {
+        this.dialogueInProgress = false;
+      });
+      this.player.canAttack = true;
+      this.player.shooting = false;
+      this.scene.resume();
+      this.boss.startFight();
+    });
   }
 
   update(time, delta) {
     if (this.player.y < 940 && !this.bossCinematic) {
       console.log(`Playing boss cinematic.`);
-      this.cameras.main.shake(2000, 0.01);
+      this.player.setVelocityX(0);
+      this.player.setVelocityY(0);
+      this.dialogueInProgress = true;
+      this.player.play('idleRight');
+      this.cameras.main.shake(2000, 0.005);
       this.bossCinematic = true;
+
+      this.player.flipX = !this.player.flipX;
+
+      this.time.delayedCall(1000, () => {
+        this.player.flipX = !this.player.flipX;
+        this.player.flipX = !this.player.flipX;
+        this.time.delayedCall(1000, () => {
+          this.player.flipX = !this.player.flipX;
+          playDialogue.call(this, this.boss, 'firstBossCutScene');
+        });
+      });
     }
 
     if (!this.dialogueInProgress) {
