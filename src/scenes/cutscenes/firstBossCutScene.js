@@ -41,6 +41,7 @@ export default class firstBossCutScene extends Phaser.Scene {
   }
 
   endScene() {
+    this.scene.get('BossScene').events.emit('startFight');
     this.endCutScene();
   }
 

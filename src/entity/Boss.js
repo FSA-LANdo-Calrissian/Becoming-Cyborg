@@ -13,6 +13,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   startFight() {
     this.play('unarmed');
+    this.setVisible(false);
+    this.body.enable = false;
+    console.log(`Starting boss fight...`);
   }
 
   attack() {}

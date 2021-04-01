@@ -100,7 +100,28 @@ export default class FgScene extends Phaser.Scene {
       this.player.canAttack = true;
       this.player.shooting = false;
       this.scene.resume();
+    });
+
+    this.events.on('startFight', () => {
       this.boss.startFight();
+      this.cameras.main.shake(2000, 0.005);
+      this.rightHand = new Boss(
+        this,
+        this.boss.x - 100,
+        this.boss.y - 10,
+        'bossfistright'
+      );
+
+      this.rightHand.play('rightHand');
+
+      this.leftHand = new Boss(
+        this,
+        this.boss.x + 130,
+        this.boss.y - 10,
+        'bossfistleft'
+      );
+
+      this.leftHand.play('leftHand');
     });
   }
 
