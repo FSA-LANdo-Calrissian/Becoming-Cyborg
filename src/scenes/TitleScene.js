@@ -73,13 +73,24 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 123,
     });
 
-    this.load.spritesheet('boss', 'assets/sprites/boss.png', {
-      frameWidth: 115,
-      frameHeight: 100,
+    this.load.spritesheet('boss', 'assets/sprites/bossidle.png', {
+      frameWidth: 426,
+      frameHeight: 292,
     });
-    this.load.spritesheet('bossfist', 'assets/sprites/bossfist.png', {
-      frameWidth: 50,
-      frameHeight: 40,
+
+    this.load.spritesheet('bossattack', 'assets/sprites/bossattack.png', {
+      frameWidth: 460,
+      frameHeight: 298,
+    });
+
+    this.load.spritesheet('bossfistleft', 'assets/sprites/bossfistleft.png', {
+      frameWidth: 149,
+      frameHeight: 59,
+    });
+
+    this.load.spritesheet('bossfistright', 'assets/sprites/bossfistright.png', {
+      frameWidth: 190,
+      frameHeight: 75,
     });
 
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
