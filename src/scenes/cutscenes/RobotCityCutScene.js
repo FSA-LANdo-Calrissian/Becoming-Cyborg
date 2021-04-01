@@ -14,6 +14,8 @@ export default class RobotCityCutScene extends Phaser.Scene {
     this.sceneOne = false;
     this.sceneTwo = false;
     this.sceneThree = false;
+    this.sceneFour = false;
+    this.sceneFive = false;
 
     this.playSceneOne();
   }
@@ -108,17 +110,9 @@ export default class RobotCityCutScene extends Phaser.Scene {
       'Go there and get some better weapon attachments.',
       'To get there, follow the street North and make the first right.',
       "When the street ends, you'll see a path that will lead you to the encampment.",
-      "Come talk to me again once you've killed the robots.",
-      "I'll be waiting by my house just behind me.",
-      'And feel free to use the upgrade station outside my house.',
-      'Good luck.',
     ];
 
     const nameTextLines = [
-      'Stacy',
-      'Stacy',
-      'Stacy',
-      'Stacy',
       'Stacy',
       'Stacy',
       'Stacy',
@@ -155,6 +149,48 @@ export default class RobotCityCutScene extends Phaser.Scene {
     dialogueHelper.call(this, textLines, nameTextLines);
   }
 
+  playSceneFour() {
+    /*
+      Panning to path so directions are more clear
+    */
+    this.sceneFour = true;
+    this.camera.stopFollow();
+
+    this.camera.setZoom(2);
+    this.camera.pan(1120, 1312, 1500);
+    this.time.delayedCall(1600, () => {
+      this.camera.pan(1952, 1312, 4000);
+      this.time.delayedCall(5000, () => {
+        this.camera.fadeOut(1000);
+        this.time.delayedCall(1000, () => {
+          this.camera.startFollow(this.player);
+          this.camera.setZoom(3);
+          this.camera.fadeIn(1000);
+          this.time.delayedCall(1000, () => {
+            this.endScene();
+          });
+        });
+      });
+    });
+  }
+
+  playSceneFive() {
+    /*
+      Stacy finishing up the backstory/quest details and ending the cutscene
+    */
+    this.sceneFive = true;
+    const textLines = [
+      "Come talk to me again once you've killed the robots.",
+      "I'll be waiting by my house just behind me.",
+      'And feel free to use the upgrade station outside my house.',
+      'Good luck.',
+    ];
+
+    const nameTextLines = ['Stacy', 'Stacy', 'Stacy', 'Stacy'];
+
+    dialogueHelper.call(this, textLines, nameTextLines);
+  }
+
   endScene() {
     /*
       Helper function to determine what to do next in cutscene
@@ -163,7 +199,11 @@ export default class RobotCityCutScene extends Phaser.Scene {
       this.playSceneTwo();
     } else if (this.sceneTwo && !this.sceneThree) {
       this.playSceneThree();
-    } else if (this.sceneThree) {
+    } else if (this.sceneThree && !this.sceneFour) {
+      this.playSceneFour();
+    } else if (this.sceneFour && !this.sceneFive) {
+      this.playSceneFive();
+    } else if (this.sceneFive) {
       this.camera.fadeOut(500);
       this.time.delayedCall(500, () => {
         this.doctor.x = 1232;
