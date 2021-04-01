@@ -61,7 +61,7 @@ const quests = {
   fireballQuest: {
     key: 'fireballQuest',
     title: 'Where-Wolf',
-    reward: 'gunAttachment',
+    reward: 'fireballAttachment',
     description: 'Idk. Just testing',
     objectiveReqs: {
       enemiesCleared: false,

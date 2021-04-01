@@ -60,7 +60,9 @@ export default class Quest {
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
-    if (rewards === 'gunAttachment') {
+    if (rewards === 'fireballAttachment') {
+      player.inventory.fireballAttachment += 1;
+    } else if (rewards === 'gunAttachment') {
       player.inventory.gunAttachment += 1;
       this.quest.isCompleted = true;
     } else {
