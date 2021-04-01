@@ -247,7 +247,7 @@ export function initCutScene() {
   });
 }
 
-export function playCutScene() {
+export function playCutScene(cutScene) {
   /*
       Runs the tutorial cutscene. Contains the logic to advance through the dialogue on player clicking on the text.
       Can increase the click area by changing the setInteractive rectangle width/height.
@@ -258,11 +258,12 @@ export function playCutScene() {
   // Stop player movements
   freeze(this.player, this);
 
-  this.scene.launch('TutorialCutScene', {
+  this.scene.launch(cutScene, {
     player: this.player,
     enemy: this.enemy,
     camera: this.cameras.main,
     deadNPC: this.deadNPC,
+    doctor: this.doctor,
   });
 }
 

@@ -32,6 +32,7 @@ export default class FgScene extends Phaser.Scene {
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
   }
+
   openInventory() {
     this.dialogueInProgress = true;
     this.scene.transition({
@@ -41,6 +42,7 @@ export default class FgScene extends Phaser.Scene {
       data: { player: this.player, camera: this.camera },
     });
   }
+
   openUpgrade() {
     /*
       Opens up the upgrade window for the player. Should only be accessed when player is at a workbench.
@@ -119,67 +121,56 @@ export default class FgScene extends Phaser.Scene {
 
     //Load in map stuff
     this.map = this.make.tilemap({ key: 'map' });
-
     this.terrainTiles = this.map.addTilesetImage('terrain', 'terrain');
-
     this.worldTiles = this.map.addTilesetImage('worldTileset', 'worldTileset');
-
     this.groundBottom = this.map.createLayer(
       'ground-layers/ground-bottom',
       this.terrainTiles,
       0,
       0
     );
-
     this.street = this.map.createLayer(
       'ground-layers/street',
       this.worldTiles,
       0,
       0
     );
-
     this.groundMid = this.map.createLayer(
       'ground-layers/ground-mid',
       this.terrainTiles,
       0,
       0
     );
-
     this.groundTop = this.map.createLayer(
       'ground-layers/ground-top',
       this.terrainTiles,
       0,
       0
     );
-
     this.groundAbove = this.map.createLayer(
       'ground-layers/ground-above',
       this.terrainTiles,
       0,
       0
     );
-
     this.worldBottom = this.map.createLayer(
       'world-layers/world-bottom',
       this.worldTiles,
       0,
       0
     );
-
     this.worldMid = this.map.createLayer(
       'world-layers/world-mid',
       this.worldTiles,
       0,
       0
     );
-
     this.worldTop = this.map.createLayer(
       'world-layers/world-top',
       this.worldTiles,
       0,
       0
     );
-
     //Moved to bottom of create/ TODO: use depth instead
     // this.worldAbove = this.map.createLayer(
     //   'world-layers/world-above',
@@ -187,21 +178,18 @@ export default class FgScene extends Phaser.Scene {
     //   0,
     //   0
     // );
-
     // this.worldAboveExtra = this.map.createLayer(
     //   'world-layers/world-above-extra',
     //   this.worldTiles,
     //   0,
     //   0
     // );
-
     this.worldCollision = this.map.createLayer(
       'collision',
       this.worldTiles,
       0,
       0
     );
-
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
@@ -353,6 +341,7 @@ export default class FgScene extends Phaser.Scene {
       // And make it disappear from screen.
       item.lifespan = 0;
     });
+
     this.physics.add.overlap(
       this.player,
       this.enemiesGroup,
@@ -609,7 +598,7 @@ export default class FgScene extends Phaser.Scene {
         true
       );
       this.enemy.play('tutorial');
-      playCutScene.call(this);
+      playCutScene.call(this, 'TutorialCutScene');
     }
 
     // If not in dialogue, allow player to move with cursors.

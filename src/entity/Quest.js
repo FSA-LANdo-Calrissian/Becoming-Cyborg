@@ -85,7 +85,16 @@ export default class Quest {
             drop.reset();
           }
         }
+
       });
+
+      } else if (item === 'oil') {
+        player.inventory.oil += 50;
+      } else if (item === 'clearanceChip') {
+        player.inventory.clearanceChip += 1;
+      }
+    });
+
 
       this.quest.isCompleted = true;
     }

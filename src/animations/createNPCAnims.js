@@ -18,4 +18,24 @@ export default function createNPCAnims() {
     frameRate: 7,
     repeat: 0,
   });
+
+  this.anims.create({
+    key: 'stacyWalk',
+    frames: this.anims.generateFrameNumbers('stacy', {
+      start: 1,
+      end: 3,
+    }),
+    frameRate: 5,
+    repeat: -1,
+  });
+
+  this.anims.create({
+    key: 'stacyIdle',
+    frames: this.anims.generateFrameNumbers('stacy', {
+      start: 0,
+      end: 0,
+    }),
+    frameRate: 1,
+    repeat: -1,
+  });
 }

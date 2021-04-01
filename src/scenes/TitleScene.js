@@ -19,6 +19,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bullet', 'assets/sprites/bullet.png');
 
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/FgSceneMap.json');
+    this.load.tilemapTiledJSON('bossMap', 'assets/backgrounds/bossRoom.json');
+
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
       frameWidth: 47.888,
       frameHeight: 49,
@@ -69,6 +71,30 @@ export default class MainScene extends Phaser.Scene {
     this.load.spritesheet('explode', 'assets/sprites/fieryexplode.png', {
       frameWidth: 128,
       frameHeight: 123,
+    });
+    this.load.spritesheet('stacy', 'assets/sprites/headnurse.png', {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
+
+    this.load.spritesheet('boss', 'assets/sprites/bossidle.png', {
+      frameWidth: 426,
+      frameHeight: 292,
+    });
+
+    this.load.spritesheet('bossattack', 'assets/sprites/bossattack.png', {
+      frameWidth: 460,
+      frameHeight: 298,
+    });
+
+    this.load.spritesheet('bossfistleft', 'assets/sprites/bossfistleft.png', {
+      frameWidth: 149,
+      frameHeight: 59,
+    });
+
+    this.load.spritesheet('bossfistright', 'assets/sprites/bossfistright.png', {
+      frameWidth: 190,
+      frameHeight: 75,
     });
 
     this.load.spritesheet('fakeBot', 'assets/sprites/brittabot.png', {
