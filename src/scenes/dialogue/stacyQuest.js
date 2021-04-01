@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
+import Quest from '../../entity/Quest';
 
 export default class stacyQuest extends Phaser.Scene {
   constructor() {
@@ -20,8 +21,10 @@ export default class stacyQuest extends Phaser.Scene {
     });
 
     if (!quests[npc.name].isStarted) {
+      console.log('Starting Robot City Quest');
       const mainGame = this.scene.get('RobotCityScene');
-      mainGame.events.emit('startQuest');
+      mainGame[npc.name] = new Quest(mainGame, npc.name, npc);
+      mainGame[npc.name].startQuest();
       this.scene.stop();
     } else if (quests[npc.name].isStarted && !quests[npc.name].isCompleted) {
       this.playIncomplete();

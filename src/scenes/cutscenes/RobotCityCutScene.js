@@ -6,7 +6,6 @@ export default class RobotCityCutScene extends Phaser.Scene {
     super('RobotCityCutScene');
   }
   create({ player, camera, doctor }) {
-    console.log(player);
     this.player = player;
     this.camera = camera;
     this.doctor = doctor;

@@ -9,43 +9,109 @@ export function stacyQuestSetUp() {
   this.enemiesKilled = 0;
 
   //Spawning the robots
-  this.scene.robot1 = new Enemy(1136, 896, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot1 = new Enemy(
+    this.scene,
+    1136,
+    896,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot2 = new Enemy(1104, 1056, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot2 = new Enemy(
+    this.scene,
+    1104,
+    1056,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot3 = new Enemy(1456, 864, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot3 = new Enemy(
+    this.scene,
+    1456,
+    864,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot4 = new Enemy(1504, 784, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot4 = new Enemy(
+    this.scene,
+    1504,
+    784,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot5 = new Enemy(1232, 720, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot5 = new Enemy(
+    this.scene,
+    1232,
+    720,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot6 = new Enemy(1056, 784, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot6 = new Enemy(
+    this.scene,
+    1056,
+    784,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot7 = new Enemy(816, 944, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot7 = new Enemy(
+    this.scene,
+    816,
+    944,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot8 = new Enemy(1216, 1184, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot8 = new Enemy(
+    this.scene,
+    1216,
+    1184,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot9 = new Enemy(1552, 1072, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot9 = new Enemy(
+    this.scene,
+    1552,
+    1072,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot10 = new Enemy(1408, 960, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot10 = new Enemy(
+    this.scene,
+    1408,
+    960,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot11 = new Enemy(1648, 608, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot11 = new Enemy(
+    this.scene,
+    1648,
+    608,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot12 = new Enemy(864, 800, 'meleeRobot', 'robot').setScale(0.6);
+  this.scene.robot12 = new Enemy(
+    this.scene,
+    864,
+    800,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
-  this.scene.robot13 = new Enemy(816, 1104, 'meleeRobot', 'robot').setScale(
-    0.6
-  );
+  this.scene.robot13 = new Enemy(
+    this.scene,
+    816,
+    1104,
+    'meleeRobot',
+    'robot'
+  ).setScale(0.6);
 
   //Adding to group
   this.scene.enemiesGroup.add(this.scene.robot1);
