@@ -254,8 +254,42 @@ export default class FgScene extends Phaser.Scene {
       1760.4166666666963,
       'fakeBot'
     )
-      .setScale(0.3)
+      .setScale(0.4)
       .setName('gunQuest');
+
+    this.fireballQuestNPC = new NPC(this, 1815.472, 1675.25, 'packLeader')
+      .setScale(0.6)
+      .setName('fireballQuest');
+
+    this.scene.wolf4 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 10,
+      this.fireballQuestNPC.y + 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf5 = new Enemy(
+      this,
+      this.fireballQuestNPC.x - 10,
+      this.fireballQuestNPC.y - 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf6 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 20,
+      this.fireballQuestNPC.y + 20,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
 
     // this.gunQuestNPC = new NPC(
     //   this,
@@ -302,6 +336,7 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.questNPC);
     this.npcGroup.add(this.questNPC2);
     this.npcGroup.add(this.gunQuestNPC);
+    this.npcGroup.add(this.fireballQuestNPC);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);

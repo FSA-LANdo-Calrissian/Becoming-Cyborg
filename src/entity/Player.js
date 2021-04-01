@@ -131,7 +131,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       Helper function to upgrade the stats after an upgrade was put in. This is because this.speed and all the other stats do not dynamically update as we update the "this.upgrade" object, so we reset it here.
     */
     const { damage, attackSpeed } = this.weaponStats[this.currentLeftWeapon];
-    this.speed = 100 + this.upgrade.moveSpeed;
+    this.speed = 400 + this.upgrade.moveSpeed;
     this.maxHealth = 100 + this.upgrade.maxHealth;
     this.damage = 10 + this.upgrade.damage + damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed - attackSpeed;
