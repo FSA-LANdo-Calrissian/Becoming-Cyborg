@@ -257,6 +257,15 @@ export default class FgScene extends Phaser.Scene {
       .setScale(0.3)
       .setName('gunQuest');
 
+    // this.gunQuestNPC = new NPC(
+    //   this,
+    //   this.player.x + 50,
+    //   this.player.y + 50,
+    //   'fakeBot'
+    // )
+    //   .setScale(0.3)
+    //   .setName('gunQuest');
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,

@@ -1,4 +1,4 @@
-import Enemy from '../entity/Enemy';
+import Item from '../entity/Item';
 
 export function gunQuestSetup() {
   /*
@@ -6,63 +6,28 @@ export function gunQuestSetup() {
   */
 
   // Initializing the tracker
-  this.iron = 0;
-  console.log(this.scene.player.inventory.iron);
 
+  this.questItem = 0;
   // Spawning the enemies
-  this.scene.robot1 = new Enemy(
+  this.scene.item = new Item(
     this.scene,
-    845.9719999999984,
-    1038.583333333334,
-    'meleeRobot',
-    'robot'
-  )
-    .setScale(0.2)
-    .setSize(45, 45);
-
-  // this.scene.wolf2 = new Enemy(
-  //   this.scene,
-  //   this.scene.player.x + 100,
-  //   this.scene.player.y,
-  //   'wolf',
-  //   'animal'
-  // )
-  //   .setScale(0.2)
-  //   .setSize(45, 45);
-
-  // this.scene.wolf3 = new Enemy(
-  //   this.scene,
-  //   this.scene.player.x,
-  //   this.scene.player.y + 300,
-  //   'wolf',
-  //   'animal'
-  // )
-  //   .setScale(0.2)
-  //   .setSize(45, 45);
-
-  // Adding to group
-  this.scene.enemiesGroup.add(this.scene.robot1);
-  // this.scene.enemiesGroup.add(this.scene.wolf2);
-  // this.scene.enemiesGroup.add(this.scene.wolf3);
+    686.6386666666683,
+    902.25,
+    'robotPart'
+  ).setScale(0.1);
 
   // Adding event emitters on death for tracking purposes
-  this.scene.robot1.on('animationcomplete-death', () => {
-    /*
-      This will emit the updateQuest- with the quest key to tell the right quest to run its update function. It is very important that you use the quest key or else it will activate all quest updates at once.
-    */
-    this.scene.events.emit('updateQuest-' + this.quest.key);
-    this.scene.robot1.removeAllListeners();
-  });
 
-  //   this.scene.wolf2.on('animationcomplete-death', () => {
-  //     this.scene.events.emit('updateQuest-' + this.quest.key);
-  //     this.scene.wolf2.removeAllListeners();
-  //   });
+  this.scene.itemsGroup.add(this.scene.item);
+  this.scene.item.reset();
 
-  //   this.scene.wolf3.on('animationcomplete-death', () => {
-  //     this.scene.events.emit('updateQuest-' + this.quest.key);
-  //     this.scene.wolf3.removeAllListeners();
-  //   });
+  this.scene.physics.add.overlap(
+    this.scene.player,
+    this.scene.itemsGroup,
+    () => {
+      this.scene.events.emit('updateQuest-' + this.quest.key);
+    }
+  );
 }
 
 export function gunQuestUpdate() {
@@ -70,10 +35,9 @@ export function gunQuestUpdate() {
     Test quest's update function. Just increases the tracker on every death. Once all 3 die, it will set the cleared objective to true. The main point of this function is to keep track of all objectives and set them to true when completed. You can split this into one function for every objective, if you wish. Just make sure to pass them all into the update array in the quest object.
   */
 
-  console.log(this.iron);
-  this.enemiesKilled++;
+  this.questItem++;
 
-  if (this.enemiesKilled === 3) {
+  if (this.questItem === 1) {
     this.quest.objectiveReqs.enemiesCleared = true;
   }
 }
