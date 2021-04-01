@@ -12,12 +12,7 @@ import UpgradeStation from '../entity/UpgradeStation';
 import Item from '../entity/Item';
 import Quest from '../entity/Quest';
 import quests from '../quests/quests';
-import {
-  initCutScene,
-  playCutScene,
-  robotKilled,
-  playDialogue,
-} from './cutscenes/cutscenes';
+import { playCutScene, playDialogue } from './cutscenes/cutscenes';
 
 export default class RobotCityScene extends Phaser.Scene {
   constructor() {
@@ -25,7 +20,7 @@ export default class RobotCityScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
-    this.initCutScene;
+    this.initCutScene = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -205,7 +200,7 @@ export default class RobotCityScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
 
-    this.doctor = new NPC(this, 1184, 1552, 'stacy').setScale(0.5);
+    this.doctor = new NPC(this, 1168, 1552, 'stacy').setScale(0.5);
     this.doctor.name = 'Stacy';
 
     // Groups
@@ -451,7 +446,7 @@ export default class RobotCityScene extends Phaser.Scene {
     }
 
     // If player in 160 range of doctor, play cutscene
-    if (this.cutSceneHelper(90)) {
+    if (this.cutSceneHelper(94)) {
       if (!this.initCutScene) {
         this.dialogueInProgress = true;
         // stop animations
