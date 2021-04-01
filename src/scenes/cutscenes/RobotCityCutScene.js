@@ -223,7 +223,7 @@ export default class RobotCityCutScene extends Phaser.Scene {
   }
 
   endCutScene() {
-    this.scene.get('RobotCityScene').events.emit('tutorialEnd');
+    this.scene.get('RobotCityScene').events.emit('cutSceneEnd');
     this.scene.stop();
   }
 }

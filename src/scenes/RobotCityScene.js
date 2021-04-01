@@ -392,7 +392,7 @@ export default class RobotCityScene extends Phaser.Scene {
       this.scene.pause();
     });
 
-    this.events.on('tutorialEnd', () => {
+    this.events.on('cutSceneEnd', () => {
       this.time.delayedCall(500, () => {
         this.dialogueInProgress = false;
       });
@@ -463,6 +463,7 @@ export default class RobotCityScene extends Phaser.Scene {
           huh.destroy();
         });
         playCutScene.call(this, 'RobotCityCutScene');
+        playDialogue.call(this, this.doctor, this.doctor.name);
       }
     }
 
