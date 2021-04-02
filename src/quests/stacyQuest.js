@@ -127,6 +127,7 @@ export function stacyQuestSetUp() {
   this.scene.enemiesGroup.add(this.scene.robot11);
   this.scene.enemiesGroup.add(this.scene.robot12);
   this.scene.enemiesGroup.add(this.scene.robot13);
+  this.scene.enemiesGroup.setDepth(7);
 
   // Adding event emitters on death for tracking purposes
   this.scene.robot1.on('animationcomplete-death', () => {

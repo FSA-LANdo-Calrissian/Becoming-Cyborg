@@ -120,70 +120,41 @@ export default class FgScene extends Phaser.Scene {
     this.gg = this.sound.add('gg');
 
     //Load in map stuff
-    this.map = this.make.tilemap({ key: 'map' });
+    this.map = this.make.tilemap({ key: 'tutorialMap' });
     this.terrainTiles = this.map.addTilesetImage('terrain', 'terrain');
     this.worldTiles = this.map.addTilesetImage('worldTileset', 'worldTileset');
     this.groundBottom = this.map.createLayer(
-      'ground-layers/ground-bottom',
+      'ground-bottom',
       this.terrainTiles,
       0,
       0
     );
-    this.street = this.map.createLayer(
-      'ground-layers/street',
-      this.worldTiles,
-      0,
-      0
-    );
     this.groundMid = this.map.createLayer(
-      'ground-layers/ground-mid',
+      'ground-mid',
       this.terrainTiles,
       0,
       0
     );
     this.groundTop = this.map.createLayer(
-      'ground-layers/ground-top',
-      this.terrainTiles,
-      0,
-      0
-    );
-    this.groundAbove = this.map.createLayer(
-      'ground-layers/ground-above',
+      'ground-top',
       this.terrainTiles,
       0,
       0
     );
     this.worldBottom = this.map.createLayer(
-      'world-layers/world-bottom',
+      'world-bottom',
       this.worldTiles,
       0,
       0
     );
-    this.worldMid = this.map.createLayer(
-      'world-layers/world-mid',
+    this.worldMid = this.map.createLayer('world-mid', this.worldTiles, 0, 0);
+    this.worldTop = this.map.createLayer('world-top', this.worldTiles, 0, 0);
+    this.worldAbove = this.map.createLayer(
+      'world-above',
       this.worldTiles,
       0,
       0
     );
-    this.worldTop = this.map.createLayer(
-      'world-layers/world-top',
-      this.worldTiles,
-      0,
-      0
-    );
-    //Moved to bottom of create/ TODO: use depth instead
-    // this.worldAbove = this.map.createLayer(
-    //   'world-layers/world-above',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
-    // this.worldAboveExtra = this.map.createLayer(
-    //   'world-layers/world-above-extra',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
     this.worldCollision = this.map.createLayer(
       'collision',
       this.worldTiles,
@@ -375,8 +346,8 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.enemiesGroup, this.worldCollision);
 
     // Adding world boundaries
-    this.boundaryX = 2400;
-    this.boundaryY = 2400;
+    this.boundaryX = 1840;
+    this.boundaryY = 1840;
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.player.setCollideWorldBounds();
@@ -467,24 +438,21 @@ export default class FgScene extends Phaser.Scene {
       main.scene.restart({ choice: false });
     }
 
-    // For debugging purposes to see pointer position
-    //   this.input.on('pointerdown', (pointer) => {
-    //     console.log(`pointer position: `, pointer.x, pointer.y);
-    //   });
-
-    this.worldAbove = this.map.createLayer(
-      'world-layers/world-above',
-      this.worldTiles,
-      0,
-      0
-    );
-
-    this.worldAboveExtra = this.map.createLayer(
-      'world-layers/world-above-extra',
-      this.worldTiles,
-      0,
-      0
-    );
+    // Setting depth of everything in scene
+    this.groundBottom.setDepth(0);
+    this.groundMid.setDepth(1);
+    this.groundTop.setDepth(2);
+    this.worldBottom.setDepth(3);
+    this.worldMid.setDepth(4);
+    this.worldTop.setDepth(5);
+    this.worldAbove.setDepth(9);
+    this.player.setDepth(8);
+    this.enemiesGroup.setDepth(7);
+    this.npcGroup.setDepth(7);
+    this.itemsGroup.setDepth(7);
+    this.playerProjectiles.setDepth(7);
+    this.worldCollision.setDepth(10);
+    debugGraphics.setDepth(10);
   }
 
   tutorialHelper(distance) {
