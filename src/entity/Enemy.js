@@ -10,7 +10,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.speed = 400;
+    this.speed = classType === 'robot' ? 80 : 90;
     this.health = 4;
     this.direction = '';
     this.isMoving = false;
@@ -161,7 +161,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     if (!this.body) return;
 
-    const aggroRange = 85;
+    const aggroRange = 120;
     const attackRange = 8;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
@@ -268,10 +268,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       ) {
         this.body.velocity.x = 0;
         if (Math.round(player.y) > Math.round(this.y)) {
-          this.body.velocity.y = 35;
+          this.body.velocity.y = this.speed;
           this.enemyMovement('down');
         } else {
-          this.body.velocity.y = -35;
+          this.body.velocity.y = -this.speed;
           this.enemyMovement('up');
         }
       } else if (
@@ -280,10 +280,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       ) {
         this.body.velocity.y = 0;
         if (Math.round(player.x) > Math.round(this.x)) {
-          this.body.velocity.x = 35;
+          this.body.velocity.x = this.speed;
           this.enemyMovement('right');
         } else {
-          this.body.velocity.x = -35;
+          this.body.velocity.x = -this.speed;
           this.enemyMovement('left');
         }
       }
@@ -294,7 +294,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         Math.round(this.body.velocity.x) >= 0
       ) {
         // move enemy to left
-        this.body.velocity.x = -35;
+        this.body.velocity.x = -this.speed;
         this.enemyMovement('left');
         this.isMoving = true;
       }
@@ -304,21 +304,21 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         Math.round(this.body.velocity.x) <= 0
       ) {
         // move enemy to right
-        this.body.velocity.x = 35;
+        this.body.velocity.x = this.speed;
         this.enemyMovement('right');
         this.isMoving = true;
       } else if (
         Math.round(player.y) < Math.round(this.y) &&
         Math.round(this.body.velocity.y) >= 0
       ) {
-        this.body.velocity.y = -35;
+        this.body.velocity.y = -this.speed;
         this.enemyMovement('up');
         this.isMoving = true;
       } else if (
         Math.round(player.y) > Math.round(this.y) &&
         Math.round(this.body.velocity.y) <= 0
       ) {
-        this.body.velocity.y = 35;
+        this.body.velocity.y = this.speed;
         this.enemyMovement('down');
         this.isMoving = true;
       }
@@ -384,7 +384,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             } else {
               // checks if enemy is still outta range and if enemy was going right switch to going left
               this.body.velocity.y = 0;
-              this.body.velocity.x = -35;
+              this.body.velocity.x = -this.speed;
 
               this.enemyMovement('left');
 
