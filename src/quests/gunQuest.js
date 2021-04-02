@@ -1,11 +1,65 @@
 import Item from '../entity/Item';
+import Enemy from '../entity/Enemy';
 
 export function gunQuestSetup() {
-  /*
-    The set up function for my test quest. I will use this as the backbone to set up future quests. All this does is spawn the monsters and initialize the tracking system for the quest. The "this" context is the quest class itself. If you want to access the scene, do so with this.scene and if you want to access the quest object, use this.quest.
-  */
+  console.log('wolves created');
+  this.scene.alphaWolf = new Enemy(
+    this.scene,
+    1731.6386666666674,
+    1989.4166666666633,
+    'wolf',
+    'animal'
+  )
+    .setScale(0.5)
+    .setSize(45, 45);
 
-  // Initializing the tracker
+  this.scene.wolf1 = new Enemy(
+    this.scene,
+    this.scene.alphaWolf.x + 30,
+    this.scene.alphaWolf.y + 30,
+    'wolf',
+    'animal'
+  )
+    .setScale(0.3)
+    .setSize(45, 45);
+
+  this.scene.wolf2 = new Enemy(
+    this.scene,
+    this.scene.alphaWolf.x - 30,
+    this.scene.alphaWolf.y - 30,
+    'wolf',
+    'animal'
+  )
+    .setScale(0.3)
+    .setSize(45, 45);
+
+  this.scene.wolf3 = new Enemy(
+    this.scene,
+    this.scene.alphaWolf.x + 60,
+    this.scene.alphaWolf.y + 60,
+    'wolf',
+    'animal'
+  )
+    .setScale(0.3)
+    .setSize(45, 45);
+
+  this.scene.enemiesGroup.add(this.scene.wolf1);
+  this.scene.enemiesGroup.add(this.scene.wolf2);
+  this.scene.enemiesGroup.add(this.scene.wolf3);
+  this.scene.enemiesGroup.add(this.scene.alphaWolf);
+  this.scene.alphaWolf.health = 10;
+
+  this.scene.wolf1.visible = false;
+  this.scene.wolf1.setActive(false);
+
+  this.scene.wolf2.visible = false;
+  this.scene.wolf2.setActive(false);
+
+  this.scene.wolf3.visible = false;
+  this.scene.wolf3.setActive(false);
+
+  this.scene.alphaWolf.visible = false;
+  this.scene.alphaWolf.setActive(false);
 
   this.questItem = 0;
   // Spawning the enemies

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
+import Enemy from '../../entity/Enemy';
 
 export default class Dialogue extends Phaser.Scene {
   constructor() {
@@ -79,13 +80,27 @@ export default class Dialogue extends Phaser.Scene {
 
   endScene() {
     if (!quests[this.npc.name].isStarted) {
-      const mainGame = this.scene.get('RobotCityScene');
-      mainGame.events.emit('startQuest');
+      this.world = this.scene.get('RobotCityScene');
+      this.world.events.emit('startQuest');
+
       this.endCutScene();
+      quests[this.npc.name].isStarted = false;
+      // this.world.wolf1.visible = true;
+      // this.world.wolf1.setActive(true);
+
+      // this.world.wolf2.visible = true;
+      // this.world.wolf2.setActive(true);
+
+      // this.world.wolf3.visible = true;
+      // this.world.wolf3.setActive(true);
+
+      // this.world.alphaWolf.visible = true;
+      // this.world.alphaWolf.setActive(true);
     } else if (
       quests[this.npc.name].isStarted &&
       !quests[this.npc.name].isCompleted
     ) {
+      console.log('quest started and not completed');
       this.endCutScene();
     } else {
       this.endCutScene();
@@ -108,21 +123,29 @@ export default class Dialogue extends Phaser.Scene {
     this.cursors = this.input.keyboard.addKeys({
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
+
+    if (player.inventory.gunAttachment === 1 && quests[npc.name].isStarted) {
+      console.log(this.world.wolf1);
+    }
     if (player.inventory.gunAttachment === 0 && this.questStarted === false) {
-      quests[npc.name].isStarted = false;
+      // this.scene.events.emit('updateQuest-' + this.quest.key);
+      // quests[npc.name].isStarted = false;
       this.playPreDialogue();
     } else if (
-      quests[npc.name].isStarted &&
+      !quests[npc.name].isStarted &&
       player.inventory.gunAttachment === 1 &&
       this.questStarted === false
     ) {
+      // quests[npc.name].isStarted = true;
       this.playDialogue();
       this.questStarted = true;
+      console.log('mission started');
     } else if (
       quests[npc.name].isStarted &&
       !quests[npc.name].isCompleted &&
       this.questStarted
     ) {
+      console.log(this.world.wolf1);
       this.playIncomplete();
     } else if (
       quests[npc.name].isStarted &&
