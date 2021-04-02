@@ -124,6 +124,15 @@ export default class BossScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(
+      this.playerProjectiles,
+      this.shockwaveCollision,
+      (proj, world) => {
+        proj.destroy();
+      },
+      (proj, world) => world.canCollide
+    );
+
+    this.physics.add.overlap(
       this.player,
       this.shockwavesGroup,
       (player, proj) => {
