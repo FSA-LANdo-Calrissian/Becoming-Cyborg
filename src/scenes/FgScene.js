@@ -39,7 +39,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'Inventory',
       sleep: true,
       duration: 10,
-      data: { player: this.player, camera: this.camera },
+      data: { player: this.player, camera: this.camera, scene: 'FgScene' },
     });
   }
 
@@ -54,7 +54,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 10,
-      data: { player: this.player },
+      data: { player: this.player, scene: 'RobotCityScene' },
     });
   }
 

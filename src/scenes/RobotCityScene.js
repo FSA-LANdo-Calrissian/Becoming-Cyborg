@@ -32,7 +32,11 @@ export default class RobotCityScene extends Phaser.Scene {
       target: 'Inventory',
       sleep: true,
       duration: 10,
-      data: { player: this.player, camera: this.camera },
+      data: {
+        player: this.player,
+        camera: this.camera,
+        scene: 'RobotCityScene',
+      },
     });
   }
   openUpgrade() {
@@ -46,7 +50,7 @@ export default class RobotCityScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 10,
-      data: { player: this.player },
+      data: { player: this.player, scene: 'RobotCityScene' },
     });
   }
 
@@ -191,8 +195,8 @@ export default class RobotCityScene extends Phaser.Scene {
     });
 
     // Spawning the entities
-    this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
-      .setScale(0.3)
+    this.upgradeStation = new UpgradeStation(this, 1392, 1392, 'upgradeStation')
+      .setScale(0.5)
       .setSize(10, 10);
 
     this.player = new Player(this, 880, 1744, 'player', this.loadBullet)
