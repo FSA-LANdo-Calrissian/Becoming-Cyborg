@@ -1,24 +1,23 @@
-import Enemy from '../entity/Enemy';
-
 export function fireballQuestSetup() {
   console.log('wolves created');
   this.alphaKilled = 0;
-  if (this.scene.wolf1) {
+  if (this.scene.wolf1 && this.scene.sendInWolves) {
     this.scene.wolf1.visible = true;
     this.scene.wolf1.setActive(true);
   }
-  if (this.scene.wolf2) {
+  if (this.scene.wolf2 && this.scene.sendInWolves) {
     this.scene.wolf2.visible = true;
     this.scene.wolf2.setActive(true);
   }
 
-  if (this.scene.wolf3) {
+  if (this.scene.wolf3 && this.scene.sendInWolves) {
     this.scene.wolf3.visible = true;
     this.scene.wolf3.setActive(true);
   }
-  if (this.scene.alphaWolf) {
+  if (this.scene.alphaWolf && this.scene.sendInWolves) {
     this.scene.alphaWolf.visible = true;
     this.scene.alphaWolf.setActive(true);
+
     this.scene.alphaWolf.on('animationcomplete-death', () => {
       this.scene.events.emit('updateQuest-' + this.quest.key);
       this.scene.alphaWolf.removeAllListeners();

@@ -138,8 +138,11 @@ export default class Dialogue extends Phaser.Scene {
     ) {
       // quests[npc.name].isStarted = true;
       this.playDialogue();
+
       this.questStarted = true;
+
       console.log('mission started');
+      this.world.sendInWolves = true;
     } else if (
       quests[npc.name].isStarted &&
       !quests[npc.name].isCompleted &&
