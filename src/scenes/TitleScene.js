@@ -106,6 +106,10 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 65,
       frameHeight: 44,
     });
+    this.load.spritesheet('shockwave', 'assets/sprites/shockwave.png', {
+      frameWidth: 20,
+      frameHeight: 22,
+    });
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
