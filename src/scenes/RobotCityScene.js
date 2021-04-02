@@ -17,6 +17,7 @@ import { playCutScene, playDialogue } from './cutscenes/cutscenes';
 export default class RobotCityScene extends Phaser.Scene {
   constructor() {
     super('RobotCityScene');
+
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
     this.initCutScene = false;
@@ -185,7 +186,7 @@ export default class RobotCityScene extends Phaser.Scene {
       0,
       0
     );
-    this.worldCollision.setCollisionByProperty({ collides: true });
+    // this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
     const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -222,6 +223,53 @@ export default class RobotCityScene extends Phaser.Scene {
       .setScale(0.5)
       .setName('stacyQuest');
 
+    this.gunQuestNPC = new NPC(
+      this,
+      1699.000000000027,
+      1760.4166666666963,
+      'fakeBot'
+    )
+      .setScale(0.4)
+      .setName('gunQuest');
+
+    this.fireballQuestNPC = new NPC(this, 1815.472, 1675.25, 'packLeader')
+      .setScale(0.6)
+      .setName('fireballQuest');
+
+    this.scene.wolf4 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 10,
+      this.fireballQuestNPC.y + 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf5 = new Enemy(
+      this,
+      this.fireballQuestNPC.x - 10,
+      this.fireballQuestNPC.y - 10,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf6 = new Enemy(
+      this,
+      this.fireballQuestNPC.x + 20,
+      this.fireballQuestNPC.y + 20,
+      'wolf',
+      'animal'
+    )
+      .setScale(0.3)
+      .setSize(45, 45);
+
+    this.scene.wolf6.flipX = !this.scene.wolf6.flipX;
+    this.scene.wolf5.flipX = !this.scene.wolf5.flipX;
+    this.scene.wolf4.flipX = !this.scene.wolf4.flipX;
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -252,6 +300,8 @@ export default class RobotCityScene extends Phaser.Scene {
 
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
+    this.npcGroup.add(this.gunQuestNPC);
+    this.npcGroup.add(this.fireballQuestNPC);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
