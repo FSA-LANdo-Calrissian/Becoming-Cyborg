@@ -119,8 +119,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.inventory.iron += 1;
         break;
       case 'potion':
-        this.health += 10;
+        if (this.maxHealth - this.health < 10) {
+          this.health += this.maxHealth - this.health;
+        } else {
+          this.health += 10;
+        }
         this.scene.events.emit('takeDamage', this.health, this.maxHealth);
+        break;
+      case 'oil':
+        this.inventory.oil += 1;
         break;
       default:
         console.log(`Not a valid item...`);
