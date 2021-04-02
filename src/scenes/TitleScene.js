@@ -18,7 +18,11 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('button', 'assets/sprites/button.png');
     this.load.image('bullet', 'assets/sprites/bullet.png');
 
-    this.load.tilemapTiledJSON('map', 'assets/backgrounds/FgSceneMap.json');
+    this.load.tilemapTiledJSON(
+      'tutorialMap',
+      'assets/backgrounds/TutorialMap.json'
+    );
+    this.load.tilemapTiledJSON('map', 'assets/backgrounds/RobotCityMap.json');
     this.load.tilemapTiledJSON('bossMap', 'assets/backgrounds/bossRoom.json');
 
     this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
