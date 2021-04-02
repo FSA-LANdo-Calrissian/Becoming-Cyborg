@@ -18,6 +18,7 @@ import {
   robotKilled,
   playDialogue,
 } from './cutscenes/cutscenes';
+import Collision from '../entity/Collision';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -27,6 +28,7 @@ export default class FgScene extends Phaser.Scene {
     this.initTutorial = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
+    this.sceneOver = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -181,6 +183,8 @@ export default class FgScene extends Phaser.Scene {
       .setSize(30, 30)
       .setOffset(10, 12);
 
+    this.sceneEnd = new Collision(this, 1836, 1328, 'blank').setSize(10, 110);
+
     this.enemy = new Enemy(this, 1728, 1280, 'meleeRobot', 'robot')
       .setScale(0.6)
       .setSize(38, 35)
@@ -240,6 +244,26 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
+    this.physics.add.overlap(this.player, this.sceneEnd, () => {
+      if (this.allowUpgrade && !this.sceneOver) {
+        this.sceneOver = true;
+        this.cameras.main.fadeOut(1000);
+        this.time.delayedCall(1000, () => {
+          this.scene.stop('HUDScene');
+          this.scene.transition({
+            target: 'RobotCityScene',
+            sleep: true,
+            duration: 10,
+            data: {
+              player: this.player,
+              camera: this.camera,
+              scene: 'FgScene',
+            },
+          });
+          this.scene.launch('HUDScene', { mainScene: 'RobotCityScene' });
+        });
+      }
+    });
     this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
       // If player full on health, don't pick up potions.
       if (
@@ -372,6 +396,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Event listeners
     this.events.on('transitioncomplete', (fromScene) => {
+      this.sceneOver = false;
       this.scene.wake();
       // If we're coming from the upgrade UI
       // Set upgradeOpened to false so we can get back into it
@@ -449,6 +474,7 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setDepth(10);
     debugGraphics.setDepth(10);
     this.upgradeStation.setDepth(7);
+    this.sceneEnd.setDepth(12);
   }
 
   tutorialHelper(distance) {

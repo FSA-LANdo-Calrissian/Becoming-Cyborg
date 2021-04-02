@@ -10,7 +10,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.speed = 80;
+    this.speed = 400;
     this.health = 4;
     this.direction = '';
     this.isMoving = false;
@@ -19,7 +19,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.goingLeft = false;
     this.goingRight = false;
     this.dropTable = {
-      robot: ['potion', 'iron'],
+      robot: ['potion', 'iron', 'oil'],
       animal: ['potion'],
     };
     this.isDead = false;

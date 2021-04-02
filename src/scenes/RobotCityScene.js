@@ -200,10 +200,23 @@ export default class RobotCityScene extends Phaser.Scene {
       .setScale(0.5)
       .setSize(10, 10);
 
-    this.player = new Player(this, 880, 1744, 'player', this.loadBullet)
+    const {
+      inventory,
+      upgrade,
+      health,
+      currentLeftWeapon,
+      stats,
+    } = data.player;
+    this.player = new Player(this, 64, 1744, 'player', this.loadBullet)
       .setScale(0.5)
       .setSize(30, 32)
       .setOffset(10, 12);
+    this.player.inventory = inventory;
+    this.player.upgrade = upgrade;
+    this.player.health = health;
+    this.player.currentLeftWeapon = currentLeftWeapon;
+    this.player.stats = stats;
+    this.player.updateStats();
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)
@@ -358,11 +371,11 @@ export default class RobotCityScene extends Phaser.Scene {
 
     // Event listeners
     this.events.on('transitioncomplete', (fromScene) => {
-      this.scene.wake();
       // If we're coming from the upgrade UI
       // Set upgradeOpened to false so we can get back into it
       switch (fromScene.scene.key) {
         case 'UpgradeUI':
+          this.scene.wake();
           this.upgradeOpened = false;
           // Waiting to set dialogue in progress to false so you don't shoot when pressing Go Back
           this.time.delayedCall(500, () => {
@@ -375,11 +388,11 @@ export default class RobotCityScene extends Phaser.Scene {
     });
 
     this.events.on('transitioncomplete', (fromScene) => {
-      this.scene.wake();
       // If we're coming from the upgrade UI
       // Set upgradeOpened to false so we can get back into it
       switch (fromScene.scene.key) {
         case 'Inventory':
+          this.scene.wake();
           this.upgradeOpened = false;
           // Waiting to set dialogue in progress to false so you don't shoot when pressing Go Back
           this.time.delayedCall(500, () => {
