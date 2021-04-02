@@ -8,15 +8,20 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.defaultX = x;
     this.defaultY = y;
-    this.fist = spriteKey === 'bossfistleft' ? 'left' : 'right';
+    this.fist =
+      spriteKey === 'boss'
+        ? 'body'
+        : spriteKey === 'bossfistleft'
+        ? 'left'
+        : 'right';
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.fightStarted = false;
     this.damage = 25;
     this.isDead = false;
-    this.attacking = false;
+    this.fightStarted = false;
     this.attackCD = 10000;
     this.nextAttack = 0;
+    this.preppingAttack = false;
     this.resetting = false;
     this.loadAttack = 1000;
     this.resetTime = 3000;
@@ -85,12 +90,15 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   resetPosition() {
+    console.log(`Resetting...`);
     this.resetting = true;
     this.scene.physics.moveTo(this, this.defaultX, this.defaultY, 400, 2000);
     this.scene.time.delayedCall(2000, () => {
       this.body.stop();
       this.angle = 0;
+      console.log(`No longer resetting...`);
       this.resetting = false;
+      this.preppingAttack = false;
     });
   }
 
@@ -113,10 +121,23 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  takeDamage(damage) {
+  takeDamage(damage, leftHp, rightHp, bodyHp) {
     this.health -= damage;
     console.log(`Remaining health for ${this.fist} hand is ${this.health}`);
+
+    let newHealth;
+    if (this.fist === 'left') {
+      newHealth = this.health + rightHp + bodyHp;
+    } else if (this.fist === 'right') {
+      newHealth = this.health + leftHp + bodyHp;
+    } else if (this.fist === 'body') {
+      newHealth = this.health;
+    }
+
+    this.scene.events.emit('bossDamaged', newHealth, 10000);
+
     if (this.health <= 0) {
+      this.health = 0;
       this.on('animationcomplete-death', () => {
         this.setActive(false);
         this.setVisible(false);
@@ -134,11 +155,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   attack() {
     if (this.fist === 'left') {
       this.scene.time.delayedCall(1000, () => {
-        this.attacking = true;
+        this.fightStarted = true;
       });
     } else {
       this.scene.time.delayedCall(3000, () => {
-        this.attacking = true;
+        this.fightStarted = true;
       });
     }
   }
@@ -155,9 +176,16 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.angle = angle * Phaser.Math.RAD_TO_DEG;
     }
 
-    if (this.attacking && !this.isDead && !this.resetting) {
+    if (
+      this.fightStarted &&
+      !this.isDead &&
+      !this.resetting &&
+      !this.preppingAttack
+    ) {
       if (time > this.nextAttack) {
+        console.log(`Not resetting so preparing attack...`, this.fist);
         const attack = Math.floor(Math.random() * 101);
+        this.preppingAttack = true;
         if (attack > 50) {
           if (this.fist === 'left') {
             this.leftHandSmash();

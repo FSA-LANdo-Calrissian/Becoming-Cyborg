@@ -4,16 +4,18 @@ export default class HUDScene extends Phaser.Scene {
   constructor() {
     super('HUDScene');
 
-    // The size of the hp bar
-    this.size = {
-      width: 150,
-      height: 10,
-    };
-
     this.updateBottomHUD = this.updateBottomHUD.bind(this);
   }
 
-  draw(newHealth, maxHealth) {
+  draw(
+    bar,
+    newHealth,
+    maxHealth,
+    xPosition = 10,
+    yPosition = 10,
+    barWidth = 150,
+    barHeight = 10
+  ) {
     /*
       Renders the hp bar.
       param newHealth: int -> The updated health of the player. This is the value we will use to determine what percentage of health the player has left.
@@ -22,42 +24,43 @@ export default class HUDScene extends Phaser.Scene {
     */
 
     // Constants for the x,y coordinate of the hp bar.
-    const x = 10;
-    const y = 10;
+    const x = xPosition;
+    const y = yPosition;
     // First we clear the old bar - so that we can draw the new/updated one
-    this.bar.clear();
-    const { width, height } = this.size;
+    bar.clear();
+    const width = barWidth;
+    const height = barHeight;
     const margin = 2;
 
     // Black border around hp bar
-    this.bar.fillStyle(0x000000);
-    this.bar.fillRect(x, y, width + margin, height + margin);
+    bar.fillStyle(0x000000);
+    bar.fillRect(x, y, width + margin, height + margin);
 
     // White beneath the hp bar
-    this.bar.fillStyle(0xffffff);
-    this.bar.fillRect(x + margin, y + margin, width - margin, height - margin);
+    bar.fillStyle(0xffffff);
+    bar.fillRect(x + margin, y + margin, width - margin, height - margin);
 
     // This makes it so the health bar goes with the camera instead of staying in that spot of the world.
-    this.bar.setScrollFactor(0, 0);
+    bar.setScrollFactor(0, 0);
 
     // How much of the hp bar to deplete on damage
-    const pixelPerHealth = this.size.width / maxHealth;
+    const pixelPerHealth = width / maxHealth;
 
     // How much of the bar to fill up
     const healthWidth = Math.floor(newHealth * pixelPerHealth);
 
     // Bar colors based on health %
     if (healthWidth <= width / 4) {
-      this.bar.fillStyle(0xff0000);
+      bar.fillStyle(0xff0000);
     } else if (healthWidth <= width / 2) {
-      this.bar.fillStyle(0xfee12b);
+      bar.fillStyle(0xfee12b);
     } else {
-      this.bar.fillStyle(0x00ff00);
+      bar.fillStyle(0x00ff00);
     }
 
     // Logic for if we have <= 0 health
     if (healthWidth > 0) {
-      this.bar.fillRect(
+      bar.fillRect(
         x + margin,
         y + margin,
         healthWidth - margin,
@@ -111,6 +114,7 @@ export default class HUDScene extends Phaser.Scene {
 
   init(data) {
     this.mainGame = this.scene.get(data.mainScene);
+    this.sceneKey = this.mainGame.scene.key;
   }
 
   create() {
@@ -134,12 +138,42 @@ export default class HUDScene extends Phaser.Scene {
     });
     // Event listener to see when to update the health bar
     this.mainGame.events.on('takeDamage', (newHealth, maxHealth) => {
-      this.draw(newHealth, maxHealth);
+      this.draw(this.bar, newHealth, maxHealth);
+    });
+
+    const bossHPX = 200;
+    const bossHPY = 50;
+    const bossHPWidth = 400;
+    const bossHPHeight = 20;
+
+    this.mainGame.events.on('startFight', () => {
+      this.bossHP = this.add.graphics();
+      this.draw(
+        this.bossHP,
+        10000,
+        10000,
+        bossHPX,
+        bossHPY,
+        bossHPWidth,
+        bossHPHeight
+      );
+    });
+
+    this.mainGame.events.on('bossDamaged', (newHealth, maxHealth) => {
+      this.draw(
+        this.bossHP,
+        newHealth,
+        maxHealth,
+        bossHPX,
+        bossHPY,
+        bossHPWidth,
+        bossHPHeight
+      );
     });
 
     // Initializes the bar with 100 health/100 max health.
     loadScene.then(() => {
-      this.draw(player.health, player.maxHealth);
+      this.draw(this.bar, player.health, player.maxHealth);
     });
 
     // Shaping the minimap + border?
@@ -153,7 +187,7 @@ export default class HUDScene extends Phaser.Scene {
         .setBackgroundColor(0x000000)
         .startFollow(player);
 
-      if (this.mainGame.scene.key === 'BossScene') {
+      if (this.sceneKey === 'BossScene') {
         minimapCam.setZoom(0.3);
       } else {
         minimapCam.setZoom(0.6);

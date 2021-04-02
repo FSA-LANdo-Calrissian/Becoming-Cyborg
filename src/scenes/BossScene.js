@@ -46,6 +46,11 @@ export default class BossScene extends Phaser.Scene {
   }
 
   create({ player }) {
+    // Initialize variables for restart
+    this.bossCinematic = false;
+    this.dialogueInProgress = false;
+    this.fightStarted = false;
+
     // Create animations
     createPlayerAnims.call(this);
     createBossAnims.call(this);
@@ -139,7 +144,12 @@ export default class BossScene extends Phaser.Scene {
       this.playerProjectiles,
       this.enemiesGroup,
       (proj, enemy) => {
-        enemy.takeDamage(proj.damage);
+        enemy.takeDamage(
+          proj.damage,
+          this.leftHand.health,
+          this.rightHand.health,
+          this.boss.health
+        );
       }
     );
 
