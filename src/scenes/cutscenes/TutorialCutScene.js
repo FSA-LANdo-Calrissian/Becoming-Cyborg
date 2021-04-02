@@ -169,13 +169,13 @@ export default class TutorialCutScene extends Phaser.Scene {
 
   playFinalScenePart2() {
     this.camera.fadeOut(1000);
-    this.player.setPosition(348, 275);
-    this.doctor.setPosition(365, 276);
+    this.player.setPosition(454, 992);
+    this.doctor.setPosition(484, 992);
     this.camera.fadeIn(2000);
 
     const textLines = [
       'My house!!!!',
-      'Well, my modification machine is still in tact, at least...',
+      'Well, my modification machine is still intact, at least...',
       '...sigh. Anyway, this is a machine of my own creation',
       "It's meant to upgrade our human capabilities so that we can become stronger.",
       '...however, using it on a human seems to add too much stress to the body that they end up dying...',
