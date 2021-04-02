@@ -13,6 +13,7 @@ import Item from '../entity/Item';
 import Quest from '../entity/Quest';
 import quests from '../quests/quests';
 import { playCutScene, playDialogue } from './cutscenes/cutscenes';
+import Collision from '../entity/Collision';
 
 export default class RobotCityScene extends Phaser.Scene {
   constructor() {
@@ -20,6 +21,7 @@ export default class RobotCityScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
     this.initCutScene = false;
+    this.lairAccess = false;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -222,6 +224,12 @@ export default class RobotCityScene extends Phaser.Scene {
       .setScale(0.5)
       .setName('stacyQuest');
 
+    this.robotGuard = new NPC(this, 2286, 100, 'robotGuard')
+      .setName('robotGuard')
+      .setOffset(0, 20);
+
+    this.sceneEnd = new Collision(this, 2288, 113, 'blank').setSize(28, 3);
+
     // Groups
     this.playerProjectiles = this.physics.add.group({
       classType: Projectile,
@@ -252,9 +260,30 @@ export default class RobotCityScene extends Phaser.Scene {
 
     // Adding entities to groups
     this.npcGroup.add(this.doctor);
+    this.npcGroup.add(this.robotGuard);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
+    this.physics.add.overlap(this.player, this.sceneEnd, () => {
+      if (this.lairAccess && !this.sceneOver) {
+        this.sceneOver = true;
+        this.cameras.main.fadeOut(1000);
+        this.time.delayedCall(1000, () => {
+          this.scene.stop('HUDScene');
+          this.scene.transition({
+            target: 'BossScene',
+            sleep: true,
+            duration: 10,
+            data: {
+              player: this.player,
+              camera: this.camera,
+              scene: 'RobotCityScene',
+            },
+          });
+          this.scene.launch('HUDScene', { mainScene: 'BossScene' });
+        });
+      }
+    });
     this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
       // If player full on health, don't pick up potions.
       if (
@@ -301,6 +330,8 @@ export default class RobotCityScene extends Phaser.Scene {
           // BUG: Find out how to play dialogue based on NPC.
           // Or make list of generic text to pick from.
           playDialogue.call(this, npc, 'Dialogue');
+        } else if (npc.name === 'robotGuard') {
+          playDialogue.call(this, npc, npc.name);
         } else {
           if (!quests[npc.name].isStarted) {
             playDialogue.call(this, npc, npc.name);
