@@ -79,19 +79,17 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endScene() {
-    if (!quests[this.npc.name].isStarted) {
-      console.log('getting scene');
-      this.world = this.scene.get('RobotCityScene');
-      console.log(this.world);
-      // this.world.events.emit('startQuest');
-      console.log(this.world);
+    // if (!quests[this.npc.name].isStarted) {
+    //   console.log('getting scene');
+    //   this.world = this.scene.get('RobotCityScene');
+    //   console.log(this.world);
+    //   // this.world.events.emit('startQuest');
+    //   console.log(this.world);
 
-      this.endCutScene();
-      this.world = this.scene.get('RobotCityScene');
-    } else if (
-      quests[this.npc.name].isStarted &&
-      !quests[this.npc.name].isCompleted
-    ) {
+    //   this.endCutScene();
+    //   this.world = this.scene.get('RobotCityScene');
+    // } else if (
+    if (quests[this.npc.name].isStarted && !quests[this.npc.name].isCompleted) {
       console.log('quest started and not completed');
 
       this.endCutScene();
@@ -125,19 +123,18 @@ export default class Dialogue extends Phaser.Scene {
       this.questStarted === false
     ) {
       this.world = this.scene.get('RobotCityScene');
-      this.world.events.emit('startQuest');
+      // this.world.events.emit('startQuest');
       this.playDialogue();
 
       this.questStarted = true;
-      this.world = this.scene.get('RobotCityScene');
-      this.world = this.scene.get('RobotCityScene');
+
       console.log('mission started');
       console.log(this.world);
-
       if (this.world) {
         console.log('send in wolves');
         this.world.sendInWolves = true;
       }
+      this.world.events.emit('startQuest');
     } else if (!quests[npc.name].isCompleted && this.questStarted) {
       this.playIncomplete();
     } else if (quests[npc.name].isStarted && quests[npc.name].isCompleted) {
