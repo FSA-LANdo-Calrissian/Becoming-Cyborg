@@ -1,14 +1,14 @@
 import Phaser from 'phaser';
 
 export default class Projectile extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, angle = 0) {
+  constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.lifespan = 2000;
 
-    this.speed = Phaser.Math.GetSpeed(80, 1); // (distance in pixels, time (ms))
+    this.speed = Phaser.Math.GetSpeed(200, 1); // (distance in pixels, time (ms))
     this.damage = 25;
     this.dy = 0;
     this.dx = 0;
@@ -26,7 +26,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
       returns null.
     */
     this.setActive(true);
-    this.lifespan = 2000;
     this.setVisible(true);
     this.rotation = angle;
     this.setPosition(x, y);

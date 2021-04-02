@@ -1,14 +1,21 @@
 import Phaser from 'phaser';
 import Projectile from '../entity/Projectile';
 import Player from '../entity/Player';
+import Enemy from '../entity/Enemy';
 import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
+import createBossAnims from '../animations/createBossAnims';
+import createRobotAnims from '../animations/createRobotAnims';
+import { playDialogue } from './cutscenes/cutscenes';
 
-export default class FgScene extends Phaser.Scene {
+export default class BossScene extends Phaser.Scene {
   constructor() {
     super('BossScene');
     this.bossCinematic = false;
     this.dialogueInProgress = false;
+    this.fightStarted = false;
+
+    this.loadBullet = this.loadBullet.bind(this);
   }
 
   loadBullet(x, y, sprite, angle) {
@@ -34,12 +41,25 @@ export default class FgScene extends Phaser.Scene {
       this.playerProjectiles.add(bullet);
     }
     // Pew pew the bullet.
+    bullet.reset();
     bullet.shoot(x, y, angle);
   }
 
   create({ player }) {
-    createPlayerAnims.call(this);
+    // Initialize variables for restart
+    this.bossCinematic = false;
+    this.dialogueInProgress = false;
+    this.fightStarted = false;
 
+    // Create animations
+    createPlayerAnims.call(this);
+    createBossAnims.call(this);
+    createRobotAnims.call(this);
+
+    // Load sounds
+    this.gg = this.sound.add('gg');
+
+    // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
 
     this.terrainTiles = this.map.addTilesetImage('allGround', 'terrain');
@@ -53,18 +73,90 @@ export default class FgScene extends Phaser.Scene {
     this.world = this.map.createLayer('world', this.worldTiles);
     this.world.setCollisionByProperty({ collides: true });
 
+    this.shockwaveCollision = this.map.createLayer(
+      'collision',
+      this.terrainTiles
+    );
+    this.shockwaveCollision.setCollisionByProperty({ collides: true });
+
+    // Create the entities
     this.player = new Player(this, 658, 1455, 'player', this.loadBullet)
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
 
+    this.player.currentLeftWeapon = 'fireBall';
+
     this.boss = new Boss(this, 750, 200, 'boss').setScale(1);
 
+    // Make the groups
+    this.enemiesGroup = this.physics.add.group({
+      classType: Enemy,
+      runChildUpdate: true,
+    });
+
+    this.shockwavesGroup = this.physics.add.group({
+      class: Projectile,
+      runChildUpdate: true,
+    });
+
+    this.playerProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+    });
+
+    // Add entities to groups
+    this.enemiesGroup.add(this.boss);
+
+    // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
 
-    this.cameras.main.startFollow(this.player);
+    this.physics.add.overlap(
+      this.shockwavesGroup,
+      this.shockwaveCollision,
+      (proj, world) => {
+        // if (world.collides) {
+        proj.destroy();
+        // }
+      },
+      (proj, world) => world.canCollide
+    );
 
+    this.physics.add.overlap(
+      this.player,
+      this.shockwavesGroup,
+      (player, proj) => {
+        proj.destroy();
+        player.takeDamage(proj.damage, this.gg);
+      }
+    );
+
+    this.physics.add.overlap(
+      this.player,
+      this.enemiesGroup,
+      (player, enemy) => {
+        player.takeDamage(enemy.damage, this.gg);
+      }
+    );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.enemiesGroup,
+      (proj, enemy) => {
+        enemy.takeDamage(
+          proj.damage,
+          this.leftHand.health,
+          this.rightHand.health,
+          this.boss.health
+        );
+      }
+    );
+
+    // Init camera
+    this.cameras.main.startFollow(this.player).setZoom(2);
+
+    // Init cursors
     this.cursors = this.input.keyboard.addKeys({
       inventory: Phaser.Input.Keyboard.KeyCodes.ESC,
       interact: Phaser.Input.Keyboard.KeyCodes.SPACE,
@@ -75,13 +167,79 @@ export default class FgScene extends Phaser.Scene {
       upgrade: Phaser.Input.Keyboard.KeyCodes.U,
       hp: Phaser.Input.Keyboard.KeyCodes.H,
     });
+
+    // Make event listeners
+    this.events.on('dialogueEnd', () => {
+      this.time.delayedCall(500, () => {
+        this.dialogueInProgress = false;
+      });
+      this.player.canAttack = true;
+      this.player.shooting = false;
+      this.scene.resume();
+    });
+
+    this.events.on('startFight', () => {
+      this.boss.startFight();
+      this.cameras.main.shake(2000, 0.005);
+      this.rightHand = new Boss(
+        this,
+        this.boss.x - 100,
+        this.boss.y - 10,
+        'bossfistright'
+      ).setSize(50, 100);
+
+      this.rightHand.play('rightHand');
+
+      this.leftHand = new Boss(
+        this,
+        this.boss.x + 130,
+        this.boss.y - 10,
+        'bossfistleft'
+      ).setSize(50, 100);
+
+      this.leftHand.play('leftHand');
+
+      this.enemiesGroup.add(this.rightHand);
+      this.enemiesGroup.add(this.leftHand);
+
+      this.leftHand.attack();
+      this.rightHand.attack();
+    });
+
+    this.events.on('rip', ({ hand }) => {
+      if (hand === 'left') {
+        console.log(`Lefty noooo! Grr me angry`);
+        this.rightHand.attackCD = 4000;
+        this.rightHand.resetTime = 1500;
+        this.rightHand.loadAttack = 500;
+      } else {
+        console.log(`Righty nooo! Grr. Me angry!`);
+        this.leftHand.attackCD = 4000;
+        this.leftHand.resetTime = 1500;
+        this.leftHand.loadAttack = 500;
+      }
+    });
   }
 
   update(time, delta) {
     if (this.player.y < 940 && !this.bossCinematic) {
-      console.log(`Playing boss cinematic.`);
-      this.cameras.main.shake(2000, 0.01);
+      this.player.setVelocityX(0);
+      this.player.setVelocityY(0);
+      this.dialogueInProgress = true;
+      this.player.play('idleRight');
+      this.cameras.main.shake(2000, 0.005);
       this.bossCinematic = true;
+
+      this.player.flipX = !this.player.flipX;
+
+      this.time.delayedCall(1000, () => {
+        this.player.flipX = !this.player.flipX;
+        this.player.flipX = !this.player.flipX;
+        this.time.delayedCall(1000, () => {
+          this.player.flipX = !this.player.flipX;
+          playDialogue.call(this, this.boss, 'firstBossCutScene');
+        });
+      });
     }
 
     if (!this.dialogueInProgress) {

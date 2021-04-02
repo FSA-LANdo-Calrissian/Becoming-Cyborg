@@ -17,6 +17,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('knife', 'assets/sprites/knifeArm.png');
     this.load.image('button', 'assets/sprites/button.png');
     this.load.image('bullet', 'assets/sprites/bullet.png');
+    this.load.image('blank', 'assets/sprites/blank.png');
 
     this.load.tilemapTiledJSON(
       'tutorialMap',
@@ -101,6 +102,7 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 75,
     });
 
+
     this.load.spritesheet('fakeBot', 'assets/sprites/brittabot.png', {
       frameWidth: 40,
       frameHeight: 50,
@@ -109,12 +111,21 @@ export default class MainScene extends Phaser.Scene {
     this.load.spritesheet('packLeader', 'assets/sprites/hector.png', {
       frameWidth: 34,
       frameHeight: 41,
+
+    this.load.spritesheet('shockwave', 'assets/sprites/shockwave.png', {
+      frameWidth: 20,
+      frameHeight: 22,
+
     });
 
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
+
     this.load.image('robotPart', 'assets/items/iron.png');
+
+    this.load.image('oil', 'assets/items/oil.png');
+
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
     this.load.image('gameOver', './assets/backgrounds/gg.jpg');
