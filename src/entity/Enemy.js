@@ -10,7 +10,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.speed = classType === 'robot' ? 80 : 90;
+    this.speed = classType === 'robot' ? 80 : 85;
     this.health = 4;
     this.direction = '';
     this.isMoving = false;
