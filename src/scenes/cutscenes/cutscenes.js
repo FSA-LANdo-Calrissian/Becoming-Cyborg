@@ -207,14 +207,14 @@ export function initCutScene() {
   const currY = this.camera.scrollY;
 
   // Pan the cam over 3 seconds
-  this.camera.pan(473, 176, 3000);
+  this.camera.pan(1700, 1280, 3000);
   this.time.delayedCall(2000, () => {
     const help = this.add
       .sprite(this.doctor.x + 15, this.doctor.y - 10, 'bubble')
       .setScale(0.045)
       .setAlpha(1, 1, 1, 1);
     const helpText = this.add
-      .text(help.x - 5, help.y - 4, 'Help us!', {
+      .text(help.x - 7, help.y - 4, 'Help!', {
         fontSize: 20,
         wordWrap: { width: 30 },
       })
@@ -222,13 +222,15 @@ export function initCutScene() {
     const nopls = this.add
       .sprite(this.deadNPC.x + 10, this.deadNPC.y - 15, 'bubble')
       .setScale(0.045)
-      .setAlpha(1, 1, 1, 1);
+      .setAlpha(1, 1, 1, 1)
+      .setDepth(7);
     const noPlsText = this.add
-      .text(nopls.x - 10, nopls.y - 5, 'Noooo, pleaseeeee', {
+      .text(nopls.x - 7, nopls.y - 5, 'Nooo!', {
         fontSize: 20,
         wordWrap: { width: 30 },
       })
-      .setScale(0.25);
+      .setScale(0.25)
+      .setDepth(7);
 
     this.time.delayedCall(3500, () => {
       help.destroy();
