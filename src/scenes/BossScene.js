@@ -5,13 +5,17 @@ import Enemy from '../entity/Enemy';
 import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
 import createBossAnims from '../animations/createBossAnims';
+import createRobotAnims from '../animations/createRobotAnims';
 import { playDialogue } from './cutscenes/cutscenes';
 
-export default class FgScene extends Phaser.Scene {
+export default class BossScene extends Phaser.Scene {
   constructor() {
     super('BossScene');
     this.bossCinematic = false;
     this.dialogueInProgress = false;
+    this.fightStarted = false;
+
+    this.loadBullet = this.loadBullet.bind(this);
   }
 
   loadBullet(x, y, sprite, angle) {
@@ -37,6 +41,7 @@ export default class FgScene extends Phaser.Scene {
       this.playerProjectiles.add(bullet);
     }
     // Pew pew the bullet.
+    bullet.reset();
     bullet.shoot(x, y, angle);
   }
 
@@ -44,6 +49,10 @@ export default class FgScene extends Phaser.Scene {
     // Create animations
     createPlayerAnims.call(this);
     createBossAnims.call(this);
+    createRobotAnims.call(this);
+
+    // Load sounds
+    this.gg = this.sound.add('gg');
 
     // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
@@ -71,6 +80,8 @@ export default class FgScene extends Phaser.Scene {
       .setSize(30, 35)
       .setOffset(10, 12);
 
+    this.player.currentLeftWeapon = 'fireBall';
+
     this.boss = new Boss(this, 750, 200, 'boss').setScale(1);
 
     // Make the groups
@@ -84,6 +95,14 @@ export default class FgScene extends Phaser.Scene {
       runChildUpdate: true,
     });
 
+    this.playerProjectiles = this.physics.add.group({
+      classType: Projectile,
+      runChildUpdate: true,
+    });
+
+    // Add entities to groups
+    this.enemiesGroup.add(this.boss);
+
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
@@ -92,15 +111,40 @@ export default class FgScene extends Phaser.Scene {
       this.shockwavesGroup,
       this.shockwaveCollision,
       (proj, world) => {
-        console.log(`Collided: `, proj, world);
-        if (world.collides) {
-          proj.destroy();
-        }
+        // if (world.collides) {
+        proj.destroy();
+        // }
+      },
+      (proj, world) => world.canCollide
+    );
+
+    this.physics.add.overlap(
+      this.player,
+      this.shockwavesGroup,
+      (player, proj) => {
+        proj.destroy();
+        player.takeDamage(proj.damage, this.gg);
+      }
+    );
+
+    this.physics.add.overlap(
+      this.player,
+      this.enemiesGroup,
+      (player, enemy) => {
+        player.takeDamage(enemy.damage, this.gg);
+      }
+    );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.enemiesGroup,
+      (proj, enemy) => {
+        enemy.takeDamage(proj.damage);
       }
     );
 
     // Init camera
-    this.cameras.main.startFollow(this.player).setZoom(0.8);
+    this.cameras.main.startFollow(this.player).setZoom(2);
 
     // Init cursors
     this.cursors = this.input.keyboard.addKeys({
@@ -132,7 +176,7 @@ export default class FgScene extends Phaser.Scene {
         this.boss.x - 100,
         this.boss.y - 10,
         'bossfistright'
-      );
+      ).setSize(50, 100);
 
       this.rightHand.play('rightHand');
 
@@ -141,10 +185,29 @@ export default class FgScene extends Phaser.Scene {
         this.boss.x + 130,
         this.boss.y - 10,
         'bossfistleft'
-      );
+      ).setSize(50, 100);
 
       this.leftHand.play('leftHand');
-      this.leftHand.leftHandSmash();
+
+      this.enemiesGroup.add(this.rightHand);
+      this.enemiesGroup.add(this.leftHand);
+
+      this.leftHand.attack();
+      this.rightHand.attack();
+    });
+
+    this.events.on('rip', ({ hand }) => {
+      if (hand === 'left') {
+        console.log(`Lefty noooo! Grr me angry`);
+        this.rightHand.attackCD = 4000;
+        this.rightHand.resetTime = 1500;
+        this.rightHand.loadAttack = 500;
+      } else {
+        console.log(`Righty nooo! Grr. Me angry!`);
+        this.leftHand.attackCD = 4000;
+        this.leftHand.resetTime = 1500;
+        this.leftHand.loadAttack = 500;
+      }
     });
   }
 

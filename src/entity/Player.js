@@ -225,7 +225,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Otherwise, set hit cooldown
     this.hitCooldown = true;
     // Logic for slight knockback
-    this.knockback();
+    // this.knockback();
     // Play damage
     const hitAnimation = this.playDamageAnimation();
 

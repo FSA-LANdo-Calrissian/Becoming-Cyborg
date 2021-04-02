@@ -8,7 +8,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.lifespan = 2000;
 
-    this.speed = Phaser.Math.GetSpeed(80, 1); // (distance in pixels, time (ms))
+    this.speed = Phaser.Math.GetSpeed(200, 1); // (distance in pixels, time (ms))
     this.damage = 25;
     this.dy = 0;
     this.dx = 0;

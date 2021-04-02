@@ -148,11 +148,16 @@ export default class HUDScene extends Phaser.Scene {
 
       const minimapCam = this.mainGame.cameras
         .add(640, 10, 150, 150)
-        .setZoom(0.6)
         .setBounds(0, 0, this.mainGame.boundaryX, this.mainGame.boundaryY)
         .setName('minimap')
         .setBackgroundColor(0x000000)
         .startFollow(player);
+
+      if (this.mainGame.scene.key === 'BossScene') {
+        minimapCam.setZoom(0.3);
+      } else {
+        minimapCam.setZoom(0.6);
+      }
 
       // Make the border
       this.add.sprite(716, 85, 'minimap').setScale(0.52);
