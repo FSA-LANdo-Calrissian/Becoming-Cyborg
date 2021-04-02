@@ -35,4 +35,12 @@ export default function () {
     }),
     repeat: -1,
   });
+
+  this.anims.create({
+    key: 'shockwave',
+    frames: this.anims.generateFrameNumbers('shockwave', { start: 0, end: 3 }),
+    frameRate: 7,
+    repeat: -1,
+    yoyo: true,
+  });
 }

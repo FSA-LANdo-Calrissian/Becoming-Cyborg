@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class Projectile extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, angle = 0) {
+  constructor(scene, x, y, spriteKey) {
     super(scene, x, y, spriteKey);
     this.scene = scene;
     this.scene.physics.world.enable(this);
@@ -26,7 +26,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
       returns null.
     */
     this.setActive(true);
-    this.lifespan = 2000;
     this.setVisible(true);
     this.rotation = angle;
     this.setPosition(x, y);

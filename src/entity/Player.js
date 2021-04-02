@@ -8,6 +8,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.currentLeftWeapon = 'none';
+
     this.upgrade = {
       maxHealth: 0,
       damage: 0,

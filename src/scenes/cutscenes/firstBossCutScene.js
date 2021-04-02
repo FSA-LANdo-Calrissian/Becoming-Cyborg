@@ -53,7 +53,6 @@ export default class firstBossCutScene extends Phaser.Scene {
   create({ npc, player }) {
     this.boss = npc;
     this.player = player;
-
-    this.firstDialogue();
+    this.endScene();
   }
 }

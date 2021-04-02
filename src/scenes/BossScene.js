@@ -59,6 +59,12 @@ export default class FgScene extends Phaser.Scene {
     this.world = this.map.createLayer('world', this.worldTiles);
     this.world.setCollisionByProperty({ collides: true });
 
+    this.shockwaveCollision = this.map.createLayer(
+      'collision',
+      this.terrainTiles
+    );
+    this.shockwaveCollision.setCollisionByProperty({ collides: true });
+
     // Create the entities
     this.player = new Player(this, 658, 1455, 'player', this.loadBullet)
       .setScale(0.5)
@@ -73,9 +79,25 @@ export default class FgScene extends Phaser.Scene {
       runChildUpdate: true,
     });
 
+    this.shockwavesGroup = this.physics.add.group({
+      class: Projectile,
+      runChildUpdate: true,
+    });
+
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
+
+    this.physics.add.overlap(
+      this.shockwavesGroup,
+      this.shockwaveCollision,
+      (proj, world) => {
+        console.log(`Collided: `, proj, world);
+        if (world.collides) {
+          proj.destroy();
+        }
+      }
+    );
 
     // Init camera
     this.cameras.main.startFollow(this.player).setZoom(0.8);
@@ -122,12 +144,12 @@ export default class FgScene extends Phaser.Scene {
       );
 
       this.leftHand.play('leftHand');
+      this.leftHand.leftHandSmash();
     });
   }
 
   update(time, delta) {
     if (this.player.y < 940 && !this.bossCinematic) {
-      console.log(`Playing boss cinematic.`);
       this.player.setVelocityX(0);
       this.player.setVelocityY(0);
       this.dialogueInProgress = true;
