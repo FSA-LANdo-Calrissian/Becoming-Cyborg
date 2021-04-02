@@ -39,7 +39,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'Inventory',
       sleep: true,
       duration: 10,
-      data: { player: this.player, camera: this.camera },
+      data: { player: this.player, camera: this.camera, scene: 'FgScene' },
     });
   }
 
@@ -54,7 +54,7 @@ export default class FgScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 10,
-      data: { player: this.player },
+      data: { player: this.player, scene: 'FgScene' },
     });
   }
 
@@ -120,70 +120,41 @@ export default class FgScene extends Phaser.Scene {
     this.gg = this.sound.add('gg');
 
     //Load in map stuff
-    this.map = this.make.tilemap({ key: 'map' });
+    this.map = this.make.tilemap({ key: 'tutorialMap' });
     this.terrainTiles = this.map.addTilesetImage('terrain', 'terrain');
     this.worldTiles = this.map.addTilesetImage('worldTileset', 'worldTileset');
     this.groundBottom = this.map.createLayer(
-      'ground-layers/ground-bottom',
+      'ground-bottom',
       this.terrainTiles,
       0,
       0
     );
-    this.street = this.map.createLayer(
-      'ground-layers/street',
-      this.worldTiles,
-      0,
-      0
-    );
     this.groundMid = this.map.createLayer(
-      'ground-layers/ground-mid',
+      'ground-mid',
       this.terrainTiles,
       0,
       0
     );
     this.groundTop = this.map.createLayer(
-      'ground-layers/ground-top',
-      this.terrainTiles,
-      0,
-      0
-    );
-    this.groundAbove = this.map.createLayer(
-      'ground-layers/ground-above',
+      'ground-top',
       this.terrainTiles,
       0,
       0
     );
     this.worldBottom = this.map.createLayer(
-      'world-layers/world-bottom',
+      'world-bottom',
       this.worldTiles,
       0,
       0
     );
-    this.worldMid = this.map.createLayer(
-      'world-layers/world-mid',
+    this.worldMid = this.map.createLayer('world-mid', this.worldTiles, 0, 0);
+    this.worldTop = this.map.createLayer('world-top', this.worldTiles, 0, 0);
+    this.worldAbove = this.map.createLayer(
+      'world-above',
       this.worldTiles,
       0,
       0
     );
-    this.worldTop = this.map.createLayer(
-      'world-layers/world-top',
-      this.worldTiles,
-      0,
-      0
-    );
-    //Moved to bottom of create/ TODO: use depth instead
-    // this.worldAbove = this.map.createLayer(
-    //   'world-layers/world-above',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
-    // this.worldAboveExtra = this.map.createLayer(
-    //   'world-layers/world-above-extra',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
     this.worldCollision = this.map.createLayer(
       'collision',
       this.worldTiles,
@@ -193,47 +164,44 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    // const debugGraphics = this.add.graphics().setAlpha(0.75);
-    // this.worldCollision.renderDebug(debugGraphics, {
-    //   tileColor: null, // Color of non-colliding tiles
-    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    // });
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    this.worldCollision.renderDebug(debugGraphics, {
+      tileColor: null, // Color of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    });
 
     // Spawning the entities
-    this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
-      .setScale(0.3)
+    this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')
+      .setScale(0.5)
       .setSize(10, 10);
 
-    this.player = new Player(this, 1104, 1104, 'player', this.loadBullet)
+    this.player = new Player(this, 1400, 1300, 'player', this.loadBullet)
       .setScale(0.5)
-      .setSize(30, 35)
+      .setSize(30, 30)
       .setOffset(10, 12);
 
-    this.enemy = new Enemy(this, 473, 176, 'meleeRobot', 'robot')
-      .setScale(0.4)
+    this.enemy = new Enemy(this, 1728, 1280, 'meleeRobot', 'robot')
+      .setScale(0.6)
       .setSize(38, 35)
       .setOffset(5);
 
-    this.wolf = new Enemy(this, 38, 388, 'wolf', 'animal')
-      .setScale(0.2)
-      .setSize(45, 45);
+    this.doctor = new NPC(this, 1728, 1330, 'drDang').setScale(0.5).setDepth(7);
 
-    this.doctor = new NPC(this, 473, 190, 'drDang').setScale(0.3);
+    this.deadNPC = new NPC(this, 1700, 1280, 'mac').setScale(0.5).setDepth(7);
 
-    this.deadNPC = new NPC(this, 453, 176, 'mac').setScale(0.3);
     this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
-      .setScale(0.3)
+      .setScale(0.5)
       .setDepth(1);
 
     this.questNPC = new NPC(this, 90, 30, 'player')
-      .setScale(0.3)
+      .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12)
       .setName('testQuest');
 
     this.questNPC2 = new NPC(this, 150, 30, 'mac')
-      .setScale(0.3)
+      .setScale(0.5)
       .setName('secondTestQuest');
 
     // Groups
@@ -265,10 +233,8 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Adding entities to groups
-    this.npcGroup.add(this.doctor);
     this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
-    this.enemiesGroup.add(this.wolf);
     this.npcGroup.add(this.questNPC);
     this.npcGroup.add(this.questNPC2);
 
@@ -375,8 +341,8 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.enemiesGroup, this.worldCollision);
 
     // Adding world boundaries
-    this.boundaryX = 2400;
-    this.boundaryY = 2400;
+    this.boundaryX = 1840;
+    this.boundaryY = 1840;
     // TODO: Fix world boundary when we finish tileset
     this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
     this.player.setCollideWorldBounds();
@@ -455,7 +421,7 @@ export default class FgScene extends Phaser.Scene {
 
     this.enemy.on('animationcomplete-death', () => {
       this.cameras.main.fadeOut(1000);
-      this.player.setPosition(450, 189);
+      this.player.setPosition(1700, 1330);
       this.cameras.main.fadeIn(1000);
       robotKilled.call(this);
     });
@@ -467,24 +433,22 @@ export default class FgScene extends Phaser.Scene {
       main.scene.restart({ choice: false });
     }
 
-    // For debugging purposes to see pointer position
-    //   this.input.on('pointerdown', (pointer) => {
-    //     console.log(`pointer position: `, pointer.x, pointer.y);
-    //   });
-
-    this.worldAbove = this.map.createLayer(
-      'world-layers/world-above',
-      this.worldTiles,
-      0,
-      0
-    );
-
-    this.worldAboveExtra = this.map.createLayer(
-      'world-layers/world-above-extra',
-      this.worldTiles,
-      0,
-      0
-    );
+    // Setting depth of everything in scene
+    this.groundBottom.setDepth(0);
+    this.groundMid.setDepth(1);
+    this.groundTop.setDepth(2);
+    this.worldBottom.setDepth(3);
+    this.worldMid.setDepth(4);
+    this.worldTop.setDepth(5);
+    this.worldAbove.setDepth(10);
+    this.player.setDepth(8);
+    this.enemiesGroup.setDepth(7);
+    this.npcGroup.setDepth(7);
+    this.itemsGroup.setDepth(7);
+    this.playerProjectiles.setDepth(7);
+    this.worldCollision.setDepth(10);
+    debugGraphics.setDepth(10);
+    this.upgradeStation.setDepth(7);
   }
 
   tutorialHelper(distance) {
@@ -515,7 +479,7 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If player in 150 range of enemy, play initial cutscene
-    if (this.tutorialHelper(150)) {
+    if (this.tutorialHelper(210)) {
       if (!this.initTutorial) {
         this.dialogueInProgress = true;
         // stop animations
@@ -527,7 +491,8 @@ export default class FgScene extends Phaser.Scene {
         const huh = this.add
           .sprite(this.player.x + 8, this.player.y - 8, '?')
           .setScale(0.015)
-          .setAlpha(1, 1, 1, 1);
+          .setAlpha(1, 1, 1, 1)
+          .setDepth(7);
         this.time.delayedCall(1000, () => {
           huh.destroy();
         });
@@ -536,7 +501,7 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If player within 51 range, play tutorial scene.
-    if (this.tutorialHelper(51)) {
+    if (this.tutorialHelper(100)) {
       this.dialogueInProgress = true;
       // stop animations
       this.player.play(

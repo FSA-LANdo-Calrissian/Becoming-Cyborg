@@ -97,12 +97,12 @@ export default class UpgradeUI extends Phaser.Scene {
     this.player.updateStats();
   }
 
-  returnToGame(player) {
+  returnToGame(player, scene) {
     /*
       Function to return us to where we left off on FgScene
     */
     this.scene.transition({
-      target: 'FgScene',
+      target: scene,
       duration: 10,
     });
   }
@@ -176,7 +176,7 @@ export default class UpgradeUI extends Phaser.Scene {
     }
   }
 
-  create({ player }) {
+  create({ player, scene }) {
     // We save this to this.player so that we have access to it
     // when we transition back to FgScene
     this.player = player;
@@ -345,7 +345,7 @@ export default class UpgradeUI extends Phaser.Scene {
     const text = this.add.text(320, 103, 'Go Back!');
     text.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       this.leftWeaponIdx = 0;
-      this.returnToGame(player);
+      this.returnToGame(player, scene);
     });
 
     // This is the event propagator.

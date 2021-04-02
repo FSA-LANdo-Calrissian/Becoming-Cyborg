@@ -11,7 +11,8 @@ export function gunQuestSetup() {
     'animal'
   )
     .setScale(0.5)
-    .setSize(45, 45);
+    .setSize(45, 45)
+    .setDepth(7);
 
   this.scene.wolf1 = new Enemy(
     this.scene,
@@ -21,7 +22,8 @@ export function gunQuestSetup() {
     'animal'
   )
     .setScale(0.3)
-    .setSize(45, 45);
+    .setSize(45, 45)
+    .setDepth(7);
 
   this.scene.wolf2 = new Enemy(
     this.scene,
@@ -31,7 +33,8 @@ export function gunQuestSetup() {
     'animal'
   )
     .setScale(0.3)
-    .setSize(45, 45);
+    .setSize(45, 45)
+    .setDepth(7);
 
   this.scene.wolf3 = new Enemy(
     this.scene,
@@ -41,7 +44,8 @@ export function gunQuestSetup() {
     'animal'
   )
     .setScale(0.3)
-    .setSize(45, 45);
+    .setSize(45, 45)
+    .setDepth(7);
 
   this.scene.enemiesGroup.add(this.scene.wolf1);
   this.scene.enemiesGroup.add(this.scene.wolf2);
@@ -61,16 +65,29 @@ export function gunQuestSetup() {
   this.scene.alphaWolf.visible = false;
   this.scene.alphaWolf.setActive(false);
 
+  this.scene.alphaWolf.on('animationcomplete-death', () => {
+    console.log('in update');
+    this.scene.events.emit('updateQuest-' + this.quest.key);
+    this.scene.alphaWolf.removeAllListeners();
+  });
+
   this.questItem = 0;
   // Spawning the enemies
+  // this.scene.item = new Item(
+  //   this.scene,
+  //   686.6386666666683,
+  //   902.25,
+  //   'robotPart'
+  // ).setScale(0.1);
+
   this.scene.item = new Item(
     this.scene,
-    686.6386666666683,
-    902.25,
+    this.scene.player.x,
+    this.scene.player.y + 5,
     'robotPart'
   ).setScale(0.1);
 
-  this.scene.item.lifespan = 120000;
+  this.scene.item.lifespan = 1200000;
 
   // Adding event emitters on death for tracking purposes
 

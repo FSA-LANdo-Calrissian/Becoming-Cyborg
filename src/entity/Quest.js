@@ -60,7 +60,6 @@ export default class Quest {
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
-
     rewards.forEach((item) => {
       if (item === 'iron') {
         player.inventory.iron += 50;

@@ -20,7 +20,6 @@ export default class RobotCityScene extends Phaser.Scene {
 
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
-    this.allowUpgrade = false;
     this.initCutScene = false;
 
     // Bindings
@@ -33,7 +32,11 @@ export default class RobotCityScene extends Phaser.Scene {
       target: 'Inventory',
       sleep: true,
       duration: 10,
-      data: { player: this.player, camera: this.camera },
+      data: {
+        player: this.player,
+        camera: this.camera,
+        scene: 'RobotCityScene',
+      },
     });
   }
   openUpgrade() {
@@ -47,7 +50,7 @@ export default class RobotCityScene extends Phaser.Scene {
       target: 'UpgradeUI',
       sleep: true,
       duration: 10,
-      data: { player: this.player },
+      data: { player: this.player, scene: 'RobotCityScene' },
     });
   }
 
@@ -106,14 +109,17 @@ export default class RobotCityScene extends Phaser.Scene {
     // Initializing the game.
     this.dialogueInProgress = false;
     this.upgradeOpened = false;
-    this.allowUpgrade = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     this.gg = this.sound.add('gg');
 
-    //Load in map stuff
+    //Make map json
     this.map = this.make.tilemap({ key: 'map' });
+
+    // Add in tilesets
     this.terrainTiles = this.map.addTilesetImage('terrain', 'terrain');
     this.worldTiles = this.map.addTilesetImage('worldTileset', 'worldTileset');
+
+    // Create layers
     this.groundBottom = this.map.createLayer(
       'ground-layers/ground-bottom',
       this.terrainTiles,
@@ -162,26 +168,25 @@ export default class RobotCityScene extends Phaser.Scene {
       0,
       0
     );
-    //Moved to bottom of create/ TODO: use depth instead
-    // this.worldAbove = this.map.createLayer(
-    //   'world-layers/world-above',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
-    // this.worldAboveExtra = this.map.createLayer(
-    //   'world-layers/world-above-extra',
-    //   this.worldTiles,
-    //   0,
-    //   0
-    // );
+    this.worldAbove = this.map.createLayer(
+      'world-layers/world-above',
+      this.worldTiles,
+      0,
+      0
+    );
+    this.worldAboveExtra = this.map.createLayer(
+      'world-layers/world-above-extra',
+      this.worldTiles,
+      0,
+      0
+    );
     this.worldCollision = this.map.createLayer(
       'collision',
       this.worldTiles,
       0,
       0
     );
-    this.worldCollision.setCollisionByProperty({ collides: true });
+    // this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
     const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -192,13 +197,13 @@ export default class RobotCityScene extends Phaser.Scene {
     });
 
     // Spawning the entities
-    this.upgradeStation = new UpgradeStation(this, 357, 257, 'upgradeStation')
-      .setScale(0.3)
+    this.upgradeStation = new UpgradeStation(this, 1384, 1384, 'upgradeStation')
+      .setScale(0.5)
       .setSize(10, 10);
 
     this.player = new Player(this, 880, 1744, 'player', this.loadBullet)
       .setScale(0.5)
-      .setSize(30, 35)
+      .setSize(30, 32)
       .setOffset(10, 12);
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
@@ -361,14 +366,12 @@ export default class RobotCityScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
-      if (this.allowUpgrade) {
-        this.upgradeStation.playAnim();
-        if (!this.upgradeOpened) {
-          this.upgradeOpened = true;
-          this.time.delayedCall(4000, () => {
-            this.openUpgrade();
-          });
-        }
+      this.upgradeStation.playAnim();
+      if (!this.upgradeOpened) {
+        this.upgradeOpened = true;
+        this.time.delayedCall(4000, () => {
+          this.openUpgrade();
+        });
       }
     });
 
@@ -458,19 +461,23 @@ export default class RobotCityScene extends Phaser.Scene {
       main.scene.restart({ choice: false });
     }
 
-    this.worldAbove = this.map.createLayer(
-      'world-layers/world-above',
-      this.worldTiles,
-      0,
-      0
-    );
-
-    this.worldAboveExtra = this.map.createLayer(
-      'world-layers/world-above-extra',
-      this.worldTiles,
-      0,
-      0
-    );
+    // Setting depth of everything in scene
+    this.groundBottom.setDepth(0);
+    this.groundMid.setDepth(2);
+    this.groundTop.setDepth(3);
+    this.groundAbove.setDepth(9);
+    this.street.setDepth(1);
+    this.worldBottom.setDepth(4);
+    this.worldMid.setDepth(5);
+    this.worldTop.setDepth(6);
+    this.worldAbove.setDepth(9);
+    this.player.setDepth(8);
+    this.enemiesGroup.setDepth(7);
+    this.npcGroup.setDepth(7);
+    this.itemsGroup.setDepth(7);
+    this.playerProjectiles.setDepth(7);
+    this.worldCollision.setDepth(10);
+    debugGraphics.setDepth(10);
   }
 
   cutSceneHelper(distance) {
@@ -497,7 +504,7 @@ export default class RobotCityScene extends Phaser.Scene {
     }
 
     // If player in 160 range of doctor, play cutscene
-    if (this.cutSceneHelper(94)) {
+    if (this.cutSceneHelper(89)) {
       if (!this.initCutScene) {
         this.dialogueInProgress = true;
         // stop animations
@@ -516,18 +523,6 @@ export default class RobotCityScene extends Phaser.Scene {
         playDialogue.call(this, this.doctor, this.doctor.name);
       }
     }
-
-    // // If player within 51 range, play tutorial scene.
-    // if (this.cutSceneHelper(51)) {
-    //   this.dialogueInProgress = true;
-    //   // stop animations
-    //   this.player.play(
-    //     this.player.facingRight ? 'idleRight' : 'idleLeft',
-    //     true
-    //   );
-    //   this.enemy.play('tutorial');
-    //   playCutScene.call(this);
-    // }
 
     // If not in dialogue, allow player to move with cursors.
     if (!this.dialogueInProgress) {

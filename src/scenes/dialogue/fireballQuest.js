@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { dialogueHelper } from '../cutscenes/cutscenes';
 import quests from '../../quests/quests';
-import Enemy from '../../entity/Enemy';
 
 export default class Dialogue extends Phaser.Scene {
   constructor() {
@@ -10,6 +9,7 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playPreDialogue() {
+    console.log('setting world');
     const textLines = [
       'Hey, uhhhh...',
       "I'm a little busy right now",
@@ -80,27 +80,21 @@ export default class Dialogue extends Phaser.Scene {
 
   endScene() {
     if (!quests[this.npc.name].isStarted) {
+      console.log('getting scene');
       this.world = this.scene.get('RobotCityScene');
+      console.log(this.world);
       this.world.events.emit('startQuest');
+      console.log(this.world);
 
       this.endCutScene();
+      this.world = this.scene.get('RobotCityScene');
       quests[this.npc.name].isStarted = false;
-      // this.world.wolf1.visible = true;
-      // this.world.wolf1.setActive(true);
-
-      // this.world.wolf2.visible = true;
-      // this.world.wolf2.setActive(true);
-
-      // this.world.wolf3.visible = true;
-      // this.world.wolf3.setActive(true);
-
-      // this.world.alphaWolf.visible = true;
-      // this.world.alphaWolf.setActive(true);
     } else if (
       quests[this.npc.name].isStarted &&
       !quests[this.npc.name].isCompleted
     ) {
       console.log('quest started and not completed');
+
       this.endCutScene();
     } else {
       this.endCutScene();
@@ -124,37 +118,27 @@ export default class Dialogue extends Phaser.Scene {
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
-    if (player.inventory.gunAttachment === 1 && quests[npc.name].isStarted) {
-      console.log(this.world.wolf1);
-    }
     if (player.inventory.gunAttachment === 0 && this.questStarted === false) {
-      // this.scene.events.emit('updateQuest-' + this.quest.key);
-      // quests[npc.name].isStarted = false;
       this.playPreDialogue();
     } else if (
       !quests[npc.name].isStarted &&
       player.inventory.gunAttachment === 1 &&
       this.questStarted === false
     ) {
-      // quests[npc.name].isStarted = true;
       this.playDialogue();
 
       this.questStarted = true;
-
+      this.world = this.scene.get('RobotCityScene');
       console.log('mission started');
-      this.world.sendInWolves = true;
-    } else if (
-      quests[npc.name].isStarted &&
-      !quests[npc.name].isCompleted &&
-      this.questStarted
-    ) {
-      console.log(this.world.wolf1);
+      console.log(this.world);
+
+      if (this.world) {
+        console.log('send in wolves');
+        this.world.sendInWolves = true;
+      }
+    } else if (!quests[npc.name].isCompleted && this.questStarted) {
       this.playIncomplete();
-    } else if (
-      quests[npc.name].isStarted &&
-      quests[npc.name].isCompleted &&
-      this.questStarted
-    ) {
+    } else if (quests[npc.name].isStarted && quests[npc.name].isCompleted) {
       this.playQuestOver();
     }
   }
