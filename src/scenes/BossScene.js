@@ -58,6 +58,7 @@ export default class BossScene extends Phaser.Scene {
 
     // Load sounds
     this.gg = this.sound.add('gg');
+    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.3 });
 
     // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
@@ -124,6 +125,15 @@ export default class BossScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(
+      this.playerProjectiles,
+      this.shockwaveCollision,
+      (proj, world) => {
+        proj.destroy();
+      },
+      (proj, world) => world.canCollide
+    );
+
+    this.physics.add.overlap(
       this.player,
       this.shockwavesGroup,
       (player, proj) => {
@@ -166,6 +176,7 @@ export default class BossScene extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       upgrade: Phaser.Input.Keyboard.KeyCodes.U,
       hp: Phaser.Input.Keyboard.KeyCodes.H,
+      sound: Phaser.Input.Keyboard.KeyCodes.P,
     });
 
     // Make event listeners
@@ -180,6 +191,7 @@ export default class BossScene extends Phaser.Scene {
 
     this.events.on('startFight', () => {
       this.boss.startFight();
+      this.bossMusic.play();
       this.cameras.main.shake(2000, 0.005);
       this.rightHand = new Boss(
         this,
@@ -248,6 +260,10 @@ export default class BossScene extends Phaser.Scene {
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production
         this.player.upgradeStats('msUp');
+      }
+
+      if (this.cursors.sound.isDown) {
+        this.bossMusic.stop();
       }
 
       if (this.cursors.hp.isDown) {
