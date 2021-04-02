@@ -57,7 +57,7 @@ export default class Dialogue extends Phaser.Scene {
 
   endScene() {
     if (!quests[this.npc.name].isStarted) {
-      const mainGame = this.scene.get('FgScene');
+      const mainGame = this.scene.get('RobotCityScene');
       mainGame.events.emit('startQuest');
       this.endCutScene();
     } else if (
@@ -71,7 +71,7 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endCutScene() {
-    this.scene.get('FgScene').events.emit('tutorialEnd');
+    this.scene.get('RobotCityScene').events.emit('cutSceneEnd');
     this.scene.stop();
   }
 

@@ -79,7 +79,7 @@ export default class Dialogue extends Phaser.Scene {
 
   endScene() {
     if (!quests[this.npc.name].isStarted) {
-      const mainGame = this.scene.get('FgScene');
+      const mainGame = this.scene.get('RobotCityScene');
       mainGame.events.emit('startQuest');
       this.endCutScene();
     } else if (
@@ -93,7 +93,7 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endCutScene() {
-    this.scene.get('FgScene').events.emit('tutorialEnd');
+    this.scene.get('RobotCityScene').events.emit('cutSceneEnd');
     this.scene.stop();
   }
 
@@ -109,6 +109,7 @@ export default class Dialogue extends Phaser.Scene {
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
     if (player.inventory.gunAttachment === 0 && this.questStarted === false) {
+      quests[npc.name].isStarted = false;
       this.playPreDialogue();
     } else if (
       quests[npc.name].isStarted &&

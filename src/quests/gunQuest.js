@@ -16,6 +16,8 @@ export function gunQuestSetup() {
     'robotPart'
   ).setScale(0.1);
 
+  this.scene.item.lifespan = 120000;
+
   // Adding event emitters on death for tracking purposes
 
   this.scene.itemsGroup.add(this.scene.item);
@@ -38,6 +40,6 @@ export function gunQuestUpdate() {
   this.questItem++;
 
   if (this.questItem === 1) {
-    this.quest.objectiveReqs.enemiesCleared = true;
+    this.quest.objectiveReqs.itemFetched = true;
   }
 }
