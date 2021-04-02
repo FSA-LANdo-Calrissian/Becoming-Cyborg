@@ -83,12 +83,11 @@ export default class Dialogue extends Phaser.Scene {
       console.log('getting scene');
       this.world = this.scene.get('RobotCityScene');
       console.log(this.world);
-      this.world.events.emit('startQuest');
+      // this.world.events.emit('startQuest');
       console.log(this.world);
 
       this.endCutScene();
       this.world = this.scene.get('RobotCityScene');
-      quests[this.npc.name].isStarted = false;
     } else if (
       quests[this.npc.name].isStarted &&
       !quests[this.npc.name].isCompleted
@@ -125,10 +124,12 @@ export default class Dialogue extends Phaser.Scene {
       player.inventory.gunAttachment === 1 &&
       this.questStarted === false
     ) {
+      this.world = this.scene.get('RobotCityScene');
+      this.world.events.emit('startQuest');
       this.playDialogue();
 
       this.questStarted = true;
-
+      this.world = this.scene.get('RobotCityScene');
       this.world = this.scene.get('RobotCityScene');
       console.log('mission started');
       console.log(this.world);
