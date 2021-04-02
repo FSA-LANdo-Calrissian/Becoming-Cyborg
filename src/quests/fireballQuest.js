@@ -3,6 +3,7 @@ export function fireballQuestSetup() {
 
   this.alphaKilled = 0;
   if (this.scene.wolf1 && this.scene.sendInWolves) {
+    this.quest.isStarted = true;
     this.scene.wolf1.visible = true;
     this.scene.wolf1.setActive(true);
 

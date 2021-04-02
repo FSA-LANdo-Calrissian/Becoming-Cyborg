@@ -30,6 +30,7 @@ export default class Quest {
       Takes nothing, returns bool
     */
     for (let keys of Object.keys(this.quest.objectiveReqs)) {
+      console.log(keys, this.quest.objectiveReqs[keys]);
       if (!this.quest.objectiveReqs[keys]) {
         return false;
       }
@@ -43,9 +44,11 @@ export default class Quest {
     */
     const isCleared = this.objectiveChecker();
     if (isCleared) {
+      console.log('cleared giving reward');
       playDialogue.call(this.scene, this.npc, this.npc.name);
       this.giveReward();
     } else {
+      console.log('not cleared');
       playDialogue.call(this.scene, this.npc, this.npc.name, {
         killed: this.enemiesKilled,
       });
@@ -61,6 +64,7 @@ export default class Quest {
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
     rewards.forEach((item) => {
+      console.log(item);
       if (item === 'iron') {
         player.inventory.iron += 50;
       } else if (item === 'potion') {
@@ -83,9 +87,12 @@ export default class Quest {
       } else if (item === 'clearanceChip') {
         player.inventory.clearanceChip += 1;
       } else if (item === 'fireballAttachment') {
+        console.log('heres fireball');
         player.inventory.fireballAttachment += 1;
+        this.quest.isCompleted = true;
       } else if (item === 'gunAttachment') {
         player.inventory.gunAttachment += 1;
+        this.quest.isCompleted = true;
       }
     });
 

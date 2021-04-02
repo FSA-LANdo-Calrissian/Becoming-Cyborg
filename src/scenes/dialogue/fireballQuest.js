@@ -128,6 +128,7 @@ export default class Dialogue extends Phaser.Scene {
       this.playDialogue();
 
       this.questStarted = true;
+
       this.world = this.scene.get('RobotCityScene');
       console.log('mission started');
       console.log(this.world);
