@@ -58,7 +58,7 @@ export default class BossScene extends Phaser.Scene {
 
     // Load sounds
     this.gg = this.sound.add('gg');
-    this.bossMusic = this.sound.add('bossTrack', { volume: 0.3 });
+    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.3 });
 
     // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });

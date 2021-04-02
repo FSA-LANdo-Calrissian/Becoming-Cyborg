@@ -109,6 +109,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
+    this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
     this.load.image('oil', 'assets/items/oil.png');
