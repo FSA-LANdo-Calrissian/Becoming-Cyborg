@@ -115,11 +115,11 @@ export default class MainScene extends Phaser.Scene {
     this.load.spritesheet('packLeader', 'assets/sprites/hector.png', {
       frameWidth: 34,
       frameHeight: 41,
+    });
 
     this.load.spritesheet('shockwave', 'assets/sprites/shockwave.png', {
       frameWidth: 20,
       frameHeight: 22,
-
     });
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
