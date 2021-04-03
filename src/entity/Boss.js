@@ -51,7 +51,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.physics.moveTo(this, 925, 700, 700, 1000);
       this.scene.time.delayedCall(1000, () => {
         this.body.stop();
-        this.scene.cameras.main.shake(300, 0.001);
+        this.scene.cameras.main.shake(300, 0.006);
         this.releaseShockwaves();
         this.scene.time.delayedCall(this.resetTime, () => {
           this.resetPosition();
@@ -70,7 +70,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.physics.moveTo(this, 500, 700, 700, 1000);
       this.scene.time.delayedCall(1000, () => {
         this.body.stop();
-        this.scene.cameras.main.shake(300, 0.001);
+        this.scene.cameras.main.shake(300, 0.006);
         this.releaseShockwaves();
         this.scene.time.delayedCall(this.resetTime, () => {
           this.resetPosition();
