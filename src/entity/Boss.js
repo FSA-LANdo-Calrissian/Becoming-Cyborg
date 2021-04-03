@@ -90,13 +90,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   resetPosition() {
-    console.log(`Resetting...`);
     this.resetting = true;
     this.scene.physics.moveTo(this, this.defaultX, this.defaultY, 400, 2000);
     this.scene.time.delayedCall(2000, () => {
       this.body.stop();
       this.angle = 0;
-      console.log(`No longer resetting...`);
       this.resetting = false;
       this.preppingAttack = false;
     });
@@ -123,7 +121,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   takeDamage(damage, leftHp, rightHp, bodyHp) {
     this.health -= damage;
-    console.log(`Remaining health for ${this.fist} hand is ${this.health}`);
 
     let newHealth;
     if (this.fist === 'left') {
@@ -183,7 +180,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       !this.preppingAttack
     ) {
       if (time > this.nextAttack) {
-        console.log(`Not resetting so preparing attack...`, this.fist);
         const attack = Math.floor(Math.random() * 101);
         this.preppingAttack = true;
         if (attack > 50) {
