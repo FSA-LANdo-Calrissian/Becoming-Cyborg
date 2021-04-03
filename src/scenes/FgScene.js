@@ -29,6 +29,7 @@ export default class FgScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.allowUpgrade = false;
     this.sceneOver = false;
+    this.key = 'FgScene';
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -77,7 +78,9 @@ export default class FgScene extends Phaser.Scene {
 
     // If none found, create it.
     if (!bullet) {
-      bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
+      bullet = new Projectile(this, x, y, sprite, angle)
+        .setScale(0.5)
+        .setDepth(7);
       // Add to projectiles group.
       // TODO: Add logic for whether to add to player or enemy projectile group
       this.playerProjectiles.add(bullet);
@@ -105,6 +108,7 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
+    console.log(this.data);
     //Creating animations
     createWorldAnims.call(this);
     createPlayerAnims.call(this);

@@ -23,10 +23,18 @@ export default class RobotCityScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.initCutScene = false;
     this.lairAccess = false;
+    this.key = 'RobotCityScene';
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
+  }
+
+  initScene() {
+    this.dialogueInProgress = false;
+    this.upgradeOpened = false;
+    this.initCutScene = false;
+    this.lairAccess = false;
   }
   openInventory() {
     this.dialogueInProgress = true;
@@ -73,7 +81,9 @@ export default class RobotCityScene extends Phaser.Scene {
 
     // If none found, create it.
     if (!bullet) {
-      bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
+      bullet = new Projectile(this, x, y, sprite, angle)
+        .setScale(0.5)
+        .setDepth(7);
       // Add to projectiles group.
       // TODO: Add logic for whether to add to player or enemy projectile group
       this.playerProjectiles.add(bullet);
@@ -101,6 +111,9 @@ export default class RobotCityScene extends Phaser.Scene {
   }
 
   create(data) {
+    // Saving initial player to pass to scene restart on game over
+    this.restartData = data.player;
+
     //Creating animations
     createWorldAnims.call(this);
     createPlayerAnims.call(this);
@@ -188,7 +201,7 @@ export default class RobotCityScene extends Phaser.Scene {
       0,
       0
     );
-    // this.worldCollision.setCollisionByProperty({ collides: true });
+    this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
     const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -203,23 +216,25 @@ export default class RobotCityScene extends Phaser.Scene {
       .setScale(0.5)
       .setSize(10, 10);
 
-    const {
-      inventory,
-      upgrade,
-      health,
-      currentLeftWeapon,
-      stats,
-    } = data.player;
     this.player = new Player(this, 64, 1744, 'player', this.loadBullet)
       .setScale(0.5)
       .setSize(30, 32)
       .setOffset(10, 12);
-    this.player.inventory = inventory;
-    this.player.upgrade = upgrade;
-    this.player.health = health;
-    this.player.currentLeftWeapon = currentLeftWeapon;
-    this.player.stats = stats;
-    this.player.updateStats();
+    if (data.player) {
+      const {
+        inventory,
+        upgrade,
+        health,
+        currentLeftWeapon,
+        stats,
+      } = data.player;
+      this.player.inventory = inventory;
+      this.player.upgrade = upgrade;
+      this.player.health = health;
+      this.player.currentLeftWeapon = currentLeftWeapon;
+      this.player.stats = stats;
+      this.player.updateStats();
+    }
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)

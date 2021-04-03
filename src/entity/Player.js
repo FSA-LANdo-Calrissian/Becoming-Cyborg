@@ -26,6 +26,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       gun: 0,
       knife: 0,
       fireBall: 1,
+      clearanceChip: 0,
     };
     this.weaponStats = {
       none: { damage: 0, attackSpeed: 0 },
@@ -245,8 +246,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.health <= 0) {
       gg.play();
       const stats = this.stats;
+      const scene = this.scene;
       this.scene.scene.stop('HUDScene');
-      this.scene.scene.start('GameOver', { stats });
+      this.scene.scene.start('GameOver', { stats, scene });
       return;
     }
 

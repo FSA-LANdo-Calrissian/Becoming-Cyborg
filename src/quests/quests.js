@@ -16,7 +16,6 @@ const quests = {
     key: 'testQuest',
     title: 'Clear the mob', // Not yet implemented
     reward: ['iron', 'potion'],
-
     description:
       'A quest to clear the big bad wolves from the city so that the little piggy next door can go to the market in peace.', // not yet implemented
     objectiveReqs: {
@@ -27,6 +26,7 @@ const quests = {
     update: [testFunc1],
     isCompleted: false,
     requirements: false, // Not implemented yet
+    scene: 'FgScene',
   },
 
   secondTestQuest: {
@@ -42,6 +42,7 @@ const quests = {
     update: [secondTestUpdate],
     isCompleted: false,
     requirements: false,
+    scene: 'FgScene',
   },
 
   gunQuest: {
@@ -57,6 +58,7 @@ const quests = {
     update: [gunQuestUpdate],
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 
   stacyQuest: {
@@ -71,9 +73,9 @@ const quests = {
     isStarted: false,
     setUp: [stacyQuestSetUp],
     update: [stacyQuestUpdate],
-
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 
   fireballQuest: {
@@ -90,6 +92,7 @@ const quests = {
 
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 };
 
