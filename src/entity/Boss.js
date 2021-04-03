@@ -16,7 +16,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         : 'right';
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
-    this.damage = 25;
+    this.damage = 8;
     this.isDead = false;
     this.fightStarted = false;
     this.attackCD = 10000;
@@ -83,6 +83,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     for (let i = 0; i < 360; i++) {
       const proj = new Projectile(this.scene, this.x, this.y, 'shockwave');
       proj.play('shockwave');
+      proj.damage = 15;
       proj.lifespan = 10000;
       proj.shoot(this.x, this.y, i);
       this.scene.shockwavesGroup.add(proj);
@@ -108,8 +109,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.tracking = false;
       const targetX = this.player.x;
       const targetY = this.player.y;
-      this.scene.physics.moveTo(this, targetX, targetY, 6000, 700);
-      this.scene.time.delayedCall(900, () => {
+      this.scene.physics.moveTo(this, targetX, targetY, 5500, 700);
+      this.scene.time.delayedCall(925, () => {
         this.body.stop();
         this.clearTint();
         this.scene.time.delayedCall(this.resetTime, () => {
