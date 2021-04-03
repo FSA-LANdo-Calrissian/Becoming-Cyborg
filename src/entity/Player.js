@@ -157,6 +157,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       returns: null
     */
 
+    if (type.includes('Down')) this.upgrade.points++;
+    if (type.includes('Up')) this.upgrade.points--;
+
     switch (type) {
       case 'hpUp':
         this.health += 10;
