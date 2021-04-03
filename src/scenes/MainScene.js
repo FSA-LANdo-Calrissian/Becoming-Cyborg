@@ -8,8 +8,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+
+
     this.scene.launch('BossScene');
     // this.scene.launch('RobotCityScene');
     this.scene.launch('HUDScene', { mainScene: 'BossScene' });
+
   }
 }

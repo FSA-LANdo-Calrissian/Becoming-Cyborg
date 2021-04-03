@@ -20,13 +20,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.inventory = {
       iron: 100,
       oil: 100,
-      gunAttachment: 1,
+      gunAttachment: 0,
       knifeAttachment: 1,
-      fireBallAttachment: 1,
+      fireBallAttachment: 0,
       gun: 0,
       knife: 0,
       fireBall: 1,
-      clearanceChip: 0,
     };
     this.weaponStats = {
       none: { damage: 0, attackSpeed: 0 },
@@ -142,7 +141,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const { damage, attackSpeed } = this.weaponStats[this.currentLeftWeapon];
     this.speed = 100 + this.upgrade.moveSpeed;
     this.maxHealth = 100 + this.upgrade.maxHealth;
-    this.damage = 100 + this.upgrade.damage + damage;
+    this.damage = 10 + this.upgrade.damage + damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed - attackSpeed;
     this.armor = 0 + this.upgrade.armor;
     this.regen = 0 + this.upgrade.regen;

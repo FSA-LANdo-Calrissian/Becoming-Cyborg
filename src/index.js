@@ -17,7 +17,10 @@ import RobotCityScene from './scenes/RobotCityScene';
 import RobotCityCutScene from './scenes/cutscenes/RobotCityCutScene';
 import stacyQuest from './scenes/dialogue/stacyQuest';
 import robotGuard from './scenes/dialogue/robotGuard';
+import fireballQuest from './scenes/dialogue/fireballQuest';
+import gunQuest from './scenes/dialogue/gunQuest';
 import firstBossCutScene from './scenes/cutscenes/firstBossCutScene';
+
 
 export default class Game extends Phaser.Game {
   constructor() {
@@ -42,6 +45,8 @@ export default class Game extends Phaser.Game {
     this.scene.add('testQuest', testQuest);
     this.scene.add('secondTestQuest', secondTestQuest);
     this.scene.add('robotGuard', robotGuard);
+    this.scene.add('fireballQuest', fireballQuest);
+    this.scene.add('gunQuest', gunQuest);
     this.scene.add('firstBossCutScene', firstBossCutScene);
     this.scene.bringToTop('HUDScene');
 
