@@ -204,12 +204,12 @@ export default class RobotCityScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 1384, 1384, 'upgradeStation')
@@ -535,7 +535,7 @@ export default class RobotCityScene extends Phaser.Scene {
     this.itemsGroup.setDepth(7);
     this.playerProjectiles.setDepth(7);
     this.worldCollision.setDepth(10);
-    debugGraphics.setDepth(10);
+    // debugGraphics.setDepth(10);
   }
 
   cutSceneHelper(distance) {

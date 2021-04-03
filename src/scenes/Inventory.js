@@ -100,6 +100,11 @@ export default class Inventory extends Phaser.Scene {
     /*
       Function to return us to where we left off on FgScene
     */
+
+    // Resume HUDScene
+    this.scene.wake('HUDScene');
+
+    // Switch back to main scene
     this.scene.transition({
       target: scene,
       duration: 10,
@@ -107,6 +112,9 @@ export default class Inventory extends Phaser.Scene {
   }
 
   create({ player, scene }) {
+    // We sleep the HUDScene
+    this.scene.sleep('HUDScene');
+
     // We save this to this.player so that we have access to it
     // when we transition back to FgScene
     this.player = player;
