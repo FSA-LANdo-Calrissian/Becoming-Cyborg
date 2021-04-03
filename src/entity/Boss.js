@@ -109,7 +109,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       const targetX = this.player.x;
       const targetY = this.player.y;
       this.scene.physics.moveTo(this, targetX, targetY, 6000, 700);
-      this.scene.time.delayedCall(1100, () => {
+      this.scene.time.delayedCall(900, () => {
         this.body.stop();
         this.clearTint();
         this.scene.time.delayedCall(this.resetTime, () => {
