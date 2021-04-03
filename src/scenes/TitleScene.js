@@ -102,6 +102,10 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 75,
     });
 
+    this.load.spritesheet('robotGuard', 'assets/sprites/robotGuard.png', {
+      frameWidth: 65,
+      frameHeight: 44,
+    });
 
     this.load.spritesheet('fakeBot', 'assets/sprites/brittabot.png', {
       frameWidth: 40,
@@ -117,7 +121,6 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 22,
 
     });
-
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
     this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');

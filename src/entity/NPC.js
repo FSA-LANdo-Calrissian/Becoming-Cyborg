@@ -25,7 +25,8 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
           wordWrap: { width: 60 },
         })
         .setResolution(10)
-        .setScale(0.5);
+        .setScale(0.6)
+        .setDepth(12);
 
       this.scene.events.emit('dialogue');
     }
