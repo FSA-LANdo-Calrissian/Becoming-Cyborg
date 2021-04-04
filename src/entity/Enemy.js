@@ -115,7 +115,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     });
 
     // After hit cooldown time, set to false, stop animation, and remove tint.
-    this.scene.time.delayedCall(1000, () => {
+    this.scene.time.delayedCall(450, () => {
       this.hitCooldown = false;
       hitAnimation.stop();
       this.clearTint();

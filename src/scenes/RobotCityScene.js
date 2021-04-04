@@ -79,6 +79,13 @@ export default class RobotCityScene extends Phaser.Scene {
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
 
+    // If wrong texture, reset texture and size
+    if (bullet && bullet.texture.key !== sprite) {
+      const size = sprite === 'bullet' ? 9 : 20;
+      bullet.setTexture(sprite);
+      bullet.setSize(size, size);
+    }
+
     // If none found, create it.
     if (!bullet) {
       bullet = new Projectile(this, x, y, sprite, angle)
@@ -101,7 +108,7 @@ export default class RobotCityScene extends Phaser.Scene {
       returns null.
     */
 
-    enemy.takeDamage(source.damage / 60);
+    enemy.takeDamage(this.player.damage);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
