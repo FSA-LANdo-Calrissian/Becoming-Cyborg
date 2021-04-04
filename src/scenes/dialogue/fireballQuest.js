@@ -79,6 +79,7 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endScene() {
+    console.log('dialogue');
     // if (!quests[this.npc.name].isStarted) {
     //   console.log('getting scene');
     //   this.world = this.scene.get('RobotCityScene');
@@ -118,7 +119,7 @@ export default class Dialogue extends Phaser.Scene {
     if (player.inventory.gunAttachment === 0 && this.questStarted === false) {
       this.playPreDialogue();
     } else if (
-      !quests[npc.name].isStarted &&
+      // !quests[npc.name].isStarted &&
       player.inventory.gunAttachment === 1 &&
       this.questStarted === false
     ) {
@@ -131,9 +132,28 @@ export default class Dialogue extends Phaser.Scene {
       console.log('mission started');
       console.log(this.world);
       if (this.world) {
+        console.log(quests[npc.name], 'quest[name]');
         console.log('send in wolves');
-        this.world.sendInWolves = true;
+        // this.world.sendInWolves = true;
+        this.world.wolf1.visible = true;
+        this.world.wolf1.setActive(true);
+
+        this.world.wolf2.visible = true;
+        this.world.wolf2.setActive(true);
+
+        this.world.wolf3.visible = true;
+        this.world.wolf3.setActive(true);
+
+        this.world.alphaWolf.visible = true;
+        this.world.alphaWolf.setActive(true);
+
+        this.world.alphaWolf.on('animationcomplete-death', () => {
+          console.log('in update');
+          this.world.events.emit('updateQuest-' + quests[npc.name].key);
+          this.world.alphaWolf.removeAllListeners();
+        });
       }
+      console.log('starting quest');
       this.world.events.emit('startQuest');
     } else if (!quests[npc.name].isCompleted && this.questStarted) {
       this.playIncomplete();
