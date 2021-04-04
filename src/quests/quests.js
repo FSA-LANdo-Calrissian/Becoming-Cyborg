@@ -15,8 +15,7 @@ const quests = {
   testQuest: {
     key: 'testQuest',
     title: 'Clear the mob', // Not yet implemented
-    reward: ['iron', 'potion'],
-
+    reward: ['iron', 'potion', 'oil'],
     description:
       'A quest to clear the big bad wolves from the city so that the little piggy next door can go to the market in peace.', // not yet implemented
     objectiveReqs: {
@@ -27,6 +26,7 @@ const quests = {
     update: [testFunc1],
     isCompleted: false,
     requirements: false, // Not implemented yet
+    scene: 'FgScene',
   },
 
   secondTestQuest: {
@@ -42,6 +42,7 @@ const quests = {
     update: [secondTestUpdate],
     isCompleted: false,
     requirements: false,
+    scene: 'FgScene',
   },
 
   gunQuest: {
@@ -57,12 +58,13 @@ const quests = {
     update: [gunQuestUpdate],
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 
   stacyQuest: {
     key: 'stacyQuest',
     title: 'Kill 10 Big Robots',
-    reward: ['iron', 'oil', 'clearanceChip'],
+    reward: ['iron', 'oil', 'clearanceChip', 'potion'],
     description:
       "Kill 10 Big Robots in Robot City to save your dad and Stacy and get a clearance chip to the robot king's lair",
     objectiveReqs: {
@@ -71,9 +73,9 @@ const quests = {
     isStarted: false,
     setUp: [stacyQuestSetUp],
     update: [stacyQuestUpdate],
-
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 
   fireballQuest: {
@@ -90,6 +92,7 @@ const quests = {
 
     isCompleted: false,
     requirements: false,
+    scene: 'RobotCityScene',
   },
 };
 

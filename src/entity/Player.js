@@ -16,6 +16,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       moveSpeed: 0,
       regen: 0,
       armor: 0,
+      points: 0,
     };
     this.inventory = {
       iron: 100,
@@ -26,12 +27,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       gun: 1,
       knife: 0,
       fireBall: 1,
+      clearanceChip: 0,
     };
     this.weaponStats = {
       none: { damage: 0, attackSpeed: 0 },
-      knife: { damage: 0, attackSpeed: 1000 },
-      gun: { damage: -15, attackSpeed: 1500 },
-      fireBall: { damage: 20, attackSpeed: 0 },
+      knife: { damage: 5, attackSpeed: 1000 },
+      gun: { damage: -2, attackSpeed: 1500 },
+      fireBall: { damage: 50, attackSpeed: -2000 },
     };
     this.health = 100;
     this.stats = {
@@ -155,6 +157,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       returns: null
     */
 
+    if (type.includes('Down')) this.upgrade.points++;
+    if (type.includes('Up')) this.upgrade.points--;
+
     switch (type) {
       case 'hpUp':
         this.health += 10;
@@ -245,8 +250,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.health <= 0) {
       gg.play();
       const stats = this.stats;
+      const scene = this.scene;
       this.scene.scene.stop('HUDScene');
-      this.scene.scene.start('GameOver', { stats });
+      this.scene.scene.start('GameOver', { stats, scene });
       return;
     }
 

@@ -63,10 +63,13 @@ export default class Quest {
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
+
+    player.upgrade.points += 2;
+
     rewards.forEach((item) => {
       console.log(item);
       if (item === 'iron') {
-        player.inventory.iron += 50;
+        player.inventory.iron += 5;
       } else if (item === 'potion') {
         if (missingHealth > 10) {
           player.health += 10;
@@ -83,7 +86,7 @@ export default class Quest {
           drop.reset();
         }
       } else if (item === 'oil') {
-        player.inventory.oil += 50;
+        player.inventory.oil += 5;
       } else if (item === 'clearanceChip') {
         player.inventory.clearanceChip += 1;
       } else if (item === 'fireballAttachment') {

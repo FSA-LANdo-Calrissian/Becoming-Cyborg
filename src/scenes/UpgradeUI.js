@@ -67,9 +67,13 @@ export default class UpgradeUI extends Phaser.Scene {
     this.inventoryItems.setText(
       `Iron: ${inventory.iron}, Oil: ${inventory.iron}`
     );
+    this.inventoryWeapons.setText(
+      `Knife: ${this.player.inventory.knife}, Gun: ${this.player.inventory.gun}, Fire Ball: ${this.player.inventory.fireBall}`
+    );
     this.inventoryAttachments.setText(
       `Knife Attachments: ${inventory.knifeAttachment}, Gun Attachments: ${inventory.gunAttachment}, Fire Ball Attachments: ${inventory.fireBallAttachment}`
     );
+    this.upgradePoints.setText(`Upgrade Points: ${this.player.upgrade.points}`);
   }
 
   equipLeft(weapon) {
@@ -99,8 +103,13 @@ export default class UpgradeUI extends Phaser.Scene {
 
   returnToGame(player, scene) {
     /*
-      Function to return us to where we left off on FgScene
+      Function to return us to where we left off in main scene
     */
+
+    // Resume HUDScene
+    this.scene.wake('HUDScene');
+
+    // Switch back to main scene
     this.scene.transition({
       target: scene,
       duration: 10,
@@ -114,6 +123,11 @@ export default class UpgradeUI extends Phaser.Scene {
       Current upgradeNames: hpUp, hpDown
       returns null
     */
+
+    if (upgradeName.includes('Up') && !this.player.upgrade.points) {
+      alert('You do not have any more upgrade points.');
+      return;
+    }
 
     switch (upgradeName) {
       case 'hpUp':
@@ -177,6 +191,9 @@ export default class UpgradeUI extends Phaser.Scene {
   }
 
   create({ player, scene }) {
+    // We sleep the HUDScene
+    this.scene.sleep('HUDScene');
+
     // We save this to this.player so that we have access to it
     // when we transition back to FgScene
     this.player = player;
@@ -185,16 +202,26 @@ export default class UpgradeUI extends Phaser.Scene {
     this.add.sprite(400, 300, 'upgrade').setScale(1.2);
 
     // Current player inventory
-    this.add.text(350, 10, 'Inventory:');
+    this.add.text(350, 5, 'Inventory:');
     this.inventoryItems = this.add.text(
       310,
-      30,
+      20,
       `Iron: ${this.player.inventory.iron}, Oil: ${this.player.inventory.iron}`
     );
+    this.inventoryWeapons = this.add.text(
+      250,
+      35,
+      `Knife: ${this.player.inventory.knife}, Gun: ${this.player.inventory.gun}, Fire Ball: ${this.player.inventory.fireBall}`
+    );
     this.inventoryAttachments = this.add.text(
-      100,
+      75,
       50,
       `Knife Attachments: ${this.player.inventory.knifeAttachment}, Gun Attachments: ${this.player.inventory.gunAttachment}, Fire Ball Attachments: ${this.player.inventory.fireBallAttachment}`
+    );
+    this.upgradePoints = this.add.text(
+      310,
+      65,
+      `Upgrade Points: ${this.player.upgrade.points}`
     );
 
     // For hp upgrades
@@ -203,12 +230,12 @@ export default class UpgradeUI extends Phaser.Scene {
     hpDown.angle = 180;
     hpDown.setName('hpDown');
     hpUp.setName('hpUp');
-    hpUp.setInteractive();
-    hpDown.setInteractive();
+    hpUp.setInteractive({ useHandCursor: true });
+    hpDown.setInteractive({ useHandCursor: true });
     this.hpText = this.add.text(
       360,
       235,
-      `Health: ${this.player.upgrade.maxHealth}`
+      `Health: +${this.player.upgrade.maxHealth}`
     );
 
     // For the top left upgrade area
@@ -217,17 +244,18 @@ export default class UpgradeUI extends Phaser.Scene {
     background.fillRectShape(rect);
 
     const weapon = this.add.image(168, 175, 'knife').setScale(0.2);
+    this.add.text(82, 95, 'Weapon Crafting Cost:').setScale(0.8);
     const materials = this.add
-      .text(50, 100, 'Iron: 5, Oil: 5, Part: 1')
-      .setScale(1);
+      .text(58, 107, 'Iron: 5, Oil: 5, Attachment: 1')
+      .setScale(0.8);
     const createButton = this.add.sprite(168, 240, 'button').setScale(0.2);
     this.leftCreateText = this.add
-      .text(135, 235, 'create')
-      .setInteractive()
+      .text(145, 232, 'Craft')
+      .setInteractive({ useHandCursor: true })
       .on('pointerup', this.checkLeftMaterials);
     this.leftEquipText = this.add
-      .text(135, 235, 'equip')
-      .setInteractive()
+      .text(145, 232, 'Equip')
+      .setInteractive({ useHandCursor: true })
       .on(
         'pointerup',
         () => {
@@ -236,8 +264,8 @@ export default class UpgradeUI extends Phaser.Scene {
         this
       );
     this.leftUnequipText = this.add
-      .text(135, 235, 'unequip')
-      .setInteractive()
+      .text(135, 232, 'Unequip')
+      .setInteractive({ useHandCursor: true })
       .on(
         'pointerup',
         () => {
@@ -248,8 +276,8 @@ export default class UpgradeUI extends Phaser.Scene {
       );
     const nextButton = this.add.sprite(250, 240, 'button').setScale(0.2);
     const nextText = this.add
-      .text(230, 235, 'next')
-      .setInteractive()
+      .text(230, 232, 'Next')
+      .setInteractive({ useHandCursor: true })
       .on('pointerup', () => {
         if (this.leftWeaponIdx !== this.weapons.length - 1) {
           const nextWeapon = this.weapons[++this.leftWeaponIdx];
@@ -260,14 +288,14 @@ export default class UpgradeUI extends Phaser.Scene {
             `${nextWeapon}Attachment`
           ];
           materials.setText(
-            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
+            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Attachment: ${this.currLeftPart}`
           );
         }
       });
     const prevButton = this.add.sprite(90, 240, 'button').setScale(0.2);
     const prevText = this.add
-      .text(70, 235, 'prev')
-      .setInteractive()
+      .text(70, 232, 'Prev')
+      .setInteractive({ useHandCursor: true })
       .on('pointerup', () => {
         if (this.leftWeaponIdx !== 0) {
           const prevWeapon = this.weapons[--this.leftWeaponIdx];
@@ -278,16 +306,10 @@ export default class UpgradeUI extends Phaser.Scene {
             `${prevWeapon}Attachment`
           ];
           materials.setText(
-            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Part: ${this.currLeftPart}`
+            `Iron: ${this.currLeftIron}, Oil: ${this.currLeftOil}, Attachment: ${this.currLeftPart}`
           );
         }
       });
-    // topLeftDown.angle = 180;
-    // topLeftDown.setName('topLeftDown');
-    // topLeftUp.setName('topLeftUp');
-    // topLeftUp.setInteractive();
-    // topLeftDown.setInteractive();
-    // this.topLeftText = this.add.text(128, 235, `UpgradeTextHere`);
 
     // For the top right upgrade area
     const topRightUp = this.add.sprite(627, 155, 'arrow').setScale(0.8);
@@ -295,8 +317,8 @@ export default class UpgradeUI extends Phaser.Scene {
     topRightDown.angle = 180;
     topRightDown.setName('topRightDown');
     topRightUp.setName('topRightUp');
-    topRightUp.setInteractive();
-    topRightDown.setInteractive();
+    topRightUp.setInteractive({ useHandCursor: true });
+    topRightDown.setInteractive({ useHandCursor: true });
     this.topRightText = this.add.text(585, 235, `UpgradeTextHere`);
 
     // For move speed upgrades
@@ -305,12 +327,12 @@ export default class UpgradeUI extends Phaser.Scene {
     msDown.angle = 180;
     msDown.setName('msDown');
     msUp.setName('msUp');
-    msUp.setInteractive();
-    msDown.setInteractive();
+    msUp.setInteractive({ useHandCursor: true });
+    msDown.setInteractive({ useHandCursor: true });
     this.msText = this.add.text(
       585,
       395,
-      `Move Speed: ${this.player.upgrade.moveSpeed}`
+      `Move Speed: +${this.player.upgrade.moveSpeed}`
     );
 
     // For regen upgrades
@@ -319,12 +341,12 @@ export default class UpgradeUI extends Phaser.Scene {
     regenDown.angle = 180;
     regenDown.setName('regenDown');
     regenUp.setName('regenUp');
-    regenUp.setInteractive();
-    regenDown.setInteractive();
+    regenUp.setInteractive({ useHandCursor: true });
+    regenDown.setInteractive({ useHandCursor: true });
     this.regenText = this.add.text(
       360,
       395,
-      `Regen: ${this.player.upgrade.regen}`
+      `Regen: +${this.player.upgrade.regen}`
     );
 
     // For armor upgrades
@@ -333,16 +355,20 @@ export default class UpgradeUI extends Phaser.Scene {
     armorDown.angle = 180;
     armorDown.setName('armorDown');
     armorUp.setName('armorUp');
-    armorUp.setInteractive();
-    armorDown.setInteractive();
+    armorUp.setInteractive({ useHandCursor: true });
+    armorDown.setInteractive({ useHandCursor: true });
     this.armorText = this.add.text(
       128,
       395,
-      `Armor: ${this.player.upgrade.armor}`
+      `Armor: +${this.player.upgrade.armor}`
     );
 
     // Button to return to FgScene button
-    const text = this.add.text(320, 103, 'Go Back!');
+    this.add.image(400, 560, 'button').setScale(0.4);
+    const text = this.add
+      .text(336, 546, 'Go Back!')
+      .setFontSize(40)
+      .setScale(0.7);
     text.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       this.leftWeaponIdx = 0;
       this.returnToGame(player, scene);
@@ -364,7 +390,7 @@ export default class UpgradeUI extends Phaser.Scene {
     // });
 
     this.events.on('transitioncomplete', () => {
-      this.player.y += 20;
+      this.player.y += 30;
     });
   }
 
