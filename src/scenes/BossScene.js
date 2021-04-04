@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Projectile from '../entity/Projectile';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
+import Item from '../entity/Item';
 import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
 import createBossAnims from '../animations/createBossAnims';
@@ -96,6 +97,11 @@ export default class BossScene extends Phaser.Scene {
       runChildUpdate: true,
     });
 
+    this.bossGroup = this.physics.add.group({
+      classType: Boss,
+      runChildUpdate: true,
+    });
+
     this.shockwavesGroup = this.physics.add.group({
       class: Projectile,
       runChildUpdate: true,
@@ -106,12 +112,18 @@ export default class BossScene extends Phaser.Scene {
       runChildUpdate: true,
     });
 
+    this.itemsGroup = this.physics.add.group({
+      classType: Item,
+      runChildUpdate: true,
+    });
     // Add entities to groups
-    this.enemiesGroup.add(this.boss);
+    this.bossGroup.add(this.boss);
 
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
+    this.physics.add.collider(this.enemiesGroup, this.worldGround);
+    this.physics.add.collider(this.enemiesGroup, this.world);
 
     this.physics.add.overlap(
       this.shockwavesGroup,
@@ -146,13 +158,14 @@ export default class BossScene extends Phaser.Scene {
       this.player,
       this.enemiesGroup,
       (player, enemy) => {
-        player.takeDamage(enemy.damage, this.gg);
+        // TODO: Replace this with actual enemy damage numbers
+        player.takeDamage(15, this.gg);
       }
     );
 
     this.physics.add.overlap(
       this.playerProjectiles,
-      this.enemiesGroup,
+      this.bossGroup,
       (proj, enemy) => {
         enemy.takeDamage(
           proj.damage,
@@ -162,6 +175,28 @@ export default class BossScene extends Phaser.Scene {
         );
       }
     );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.enemiesGroup,
+      (proj, enemy) => {
+        enemy.takeDamage(proj.damage);
+      }
+    );
+
+    this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
+      // If player full on health, don't pick up potions.
+      if (
+        item.texture.key === 'potion' &&
+        this.player.health === this.player.maxHealth
+      ) {
+        return;
+      }
+      // Otherwise, pick up items
+      player.pickUpItem(item.texture.key);
+      // And make it disappear from screen.
+      item.lifespan = 0;
+    });
 
     // Init camera
     this.cameras.main.startFollow(this.player).setZoom(2);
@@ -211,11 +246,12 @@ export default class BossScene extends Phaser.Scene {
 
       this.leftHand.play('leftHand');
 
-      this.enemiesGroup.add(this.rightHand);
-      this.enemiesGroup.add(this.leftHand);
+      this.bossGroup.add(this.rightHand);
+      this.bossGroup.add(this.leftHand);
 
       this.leftHand.attack();
       this.rightHand.attack();
+      // this.leftHand.leftHandSmash();
     });
 
     this.events.on('rip', ({ hand }) => {

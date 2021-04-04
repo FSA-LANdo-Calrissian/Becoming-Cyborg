@@ -121,6 +121,12 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 20,
       frameHeight: 22,
     });
+
+    this.load.spritesheet('firePillar', 'assets/sprites/firepillar.png', {
+      frameWidth: 189,
+      frameHeight: 191,
+    });
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
     this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
@@ -128,9 +134,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('iron', 'assets/items/iron.png');
 
     this.load.image('robotPart', 'assets/items/iron.png');
-
     this.load.image('oil', 'assets/items/oil.png');
-
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
     this.load.image('gameOver', './assets/backgrounds/gg.jpg');
@@ -141,6 +145,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
     this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
     this.load.image('none', 'assets/sprites/robotArmClosed.png');
+    this.load.image('target', 'assets/sprites/target.png');
   }
 
   create() {

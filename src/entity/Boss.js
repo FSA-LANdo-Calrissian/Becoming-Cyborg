@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import Projectile from './Projectile';
+import Enemy from './Enemy';
 
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -40,10 +41,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     console.log(`Starting boss fight...`);
   }
 
-  // Left hand skills
+  // Left hand skill
   leftHandSmash() {
     console.log(`Left hand preparing to smash...`);
-    // 950 700
+    const target = this.scene.add.sprite(925, 700, 'target').setScale(0.3);
+
     const angle = Phaser.Math.Angle.Between(this.x, this.y, 925, 700);
     this.angle = angle * Phaser.Math.RAD_TO_DEG;
 
@@ -51,6 +53,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.physics.moveTo(this, 925, 700, 700, 1000);
       this.scene.time.delayedCall(1000, () => {
         this.body.stop();
+        target.destroy();
         this.scene.cameras.main.shake(300, 0.006);
         this.releaseShockwaves();
         this.scene.time.delayedCall(this.resetTime, () => {
@@ -60,9 +63,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  // Right hand version
   rightHandSmash() {
     console.log(`Right hand preparing to smash...`);
-    // 950 700
+    const target = this.scene.add.sprite(500, 700, 'target').setScale(0.3);
+
     const angle = Phaser.Math.Angle.Between(this.x, this.y, 500, 700);
     this.angle = angle * Phaser.Math.RAD_TO_DEG;
 
@@ -71,6 +76,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.time.delayedCall(1000, () => {
         this.body.stop();
         this.scene.cameras.main.shake(300, 0.006);
+        target.destroy();
         this.releaseShockwaves();
         this.scene.time.delayedCall(this.resetTime, () => {
           this.resetPosition();
@@ -79,6 +85,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  // Helper function for smash skills
   releaseShockwaves() {
     for (let i = 0; i < 360; i++) {
       const proj = new Projectile(this.scene, this.x, this.y, 'shockwave');
@@ -90,6 +97,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  // Resets fist positioning
   resetPosition() {
     this.resetting = true;
     this.scene.physics.moveTo(this, this.defaultX, this.defaultY, 400, 2000);
@@ -101,6 +109,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  // Rocket punch
   punch() {
     console.log(`Tracking player...preparing to punch with ${this.fist}`);
     this.tracking = true;
@@ -120,6 +129,16 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  trackPlayer(player) {
+    if (this.target) {
+      this.target.destroy();
+    }
+    this.target = this.scene.add
+      .sprite(this.player.x, this.player.y, 'target')
+      .setScale(0.05);
+  }
+
+  // Damage logic
   takeDamage(damage, leftHp, rightHp, bodyHp) {
     this.health -= damage;
 
@@ -150,6 +169,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  // Initiate attacking
   attack() {
     if (this.fist === 'left') {
       this.scene.time.delayedCall(1000, () => {
@@ -158,6 +178,49 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     } else {
       this.scene.time.delayedCall(3000, () => {
         this.fightStarted = true;
+      });
+    }
+  }
+
+  // Main body skills
+  callBackup() {
+    for (let i = 0; i <= 5; i++) {
+      const maxVal = 250;
+      const minVal = -250;
+      const randX = Math.random() * (maxVal - minVal + 1) + minVal;
+      const randY = Math.random() * (maxVal - minVal + 1) + minVal;
+      const backup = new Enemy(
+        this.scene,
+        this.scene.player.x + randX,
+        this.scene.player.y + randY,
+        'meleeRobot',
+        'robot'
+      ).setSize(27, 30);
+      backup.health = 100;
+      this.scene.enemiesGroup.add(backup);
+    }
+  }
+
+  spawnPillars() {
+    for (let i = 0; i <= 5; i++) {
+      const maxVal = 150;
+      const minVal = -150;
+      const randX = Math.random() * (maxVal - minVal + 1) + minVal;
+      const randY = Math.random() * (maxVal - minVal + 1) + minVal;
+      const pillar = new Enemy(
+        this.scene,
+        this.scene.player.x + randX,
+        this.scene.player.y + randY,
+        'firePillar',
+        'robot'
+      )
+        .setScale(0.2)
+        .setSize(60, 180);
+      pillar.health = Infinity;
+      pillar.isDead = true;
+      this.scene.time.delayedCall(5000, () => {
+        this.scene.enemiesGroup.add(pillar);
+        pillar.play('firePillar', true);
       });
     }
   }
@@ -172,6 +235,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         this.player.y
       );
       this.angle = angle * Phaser.Math.RAD_TO_DEG;
+      this.trackPlayer(this.player);
+    } else {
+      if (this.target) this.target.destroy();
     }
 
     if (

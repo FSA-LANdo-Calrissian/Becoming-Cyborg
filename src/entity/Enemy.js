@@ -61,7 +61,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           this.x + Math.random() * 20,
           this.y + Math.random() * 20,
           itemKey
-        ).setScale(0.1);
+        ).setScale(0.3);
         this.scene.itemsGroup.add(drop);
       }
       // Reset base config for items in case grabbed from group
