@@ -98,7 +98,7 @@ export default class FgScene extends Phaser.Scene {
       returns null.
     */
 
-    enemy.takeDamage(source.damage / 60);
+    enemy.takeDamage(source.damage);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
@@ -198,19 +198,15 @@ export default class FgScene extends Phaser.Scene {
 
     this.deadNPC = new NPC(this, 1700, 1280, 'mac').setScale(0.5).setDepth(7);
 
-    this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
+    this.startingNPC = new NPC(this, 702, 515, 'tutorialNPC')
       .setScale(0.5)
       .setDepth(1);
 
-    this.questNPC = new NPC(this, 90, 30, 'player')
+    this.questNPC = new NPC(this, 1264, 992, 'bittenNPC')
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12)
       .setName('testQuest');
-
-    this.questNPC2 = new NPC(this, 150, 30, 'mac')
-      .setScale(0.5)
-      .setName('secondTestQuest');
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -244,7 +240,6 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
     this.npcGroup.add(this.questNPC);
-    this.npcGroup.add(this.questNPC2);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
@@ -287,7 +282,7 @@ export default class FgScene extends Phaser.Scene {
       this.enemiesGroup,
       (player, enemy) => {
         if (enemy.isMelee === true) {
-          this.player.takeDamage(10, this.gg);
+          this.player.takeDamage(enemy.damage, this.gg);
         }
 
         if (

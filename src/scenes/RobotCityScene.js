@@ -366,7 +366,7 @@ export default class RobotCityScene extends Phaser.Scene {
       this.enemiesGroup,
       (player, enemy) => {
         if (enemy.isMelee === true) {
-          this.player.takeDamage(10, this.gg);
+          this.player.takeDamage(enemy.damage, this.gg);
         }
 
         if (

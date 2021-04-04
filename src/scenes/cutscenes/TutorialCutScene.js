@@ -47,6 +47,10 @@ export default class TutorialCutScene extends Phaser.Scene {
       if (this.finalPart1 && !this.finalPart2) {
         this.playFinalScenePart2();
       } else if (this.finalPart2) {
+        this.player.inventory.iron += 5;
+        this.player.inventory.oil += 5;
+        this.player.inventory.knifeAttachment += 1;
+        this.player.upgrade.points += 2;
         this.endCutScene();
       }
     }

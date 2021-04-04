@@ -15,7 +15,7 @@ const quests = {
   testQuest: {
     key: 'testQuest',
     title: 'Clear the mob', // Not yet implemented
-    reward: ['iron', 'potion'],
+    reward: ['iron', 'potion', 'oil'],
     description:
       'A quest to clear the big bad wolves from the city so that the little piggy next door can go to the market in peace.', // not yet implemented
     objectiveReqs: {
@@ -64,7 +64,7 @@ const quests = {
   stacyQuest: {
     key: 'stacyQuest',
     title: 'Kill 10 Big Robots',
-    reward: ['iron', 'oil', 'clearanceChip'],
+    reward: ['iron', 'oil', 'clearanceChip', 'potion'],
     description:
       "Kill 10 Big Robots in Robot City to save your dad and Stacy and get a clearance chip to the robot king's lair",
     objectiveReqs: {
