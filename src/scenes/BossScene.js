@@ -16,6 +16,7 @@ export default class BossScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.fightStarted = false;
     this.handsKilled = 0;
+    this.key = 'BossScene';
 
     this.loadBullet = this.loadBullet.bind(this);
   }
@@ -48,6 +49,9 @@ export default class BossScene extends Phaser.Scene {
   }
 
   create({ player }) {
+    // Saving initial player to pass to scene restart on game over
+    this.restartData = player;
+
     // Initialize variables for restart
     this.bossCinematic = false;
     this.dialogueInProgress = false;
@@ -88,8 +92,13 @@ export default class BossScene extends Phaser.Scene {
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
-
-    this.player.currentLeftWeapon = 'fireBall';
+    const { inventory, upgrade, health, currentLeftWeapon, stats } = player;
+    this.player.inventory = inventory;
+    this.player.upgrade = upgrade;
+    this.player.health = health;
+    this.player.currentLeftWeapon = currentLeftWeapon;
+    this.player.stats = stats;
+    this.player.updateStats();
 
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)

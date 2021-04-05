@@ -275,6 +275,7 @@ export function robotKilled() {
   */
 
   // Stop player movements
+  this.player.play('idleRight', true);
   freeze(this.player, this);
   this.allowUpgrade = true;
 

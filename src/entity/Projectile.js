@@ -12,9 +12,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.damage = 25;
     this.dy = 0;
     this.dx = 0;
-
-    // When we grab a dead bullet, we need to reset it before we can shoot it.
-    this.reset();
   }
 
   shoot(x, y, angle) {
@@ -25,8 +22,8 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
       param angle: int -> The angle at which the projectile travels and faces.
       returns null.
     */
-    this.setActive(true);
-    this.setVisible(true);
+    // When we grab a dead bullet, we need to reset it before we can shoot it.
+    this.reset();
     this.rotation = angle;
     this.setPosition(x, y);
     // SOH CAH TOA -> y is sin/x is cos

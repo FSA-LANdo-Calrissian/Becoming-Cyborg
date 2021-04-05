@@ -11,7 +11,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = classType === 'robot' ? 80 : 85;
-    this.health = 4;
+    this.health = classType === 'robot' ? 60 : 30;
+    this.damage = classType === 'robot' ? 12 : 10;
     this.direction = '';
     this.isMoving = false;
     this.isMelee = false;
@@ -61,7 +62,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           this.x + Math.random() * 20,
           this.y + Math.random() * 20,
           itemKey
-        ).setScale(0.3);
+        )
+          .setScale(0.2)
+          .setDepth(7);
         this.scene.itemsGroup.add(drop);
       }
       // Reset base config for items in case grabbed from group
@@ -76,6 +79,18 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param damage: int -> The amount of damage the enemy will take.
       returns null.
     */
+
+    // If enemy gets hit in cooldown period,
+    if (this.hitCooldown) {
+      // Do nothing
+      return;
+    }
+
+    // Otherwise, set hit cooldown
+    this.hitCooldown = true;
+
+    // Play damage
+    const hitAnimation = this.playDamageAnimation();
 
     // Subtract damage from health
     this.health -= damage;
@@ -94,8 +109,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.play('death', true);
       return;
     }
-    const hitAnimation = this.playDamageAnimation();
+    this.on('animationstart-death', () => {
+      hitAnimation.stop();
+      this.clearTint();
+    });
+
+    // After hit cooldown time, set to false, stop animation, and remove tint.
     this.scene.time.delayedCall(1000, () => {
+      this.hitCooldown = false;
       hitAnimation.stop();
       this.clearTint();
     });
