@@ -119,8 +119,9 @@ export default class BossScene extends Phaser.Scene {
       this.player.health = health;
       this.player.currentLeftWeapon = currentLeftWeapon;
       this.player.stats = stats;
-      this.player.updateStats();
     }
+    this.player.currentLeftWeapon = 'fireBall';
+    this.player.updateStats();
 
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)

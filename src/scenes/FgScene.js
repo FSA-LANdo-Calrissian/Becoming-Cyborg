@@ -201,13 +201,13 @@ export default class FgScene extends Phaser.Scene {
     this.laser = this.sound.add('laser', { loop: false });
     this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
     this.scream = this.sound.add('scream', { loop: false });
-    this.TutorialSceneMusic = this.sound.add('TutorialSceneMusic', {
+    this.FgSceneMusic = this.sound.add('TutorialSceneMusic', {
       loop: true,
       volume: 0.1,
     });
 
     // Start playing scene music
-    this.TutorialSceneMusic.play();
+    this.FgSceneMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')
@@ -285,12 +285,13 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
+    this.physics.add.collider(this.enemiesGroup, this.enemiesGroup);
     this.physics.add.overlap(this.player, this.sceneEnd, () => {
       if (this.allowUpgrade && !this.sceneOver) {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
-          this.TutorialSceneMusic.stop();
+          this.FgSceneMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'RobotCityScene',
