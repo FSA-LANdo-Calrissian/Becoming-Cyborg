@@ -8,44 +8,56 @@ export function gunQuestSetup() {
     1731.6386666666674,
     1989.4166666666633,
     'wolf',
-    'animal'
+    'animal',
+    this.scene.assignRobotNumber()
   )
     .setScale(0.5)
     .setSize(45, 45)
     .setDepth(7);
+  // console.log(this.scene.alphaWolf, 'alpha');
+  this.scene.enemysArr.push(this.scene.alphaWolf);
 
   this.scene.wolf1 = new Enemy(
     this.scene,
     this.scene.alphaWolf.x + 30,
     this.scene.alphaWolf.y + 30,
     'wolf',
-    'animal'
+    'animal',
+    this.scene.assignRobotNumber(4)
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
+  // console.log(this.scene.wolf1, 'wolf1');
+  this.scene.enemysArr.push(this.scene.wolf1);
 
   this.scene.wolf2 = new Enemy(
     this.scene,
     this.scene.alphaWolf.x - 30,
     this.scene.alphaWolf.y - 30,
     'wolf',
-    'animal'
+    'animal',
+    this.scene.assignRobotNumber(4)
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
+  // console.log(this.scene.wolf2, 'wolf2');
+  this.scene.enemysArr.push(this.scene.wolf2);
 
   this.scene.wolf3 = new Enemy(
     this.scene,
     this.scene.alphaWolf.x + 60,
     this.scene.alphaWolf.y + 60,
     'wolf',
-    'animal'
+    'animal',
+    this.scene.assignRobotNumber(4)
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
+  // console.log(this.scene.wolf3, 'wolf3');
+  this.scene.enemysArr.push(this.scene.wolf3);
 
   this.scene.enemiesGroup.add(this.scene.wolf1);
   this.scene.enemiesGroup.add(this.scene.wolf2);

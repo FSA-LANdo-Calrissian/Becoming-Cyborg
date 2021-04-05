@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, classType) {
+  constructor(scene, x, y, spriteKey, classType, number) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
@@ -14,6 +14,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.health = 4;
     this.direction = '';
     this.isMoving = false;
+    this.enemyArr = [];
+    this.enemysNumber = number;
     this.isMelee = false;
     this.canMelee = true;
     this.goingLeft = false;
@@ -23,6 +25,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       animal: ['potion'],
     };
     this.isDead = false;
+    this.count = 0;
+    this.needToSeparate = false;
 
     // Bindings
 
@@ -151,6 +155,66 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  makeEnemyArr(enemyArray, numberOfEnemies) {
+    this.scene.enemyCount++;
+    // this.enemyArr.push(enemy);
+    // console.log(enemyArray, 'enemy array in enemy');
+
+    this.enemyArr = enemyArray;
+    // console.log(this.scene.enemyCount, numberOfEnemies);
+    if (this.scene.enemyCount === numberOfEnemies - 1) {
+      // this.separate(numberOfEnemies);
+      this.length = numberOfEnemies;
+    }
+
+    // this.count++;
+  }
+
+  separate() {
+    this.scene.enemyCount++;
+
+    // console.log('count', this.scene.enemyCount);
+    // console.log('seperating');
+    // console.log('enemy arr length', this.enemyArr.length);
+    // if (this.scene.enemyCount + 1 === length) {
+
+    for (let i = 0; i < this.length; i++) {
+      for (let j = i + 1; j < this.length; j++) {
+        if (this.enemyArr[i] && this.enemyArr[j]) {
+          if (
+            Phaser.Math.Distance.Between(
+              this.enemyArr[i].x,
+              this.enemyArr[i].y,
+              this.enemyArr[j].x,
+              this.enemyArr[j].y
+            ) <= 7
+          ) {
+            this.needToSeparate = true;
+            console.log('too close');
+            if (this.enemyArr[j].x < this.enemyArr[i].x) {
+              this.enemyArr[i].body.velocity.x = 10;
+              this.enemyArr[j].body.velocity.x = -10;
+            }
+            if (this.enemyArr[j].y < this.enemyArr[i].y) {
+              this.enemyArr[i].body.velocity.y = 10;
+              this.enemyArr[j].body.velocity.y = -10;
+            }
+            if (this.enemyArr[j].x > this.enemyArr[i].x) {
+              this.enemyArr[i].body.velocity.x = 10;
+              this.enemyArr[j].body.velocity.x = -10;
+            }
+            if (this.enemyArr[j].y > this.enemyArr[i].y) {
+              this.enemyArr[i].body.velocity.y = 10;
+              this.enemyArr[j].body.velocity.y = -10;
+            }
+          } else {
+            this.needToSeparate = false;
+          }
+        }
+      }
+    }
+  }
+
   updateEnemyMovement(player) {
     /*
       Function to determine enemy aggro and enemy movement.
@@ -161,14 +225,15 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     if (!this.body) return;
 
-    const aggroRange = 120;
+    const aggroRange = 200;
     const attackRange = 8;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
 
     if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <=
-      attackRange
+        attackRange &&
+      this.needToSeparate === false
     ) {
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
@@ -260,67 +325,80 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <=
-      aggroRange
+        aggroRange &&
+      this.needToSeparate === false
     ) {
       if (
-        Math.round(player.x) === Math.round(this.x) &&
-        Math.round(player.y) !== Math.round(this.y)
+        Math.abs(Math.round(player.x) - Math.round(this.x)) <= 1.5 &&
+        Math.abs(Math.round(player.y) - Math.round(this.y)) > 1.5
       ) {
         this.body.velocity.x = 0;
         if (Math.round(player.y) > Math.round(this.y)) {
           this.body.velocity.y = this.speed;
           this.enemyMovement('down');
+          return;
         } else {
           this.body.velocity.y = -this.speed;
           this.enemyMovement('up');
+          return;
         }
       } else if (
-        Math.round(player.y) === Math.round(this.y) &&
-        Math.round(player.x) !== Math.round(this.x)
+        Math.abs(Math.round(player.y) - Math.round(this.y)) <= 1.5 &&
+        Math.abs(Math.round(player.x) - Math.round(this.x)) > 1.5
       ) {
         this.body.velocity.y = 0;
         if (Math.round(player.x) > Math.round(this.x)) {
           this.body.velocity.x = this.speed;
           this.enemyMovement('right');
+          return;
         } else {
           this.body.velocity.x = -this.speed;
           this.enemyMovement('left');
+          return;
         }
       }
 
       // if player to left of enemy AND enemy moving to right (or not moving)
       if (
-        Math.round(player.x) < Math.round(this.x) &&
+        Math.abs(player.y - this.y) < 1.5 &&
+        player.x < this.x &&
         Math.round(this.body.velocity.x) >= 0
       ) {
         // move enemy to left
         this.body.velocity.x = -this.speed;
         this.enemyMovement('left');
         this.isMoving = true;
+        return;
       }
       // if player to right of enemy AND enemy moving to left (or not moving)
       else if (
-        Math.round(player.x) > Math.round(this.x) &&
+        player.x > this.x &&
+        Math.abs(player.y - this.y) < 1.5 &&
         Math.round(this.body.velocity.x) <= 0
       ) {
         // move enemy to right
         this.body.velocity.x = this.speed;
         this.enemyMovement('right');
         this.isMoving = true;
+        return;
       } else if (
-        Math.round(player.y) < Math.round(this.y) &&
+        player.y < this.y &&
+        Math.abs(player.x - this.x) < 1.5 &&
         Math.round(this.body.velocity.y) >= 0
       ) {
         this.body.velocity.y = -this.speed;
         this.enemyMovement('up');
         this.isMoving = true;
+        return;
       } else if (
-        Math.round(player.y) > Math.round(this.y) &&
+        player.y > this.y &&
+        Math.abs(player.x - this.x) <= 1.5 &&
         Math.round(this.body.velocity.y) <= 0
       ) {
         this.body.velocity.y = this.speed;
         this.enemyMovement('down');
         this.isMoving = true;
+        return;
       }
     } else if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) >=
@@ -405,7 +483,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  enemyStraighten() {}
+
   update() {
+    this.separate();
     const player1 = this.scene.player;
     if (!this.isDead && !this.scene.dialogueInProgress) {
       this.updateEnemyMovement(player1);

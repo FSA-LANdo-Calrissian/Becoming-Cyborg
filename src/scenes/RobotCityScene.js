@@ -23,6 +23,9 @@ export default class RobotCityScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.initCutScene = false;
     this.lairAccess = false;
+    this.count = 0;
+    this.enemysArr = [];
+    this.enemyCount = 0;
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
@@ -54,6 +57,16 @@ export default class RobotCityScene extends Phaser.Scene {
       duration: 10,
       data: { player: this.player, scene: 'RobotCityScene' },
     });
+  }
+
+  assignRobotNumber(numberOfEnemies) {
+    this.count++;
+    if (this.count === numberOfEnemies) {
+      for (let i = 0; i < this.enemysArr.length; i++) {
+        this.enemysArr[i].makeEnemyArr(this.enemysArr, numberOfEnemies);
+      }
+    }
+    return this.count;
   }
 
   loadBullet(x, y, sprite, angle) {
@@ -90,7 +103,7 @@ export default class RobotCityScene extends Phaser.Scene {
       param projectile: object -> Thing doing the damage (must have the this.damage property on it)
       returns null.
     */
-
+    // console.log(this.enemysArr);
     enemy.takeDamage(source.damage / 60);
 
     // if (enemy.active === true && projectile.active === true) {
@@ -210,16 +223,27 @@ export default class RobotCityScene extends Phaser.Scene {
     //   currentLeftWeapon,
     //   stats,
     // } = data.player;
-    this.player = new Player(this, 64, 1744, 'player', this.loadBullet)
-      .setScale(0.5)
-      .setSize(30, 32)
-      .setOffset(10, 12);
+    // this.player = new Player(this, 64, 1744, 'player', this.loadBullet)
+    //   .setScale(0.5)
+    //   .setSize(30, 32)
+    //   .setOffset(10, 12);
     // this.player.inventory = inventory;
     // this.player.upgrade = upgrade;
     // this.player.health = health;
     // this.player.currentLeftWeapon = currentLeftWeapon;
     // this.player.stats = stats;
     // this.player.updateStats();
+
+    this.player = new Player(
+      this,
+      1642.5000000000089,
+      1764,
+      'player',
+      this.loadBullet
+    )
+      .setScale(0.5)
+      .setSize(30, 32)
+      .setOffset(10, 12);
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)
@@ -363,6 +387,14 @@ export default class RobotCityScene extends Phaser.Scene {
         ) {
           this.damageEnemy(enemy, player);
         }
+      }
+    );
+
+    this.physics.add.overlap(
+      this.enemiesGroup,
+      this.enemiesGroup,
+      (enemy, enemy2) => {
+        // console.log(enemy.enemysNumber, enemy2.enemysNumber);
       }
     );
 
