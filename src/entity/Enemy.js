@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, classType) {
+  constructor(scene, x, y, spriteKey, classType, attackSound) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
@@ -24,9 +24,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       animal: ['potion'],
     };
     this.isDead = false;
+    this.attackSound = attackSound;
 
     // Bindings
-
     this.takeDamage = this.takeDamage.bind(this);
     this.dropItems = this.dropItems.bind(this);
   }
@@ -115,7 +115,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     });
 
     // After hit cooldown time, set to false, stop animation, and remove tint.
-    this.scene.time.delayedCall(1000, () => {
+    this.scene.time.delayedCall(450, () => {
       this.hitCooldown = false;
       hitAnimation.stop();
       this.clearTint();
@@ -137,6 +137,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param direction: string -> Enemy current moving direction. Current strings are: left, right, up, down
       param angle: float -> Angle at which the enemy is facing. Only relevant for the punching up/down animations. Adjusts the enemy's angle to display properly.
     */
+
+    // Play attack sound when attacking
+    if (this.attackSound && direction.includes('punch')) {
+      this.attackSound.play();
+    }
+
     switch (direction) {
       case 'left':
         this.angle = 0;

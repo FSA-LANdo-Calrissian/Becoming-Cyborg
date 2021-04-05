@@ -1,6 +1,6 @@
 import Enemy from '../entity/Enemy';
 
-export function testFunc() {
+export function testFunc(bite) {
   /*
     The set up function for my test quest. I will use this as the backbone to set up future quests. All this does is spawn the monsters and initialize the tracking system for the quest. The "this" context is the quest class itself. If you want to access the scene, do so with this.scene and if you want to access the quest object, use this.quest.
   */
@@ -9,15 +9,15 @@ export function testFunc() {
   this.enemiesKilled = 0;
 
   // Spawning the enemies
-  this.scene.wolf1 = new Enemy(this.scene, 1152, 1039, 'wolf', 'animal')
+  this.scene.wolf1 = new Enemy(this.scene, 1152, 1039, 'wolf', 'animal', bite)
     .setScale(0.4)
     .setSize(45, 45);
 
-  this.scene.wolf2 = new Enemy(this.scene, 1168, 927, 'wolf', 'animal')
+  this.scene.wolf2 = new Enemy(this.scene, 1168, 927, 'wolf', 'animal', bite)
     .setScale(0.4)
     .setSize(45, 45);
 
-  this.scene.wolf3 = new Enemy(this.scene, 1337, 1049, 'wolf', 'animal')
+  this.scene.wolf3 = new Enemy(this.scene, 1337, 1049, 'wolf', 'animal', bite)
     .setScale(0.4)
     .setSize(45, 45);
 

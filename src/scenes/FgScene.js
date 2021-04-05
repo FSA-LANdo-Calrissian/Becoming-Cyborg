@@ -36,6 +36,15 @@ export default class FgScene extends Phaser.Scene {
     this.damageEnemy = this.damageEnemy.bind(this);
   }
 
+  initScene() {
+    this.finishedTutorial = false;
+    this.dialogueInProgress = false;
+    this.initTutorial = false;
+    this.upgradeOpened = false;
+    this.allowUpgrade = false;
+    this.sceneOver = false;
+  }
+
   openInventory() {
     this.dialogueInProgress = true;
     this.scene.transition({
@@ -76,6 +85,13 @@ export default class FgScene extends Phaser.Scene {
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
 
+    // If wrong texture, reset texture and size
+    if (bullet && bullet.texture.key !== sprite) {
+      const size = sprite === 'bullet' ? 9 : 20;
+      bullet.setTexture(sprite);
+      bullet.setSize(size, size);
+    }
+
     // If none found, create it.
     if (!bullet) {
       bullet = new Projectile(this, x, y, sprite, angle)
@@ -98,7 +114,7 @@ export default class FgScene extends Phaser.Scene {
       returns null.
     */
 
-    enemy.takeDamage(source.damage);
+    enemy.takeDamage(this.player.damage);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
@@ -108,7 +124,6 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
-    console.log(this.data);
     //Creating animations
     createWorldAnims.call(this);
     createPlayerAnims.call(this);
@@ -170,19 +185,46 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
+    // debugGraphics.setDepth(10);
+
+    // Load in audio
+    this.bite = this.sound.add('bite', { loop: false, volume: 0.3 });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.laser = this.sound.add('laser', { loop: false });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
+    this.scream = this.sound.add('scream', { loop: false });
+    this.TutorialSceneMusic = this.sound.add('TutorialSceneMusic', {
+      loop: true,
+      volume: 0.1,
     });
+
+    // Start playing scene music
+    this.TutorialSceneMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')
       .setScale(0.5)
       .setSize(10, 10);
 
-    this.player = new Player(this, 1400, 1300, 'player', this.loadBullet)
+    this.player = new Player(
+      this,
+      552,
+      496,
+      'player',
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
+    )
       .setScale(0.5)
       .setSize(30, 30)
       .setOffset(10, 12);
@@ -248,6 +290,7 @@ export default class FgScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
+          this.TutorialSceneMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'RobotCityScene',
@@ -319,7 +362,7 @@ export default class FgScene extends Phaser.Scene {
             playDialogue.call(this, npc, npc.name);
 
             // and initialize the quest.
-            this[npc.name] = new Quest(this, npc.name, npc);
+            this[npc.name] = new Quest(this, npc.name, npc, this.bite);
 
             // Start quest when dialogue is over.
             this.events.on('startQuest', () => {
@@ -471,7 +514,6 @@ export default class FgScene extends Phaser.Scene {
     this.itemsGroup.setDepth(7);
     this.playerProjectiles.setDepth(7);
     this.worldCollision.setDepth(10);
-    debugGraphics.setDepth(10);
     this.upgradeStation.setDepth(7);
     this.sceneEnd.setDepth(12);
   }

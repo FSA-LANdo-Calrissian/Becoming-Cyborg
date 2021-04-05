@@ -242,7 +242,6 @@ export default class UpgradeUI extends Phaser.Scene {
     const rect = new Phaser.Geom.Rectangle(83, 133, 178, 100);
     const background = this.add.graphics({ fillStyle: { color: 0x00ffff } });
     background.fillRectShape(rect);
-
     const weapon = this.add.image(168, 175, 'knife').setScale(0.2);
     this.add.text(82, 95, 'Weapon Crafting Cost:').setScale(0.8);
     const materials = this.add
@@ -366,7 +365,7 @@ export default class UpgradeUI extends Phaser.Scene {
     // Button to return to FgScene button
     this.add.image(400, 560, 'button').setScale(0.4);
     const text = this.add
-      .text(336, 546, 'Go Back!')
+      .text(337, 546, 'Go Back')
       .setFontSize(40)
       .setScale(0.7);
     text.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
