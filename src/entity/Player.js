@@ -447,9 +447,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.health += this.regen;
           }
           this.scene.events.emit('takeDamage', this.health, this.maxHealth);
-          this.nextHeal += this.regenCD;
         }
       }
+      this.nextHeal = time + this.regenCD;
     }
   }
 }
