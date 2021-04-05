@@ -430,9 +430,9 @@ export default class FgScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       // TODO: Remove this
-      hp: Phaser.Input.Keyboard.KeyCodes.H,
-      speed: Phaser.Input.Keyboard.KeyCodes.I,
-      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
+      // hp: Phaser.Input.Keyboard.KeyCodes.H,
+      // speed: Phaser.Input.Keyboard.KeyCodes.I,
+      // upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
 
     // Event emitters
@@ -584,30 +584,30 @@ export default class FgScene extends Phaser.Scene {
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
 
-      if (this.cursors.upgrade.isDown) {
-        // TODO: Remove this for production
-        this.openUpgrade();
-      }
-      if (this.cursors.hp.isDown) {
-        // Press h button to see stats.
-        // TODO: Remove this for production
-        console.log(
-          `Current health: ${this.player.health}/${this.player.maxHealth}`
-        );
-        console.log(`Current move speed: ${this.player.speed}`);
-        console.log(`Current armor: ${this.player.armor}`);
-        console.log(`Current regen: ${this.player.regen}`);
-        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
-        console.log(`Current damage: ${this.player.damage}`);
-        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
-        console.log(`Current player position: `, this.player.x, this.player.y);
-        console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
-        console.log(
-          `Current camera position: `,
-          this.cameras.main.scrollX,
-          this.cameras.main.scrollY
-        );
-      }
+      // if (this.cursors.upgrade.isDown) {
+      //   // TODO: Remove this for production
+      //   this.openUpgrade();
+      // }
+      // if (this.cursors.hp.isDown) {
+      //   // Press h button to see stats.
+      //   // TODO: Remove this for production
+      //   console.log(
+      //     `Current health: ${this.player.health}/${this.player.maxHealth}`
+      //   );
+      //   console.log(`Current move speed: ${this.player.speed}`);
+      //   console.log(`Current armor: ${this.player.armor}`);
+      //   console.log(`Current regen: ${this.player.regen}`);
+      //   console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      //   console.log(`Current damage: ${this.player.damage}`);
+      //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      //   console.log(`Current player position: `, this.player.x, this.player.y);
+      //   console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+      //   console.log(
+      //     `Current camera position: `,
+      //     this.cameras.main.scrollX,
+      //     this.cameras.main.scrollY
+      //   );
+      // }
     }
   }
 }
