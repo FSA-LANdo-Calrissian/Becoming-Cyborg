@@ -102,6 +102,7 @@ export default class FgScene extends Phaser.Scene {
       this.playerProjectiles.add(bullet);
     }
     // Pew pew the bullet.
+    bullet.reset();
     bullet.shoot(x, y, angle);
   }
 
@@ -201,6 +202,10 @@ export default class FgScene extends Phaser.Scene {
     this.laser = this.sound.add('laser', { loop: false });
     this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
     this.scream = this.sound.add('scream', { loop: false });
+    this.robotPunch = this.sound.add('robotPunch', {
+      loop: false,
+      volume: 0.3,
+    });
     this.upgradeStationSound = this.sound.add('upgradeStation', {
       loop: false,
       volume: 0.5,
@@ -235,7 +240,14 @@ export default class FgScene extends Phaser.Scene {
 
     this.sceneEnd = new Collision(this, 1836, 1328, 'blank').setSize(10, 110);
 
-    this.enemy = new Enemy(this, 1728, 1280, 'meleeRobot', 'robot')
+    this.enemy = new Enemy(
+      this,
+      1728,
+      1280,
+      'meleeRobot',
+      'robot',
+      this.robotPunch
+    )
       .setScale(0.6)
       .setSize(38, 35)
       .setOffset(5);

@@ -164,6 +164,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('TitleSceneMusic', 'assets/audio/TitleScene.mp3');
     this.load.audio('TutorialSceneMusic', 'assets/audio/TutorialScene.mp3');
     this.load.audio('upgradeStation', 'assets/audio/upgradeStation.wav');
+    this.load.audio('robotPunch', 'assets/audio/robotPunch.wav');
     this.load.image('target', 'assets/sprites/target.png');
     this.load.image('laser', 'assets/sprites/laz0r.png');
   }

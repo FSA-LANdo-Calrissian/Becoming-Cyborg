@@ -3,11 +3,12 @@ import Item from '../entity/Item';
 import { playDialogue } from '../scenes/cutscenes/cutscenes';
 
 export default class Quest {
-  constructor(scene, questKey, npc, bite) {
+  constructor(scene, questKey, npc, bite, robotPunch) {
     this.scene = scene;
     this.quest = quests[questKey];
     this.npc = npc;
     this.bite = bite;
+    this.robotPunch = robotPunch;
   }
 
   startQuest() {
@@ -17,7 +18,7 @@ export default class Quest {
     */
 
     this.quest.setUp.forEach((func) => {
-      func.call(this, this.bite);
+      func.call(this, this.bite, this.robotPunch);
     });
     this.quest.isStarted = true;
     this.scene.events.on('updateQuest-' + this.quest.key, () => {
