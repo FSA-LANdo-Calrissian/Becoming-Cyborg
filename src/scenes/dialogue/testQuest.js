@@ -12,15 +12,15 @@ export default class Dialogue extends Phaser.Scene {
       Function for the initializing the quest dialogue.
     */
     const textLines = [
-      "I've got a quest for you",
-      'I want to go to the market',
-      'My brothers went to the market but I just stayed home',
-      'and one of my brothers ran home crying weee weee weee',
-      'Turns out, a wolf ate the rest of my brothers',
-      'Kill wolves pls',
+      "You've got to help me!",
+      'Robots just came through here and destroyed the town!',
+      'Then I guess some wolves smelled all the blood and decided to come after us too!',
+      'I had to hop in this well just to escape.',
+      'Oh no!! Here they come again!',
+      'Hurry, kill them!',
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Sophie');
 
     dialogueHelper.call(this, textLines, nameTextLines);
   }
@@ -36,7 +36,7 @@ export default class Dialogue extends Phaser.Scene {
       `You still have ${3 - this.killed} ${
         3 - this.killed === 1 ? 'wolf' : 'wolves'
       } left to kill!`,
-      'Please hurry before they huff and puff',
+      "Don't make me hop in this well again!",
     ];
 
     const nameTextLines = Array(textLines.length).fill('Little Piggy');
@@ -49,8 +49,9 @@ export default class Dialogue extends Phaser.Scene {
       Function for after the quest has been handed in
     */
     const textLines = [
-      'Thanks for everything!',
-      'I feel safe to go to the market now',
+      'Oh thank God, I thought I was going to die for sure.',
+      "I don't have much, but here's some iron and oil.",
+      'You seem like you need it more than me.',
     ];
 
     const nameTextLines = Array(textLines.length).fill('Little Piggy');

@@ -3,10 +3,11 @@ import Item from '../entity/Item';
 import { playDialogue } from '../scenes/cutscenes/cutscenes';
 
 export default class Quest {
-  constructor(scene, questKey, npc) {
+  constructor(scene, questKey, npc, bite) {
     this.scene = scene;
     this.quest = quests[questKey];
     this.npc = npc;
+    this.bite = bite;
   }
 
   startQuest() {
@@ -16,7 +17,7 @@ export default class Quest {
     */
 
     this.quest.setUp.forEach((func) => {
-      func.call(this);
+      func.call(this, this.bite);
     });
     this.quest.isStarted = true;
     this.scene.events.on('updateQuest-' + this.quest.key, () => {
@@ -63,10 +64,13 @@ export default class Quest {
     const rewards = this.quest.reward;
     const player = this.scene.player;
     const missingHealth = player.maxHealth - player.health;
+
+    player.upgrade.points += 2;
+
     rewards.forEach((item) => {
       console.log(item);
       if (item === 'iron') {
-        player.inventory.iron += 50;
+        player.inventory.iron += 5;
       } else if (item === 'potion') {
         if (missingHealth > 10) {
           player.health += 10;
@@ -83,7 +87,7 @@ export default class Quest {
           drop.reset();
         }
       } else if (item === 'oil') {
-        player.inventory.oil += 50;
+        player.inventory.oil += 5;
       } else if (item === 'clearanceChip') {
         player.inventory.clearanceChip += 1;
       } else if (item === 'fireballAttachment') {

@@ -191,7 +191,7 @@ export default class HUDScene extends Phaser.Scene {
       if (this.sceneKey === 'BossScene') {
         minimapCam.setZoom(0.3);
       } else {
-        minimapCam.setZoom(0.6);
+        minimapCam.setZoom(0.35);
       }
 
       // Make the border

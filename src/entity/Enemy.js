@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Item from './Item';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, classType, number) {
+  constructor(scene, x, y, spriteKey, classType, number, attackSound) {
     super(scene, x, y, spriteKey);
     this.spriteKey = spriteKey.includes('wolf') ? 'wolf' : spriteKey;
     this.scene = scene;
@@ -11,7 +11,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.speed = classType === 'robot' ? 80 : 85;
-    this.health = 4;
+    this.health = classType === 'robot' ? 60 : 30;
+    this.damage = classType === 'robot' ? 12 : 10;
     this.direction = '';
     this.isMoving = false;
     this.enemyArr = [];
@@ -27,9 +28,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.isDead = false;
     this.count = 0;
     this.needToSeparate = false;
+    this.attackSound = attackSound;
 
     // Bindings
-
     this.takeDamage = this.takeDamage.bind(this);
     this.dropItems = this.dropItems.bind(this);
   }
@@ -65,7 +66,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           this.x + Math.random() * 20,
           this.y + Math.random() * 20,
           itemKey
-        ).setScale(0.1);
+        )
+          .setScale(0.2)
+          .setDepth(7);
         this.scene.itemsGroup.add(drop);
       }
       // Reset base config for items in case grabbed from group
@@ -80,6 +83,18 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param damage: int -> The amount of damage the enemy will take.
       returns null.
     */
+
+    // If enemy gets hit in cooldown period,
+    if (this.hitCooldown) {
+      // Do nothing
+      return;
+    }
+
+    // Otherwise, set hit cooldown
+    this.hitCooldown = true;
+
+    // Play damage
+    const hitAnimation = this.playDamageAnimation();
 
     // Subtract damage from health
     this.health -= damage;
@@ -98,8 +113,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.play('death', true);
       return;
     }
-    const hitAnimation = this.playDamageAnimation();
-    this.scene.time.delayedCall(1000, () => {
+    this.on('animationstart-death', () => {
+      hitAnimation.stop();
+      this.clearTint();
+    });
+
+    // After hit cooldown time, set to false, stop animation, and remove tint.
+    this.scene.time.delayedCall(450, () => {
+      this.hitCooldown = false;
       hitAnimation.stop();
       this.clearTint();
     });
@@ -120,6 +141,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       param direction: string -> Enemy current moving direction. Current strings are: left, right, up, down
       param angle: float -> Angle at which the enemy is facing. Only relevant for the punching up/down animations. Adjusts the enemy's angle to display properly.
     */
+
+    // Play attack sound when attacking
+    if (this.attackSound && direction.includes('punch')) {
+      this.attackSound.play();
+    }
+
     switch (direction) {
       case 'left':
         this.angle = 0;
@@ -155,28 +182,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  makeEnemyArr(enemyArray, numberOfEnemies) {
-    this.scene.enemyCount++;
-    // this.enemyArr.push(enemy);
-    // console.log(enemyArray, 'enemy array in enemy');
-
-    this.enemyArr = enemyArray;
-    // console.log(this.scene.enemyCount, numberOfEnemies);
-    if (this.scene.enemyCount === numberOfEnemies - 1) {
-      // this.separate(numberOfEnemies);
-      this.length = numberOfEnemies;
-    }
-
-    // this.count++;
-  }
-
   separate() {
     this.scene.enemyCount++;
 
-    // console.log('count', this.scene.enemyCount);
-    // console.log('seperating');
-    // console.log('enemy arr length', this.enemyArr.length);
-    // if (this.scene.enemyCount + 1 === length) {
+    this.enemyArr = this.scene.enemiesGroup
+      .getChildren()
+      .filter((enemy) => !enemy.isDead);
 
     for (let i = 0; i < this.length; i++) {
       for (let j = i + 1; j < this.length; j++) {
@@ -187,28 +198,51 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
               this.enemyArr[i].y,
               this.enemyArr[j].x,
               this.enemyArr[j].y
-            ) <= 7
+            ) <= 40
           ) {
             this.needToSeparate = true;
-            console.log('too close');
+
             if (this.enemyArr[j].x < this.enemyArr[i].x) {
-              this.enemyArr[i].body.velocity.x = 10;
-              this.enemyArr[j].body.velocity.x = -10;
-            }
-            if (this.enemyArr[j].y < this.enemyArr[i].y) {
-              this.enemyArr[i].body.velocity.y = 10;
-              this.enemyArr[j].body.velocity.y = -10;
-            }
-            if (this.enemyArr[j].x > this.enemyArr[i].x) {
-              this.enemyArr[i].body.velocity.x = 10;
-              this.enemyArr[j].body.velocity.x = -10;
-            }
-            if (this.enemyArr[j].y > this.enemyArr[i].y) {
-              this.enemyArr[i].body.velocity.y = 10;
-              this.enemyArr[j].body.velocity.y = -10;
+              this.enemyArr[i].body.velocity.x = 35;
+              this.enemyArr[i].body.velocity.y = 0;
+              this.enemyArr[i].enemyMovement('right');
+              this.isMoving = true;
+
+              this.enemyArr[j].body.velocity.x = -35;
+              this.enemyArr[j].body.velocity.y = 0;
+              this.enemyArr[j].enemyMovement('left');
+              this.isMoving = true;
+            } else if (this.enemyArr[j].y < this.enemyArr[i].y) {
+              this.enemyArr[i].body.velocity.y = 35;
+              this.enemyArr[i].body.velocity.x = 0;
+              this.enemyArr[i].enemyMovement('down');
+              this.isMoving = true;
+
+              this.enemyArr[j].body.velocity.y = -35;
+              this.enemyArr[j].body.velocity.x = 0;
+              this.enemyArr[j].enemyMovement('up');
+              this.isMoving = true;
+            } else if (this.enemyArr[j].x > this.enemyArr[i].x) {
+              this.enemyArr[i].body.velocity.x = -35;
+              this.enemyArr[i].body.velocity.y = 0;
+              this.enemyArr[i].enemyMovement('left');
+
+              this.enemyArr[j].body.velocity.x = 35;
+              this.enemyArr[j].body.velocity.y = 0;
+              this.enemyArr[j].enemyMovement('right');
+            } else {
+              // if (this.enemyArr[j].y > this.enemyArr[i].y) {
+              this.enemyArr[i].body.velocity.y = 35;
+              this.enemyArr[i].body.velocity.x = 0;
+              this.enemyArr[i].enemyMovement('down');
+
+              this.enemyArr[j].body.velocity.y = -35;
+              this.enemyArr[j].body.velocity.x = 0;
+              this.enemyArr[j].enemyMovement('up');
             }
           } else {
             this.needToSeparate = false;
+            return;
           }
         }
       }
@@ -225,7 +259,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     if (!this.body) return;
 
-    const aggroRange = 200;
+    const aggroRange = 120;
     const attackRange = 8;
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y);
@@ -482,8 +516,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       }
     }
   }
-
-  enemyStraighten() {}
 
   update() {
     this.separate();

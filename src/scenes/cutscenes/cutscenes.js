@@ -266,6 +266,8 @@ export function playCutScene(cutScene) {
     camera: this.cameras.main,
     deadNPC: this.deadNPC,
     doctor: this.doctor,
+    scream: this.scream,
+    laser: this.laser,
   });
 }
 
@@ -275,6 +277,7 @@ export function robotKilled() {
   */
 
   // Stop player movements
+  this.player.play('idleRight', true);
   freeze(this.player, this);
   this.allowUpgrade = true;
 

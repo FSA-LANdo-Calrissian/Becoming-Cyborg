@@ -26,9 +26,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/RobotCityMap.json');
     this.load.tilemapTiledJSON('bossMap', 'assets/backgrounds/bossRoom.json');
 
-    this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-      frameWidth: 47.888,
-      frameHeight: 49,
+    this.load.spritesheet('player', 'assets/sprites/kick.png', {
+      frameWidth: 48,
+      frameHeight: 48,
     });
     this.load.spritesheet('meleeRobot', 'assets/sprites/Walk.png', {
       frameWidth: 46,
@@ -81,6 +81,10 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 48,
     });
+    this.load.spritesheet('bittenNPC', 'assets/sprites/bitten.png', {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
 
     this.load.spritesheet('boss', 'assets/sprites/bossidle.png', {
       frameWidth: 426,
@@ -121,16 +125,19 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 20,
       frameHeight: 22,
     });
+
+    this.load.spritesheet('firePillar', 'assets/sprites/firepillar.png', {
+      frameWidth: 189,
+      frameHeight: 191,
+    });
+
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
     this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
-
     this.load.image('robotPart', 'assets/items/iron.png');
-
     this.load.image('oil', 'assets/items/oil.png');
-
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
     this.load.image('upgrade', 'assets/backgrounds/upgrade.jpg');
     this.load.image('gameOver', './assets/backgrounds/gg.jpg');
@@ -141,9 +148,38 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
     this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
     this.load.image('none', 'assets/sprites/robotArmClosed.png');
+    this.load.image(
+      'TitleSceneBackground',
+      'assets/backgrounds/TitleBackground.png'
+    );
+
+    this.load.audio('bite', 'assets/audio/bite.wav');
+    this.load.audio('fireBall', 'assets/audio/fireBall.wav');
+    this.load.audio('gun', 'assets/audio/gun.wav');
+    this.load.audio('knife', 'assets/audio/knife.wav');
+    this.load.audio('laser', 'assets/audio/laser.wav');
+    this.load.audio('punch', 'assets/audio/punch.wav');
+    this.load.audio('RobotCityMusic', 'assets/audio/RobotCity.mp3');
+    this.load.audio('scream', 'assets/audio/scream.wav');
+    this.load.audio('TitleSceneMusic', 'assets/audio/TitleScene.mp3');
+    this.load.audio('TutorialSceneMusic', 'assets/audio/TutorialScene.mp3');
+    this.load.image('target', 'assets/sprites/target.png');
+    this.load.image('laser', 'assets/sprites/laz0r.png');
   }
 
   create() {
+    // Add Title Scene music
+    this.TitleSceneMusic = this.sound.add('TitleSceneMusic', {
+      loop: true,
+      volume: 0.1,
+    });
+    this.TitleSceneMusic.play();
+
+    // Background image
+    this.background = this.add
+      .image(300, 300, 'TitleSceneBackground')
+      .setDisplaySize(1067, 600);
+
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
       .text(350, 200, 'New Game', { fill: '#0f0' })
@@ -170,9 +206,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   startNewGame() {
+    this.TitleSceneMusic.stop();
     this.scene.start('PreGameScene');
   }
   startLoadGame() {
+    this.TitleSceneMusic.stop();
     this.scene.start('MainScene');
   }
 }

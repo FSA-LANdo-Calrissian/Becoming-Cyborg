@@ -1,7 +1,7 @@
 import Item from '../entity/Item';
 import Enemy from '../entity/Enemy';
 
-export function gunQuestSetup() {
+export function gunQuestSetup(bite) {
   console.log('wolves created');
   this.scene.alphaWolf = new Enemy(
     this.scene,
@@ -9,13 +9,12 @@ export function gunQuestSetup() {
     1989.4166666666633,
     'wolf',
     'animal',
-    this.scene.assignRobotNumber()
+
+    bite
   )
     .setScale(0.5)
     .setSize(45, 45)
     .setDepth(7);
-  // console.log(this.scene.alphaWolf, 'alpha');
-  this.scene.enemysArr.push(this.scene.alphaWolf);
 
   this.scene.wolf1 = new Enemy(
     this.scene,
@@ -23,13 +22,12 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.y + 30,
     'wolf',
     'animal',
-    this.scene.assignRobotNumber(4)
+
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
-  // console.log(this.scene.wolf1, 'wolf1');
-  this.scene.enemysArr.push(this.scene.wolf1);
 
   this.scene.wolf2 = new Enemy(
     this.scene,
@@ -37,13 +35,12 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.y - 30,
     'wolf',
     'animal',
-    this.scene.assignRobotNumber(4)
+
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
-  // console.log(this.scene.wolf2, 'wolf2');
-  this.scene.enemysArr.push(this.scene.wolf2);
 
   this.scene.wolf3 = new Enemy(
     this.scene,
@@ -51,13 +48,12 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.y + 60,
     'wolf',
     'animal',
-    this.scene.assignRobotNumber(4)
+
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
     .setDepth(7);
-  // console.log(this.scene.wolf3, 'wolf3');
-  this.scene.enemysArr.push(this.scene.wolf3);
 
   this.scene.enemiesGroup.add(this.scene.wolf1);
   this.scene.enemiesGroup.add(this.scene.wolf2);
@@ -84,27 +80,18 @@ export function gunQuestSetup() {
   });
 
   this.questItem = 0;
-  // Spawning the enemies
-  // this.scene.item = new Item(
-  //   this.scene,
-  //   686.6386666666683,
-  //   902.25,
-  //   'robotPart'
-  // ).setScale(0.1);
 
   this.scene.item = new Item(
     this.scene,
-    this.scene.player.x,
-    this.scene.player.y + 5,
+    686.6386666666683,
+    902.25,
     'robotPart'
   ).setScale(0.1);
 
   this.scene.item.lifespan = 1200000;
-
-  // Adding event emitters on death for tracking purposes
-
   this.scene.itemsGroup.add(this.scene.item);
   this.scene.item.reset();
+  // Adding event emitters on death for tracking purposes
 
   this.scene.physics.add.overlap(
     this.scene.player,

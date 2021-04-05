@@ -26,10 +26,18 @@ export default class RobotCityScene extends Phaser.Scene {
     this.count = 0;
     this.enemysArr = [];
     this.enemyCount = 0;
+    this.key = 'RobotCityScene';
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
+  }
+
+  initScene() {
+    this.dialogueInProgress = false;
+    this.upgradeOpened = false;
+    this.initCutScene = false;
+    this.lairAccess = false;
   }
   openInventory() {
     this.dialogueInProgress = true;
@@ -59,16 +67,6 @@ export default class RobotCityScene extends Phaser.Scene {
     });
   }
 
-  assignRobotNumber(numberOfEnemies) {
-    this.count++;
-    if (this.count === numberOfEnemies) {
-      for (let i = 0; i < this.enemysArr.length; i++) {
-        this.enemysArr[i].makeEnemyArr(this.enemysArr, numberOfEnemies);
-      }
-    }
-    return this.count;
-  }
-
   loadBullet(x, y, sprite, angle) {
     /*
       Function to pass into any entity that uses projectiles on creation.
@@ -84,9 +82,18 @@ export default class RobotCityScene extends Phaser.Scene {
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
 
+    // If wrong texture, reset texture and size
+    if (bullet && bullet.texture.key !== sprite) {
+      const size = sprite === 'bullet' ? 9 : 20;
+      bullet.setTexture(sprite);
+      bullet.setSize(size, size);
+    }
+
     // If none found, create it.
     if (!bullet) {
-      bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
+      bullet = new Projectile(this, x, y, sprite, angle)
+        .setScale(0.5)
+        .setDepth(7);
       // Add to projectiles group.
       // TODO: Add logic for whether to add to player or enemy projectile group
       this.playerProjectiles.add(bullet);
@@ -103,8 +110,8 @@ export default class RobotCityScene extends Phaser.Scene {
       param projectile: object -> Thing doing the damage (must have the this.damage property on it)
       returns null.
     */
-    // console.log(this.enemysArr);
-    enemy.takeDamage(source.damage / 60);
+
+    enemy.takeDamage(this.player.damage);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
@@ -114,6 +121,9 @@ export default class RobotCityScene extends Phaser.Scene {
   }
 
   create(data) {
+    // Saving initial player to pass to scene restart on game over
+    this.restartData = data.player;
+
     //Creating animations
     createWorldAnims.call(this);
     createPlayerAnims.call(this);
@@ -201,49 +211,66 @@ export default class RobotCityScene extends Phaser.Scene {
       0,
       0
     );
-    // this.worldCollision.setCollisionByProperty({ collides: true });
+    this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
+    // debugGraphics.setDepth(10);
+
+    // Load in audio
+    this.bite = this.sound.add('bite', { loop: false, volume: 0.3 });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
+    this.RobotCityMusic = this.sound.add('RobotCityMusic', {
+      loop: true,
+      volume: 0.06,
     });
+
+    // Start playing scene music
+    this.RobotCityMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 1384, 1384, 'upgradeStation')
       .setScale(0.5)
       .setSize(10, 10);
 
-    // const {
-    //   inventory,
-    //   upgrade,
-    //   health,
-    //   currentLeftWeapon,
-    //   stats,
-    // } = data.player;
-    // this.player = new Player(this, 64, 1744, 'player', this.loadBullet)
-    //   .setScale(0.5)
-    //   .setSize(30, 32)
-    //   .setOffset(10, 12);
-    // this.player.inventory = inventory;
-    // this.player.upgrade = upgrade;
-    // this.player.health = health;
-    // this.player.currentLeftWeapon = currentLeftWeapon;
-    // this.player.stats = stats;
-    // this.player.updateStats();
-
     this.player = new Player(
       this,
-      1642.5000000000089,
-      1764,
+      64,
+      1744,
       'player',
-      this.loadBullet
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
     )
       .setScale(0.5)
       .setSize(30, 32)
       .setOffset(10, 12);
+
+    if (data.player) {
+      const {
+        inventory,
+        upgrade,
+        health,
+        currentLeftWeapon,
+        stats,
+      } = data.player;
+      this.player.inventory = inventory;
+      this.player.upgrade = upgrade;
+      this.player.health = health;
+      this.player.currentLeftWeapon = currentLeftWeapon;
+      this.player.stats = stats;
+      this.player.updateStats();
+    }
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)
@@ -342,6 +369,7 @@ export default class RobotCityScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
+          this.RobotCityMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'BossScene',
@@ -375,7 +403,7 @@ export default class RobotCityScene extends Phaser.Scene {
       this.enemiesGroup,
       (player, enemy) => {
         if (enemy.isMelee === true) {
-          this.player.takeDamage(10, this.gg);
+          this.player.takeDamage(enemy.damage, this.gg);
         }
 
         if (
@@ -387,14 +415,6 @@ export default class RobotCityScene extends Phaser.Scene {
         ) {
           this.damageEnemy(enemy, player);
         }
-      }
-    );
-
-    this.physics.add.overlap(
-      this.enemiesGroup,
-      this.enemiesGroup,
-      (enemy, enemy2) => {
-        // console.log(enemy.enemysNumber, enemy2.enemysNumber);
       }
     );
 
@@ -417,7 +437,7 @@ export default class RobotCityScene extends Phaser.Scene {
           if (!quests[npc.name].isStarted) {
             playDialogue.call(this, npc, npc.name);
 
-            this[npc.name] = new Quest(this, npc.name, npc);
+            this[npc.name] = new Quest(this, npc.name, npc, this.bite);
             this.events.on('startQuest', () => {
               this[npc.name].startQuest();
               this.events.removeListener('startQuest');
@@ -546,13 +566,13 @@ export default class RobotCityScene extends Phaser.Scene {
     this.worldMid.setDepth(5);
     this.worldTop.setDepth(6);
     this.worldAbove.setDepth(9);
+    this.worldAboveExtra.setDepth(9);
     this.player.setDepth(8);
     this.enemiesGroup.setDepth(7);
     this.npcGroup.setDepth(7);
     this.itemsGroup.setDepth(7);
     this.playerProjectiles.setDepth(7);
     this.worldCollision.setDepth(10);
-    debugGraphics.setDepth(10);
   }
 
   cutSceneHelper(distance) {

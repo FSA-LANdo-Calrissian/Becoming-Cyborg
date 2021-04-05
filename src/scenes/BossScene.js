@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Projectile from '../entity/Projectile';
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
+import Item from '../entity/Item';
 import Boss from '../entity/Boss';
 import createPlayerAnims from '../animations/createPlayerAnims';
 import createBossAnims from '../animations/createBossAnims';
@@ -14,8 +15,16 @@ export default class BossScene extends Phaser.Scene {
     this.bossCinematic = false;
     this.dialogueInProgress = false;
     this.fightStarted = false;
+    this.handsKilled = 0;
+    this.key = 'BossScene';
 
     this.loadBullet = this.loadBullet.bind(this);
+  }
+
+  initScene() {
+    this.bossCinematic = false;
+    this.dialogueInProgress = false;
+    this.fightStarted = false;
   }
 
   loadBullet(x, y, sprite, angle) {
@@ -46,10 +55,14 @@ export default class BossScene extends Phaser.Scene {
   }
 
   create({ player }) {
+    // Saving initial player to pass to scene restart on game over
+    this.restartData = player;
+
     // Initialize variables for restart
     this.bossCinematic = false;
     this.dialogueInProgress = false;
     this.fightStarted = false;
+    this.handsKilled = 0;
 
     // Create animations
     createPlayerAnims.call(this);
@@ -58,7 +71,11 @@ export default class BossScene extends Phaser.Scene {
 
     // Load sounds
     this.gg = this.sound.add('gg');
-    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.3 });
+    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.1 });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
 
     // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
@@ -81,18 +98,44 @@ export default class BossScene extends Phaser.Scene {
     this.shockwaveCollision.setCollisionByProperty({ collides: true });
 
     // Create the entities
-    this.player = new Player(this, 658, 1455, 'player', this.loadBullet)
+    this.player = new Player(
+      this,
+      658,
+      1455,
+      'player',
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
+    )
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
-
+    if (player) {
+      const { inventory, upgrade, health, currentLeftWeapon, stats } = player;
+      this.player.inventory = inventory;
+      this.player.upgrade = upgrade;
+      this.player.health = health;
+      this.player.currentLeftWeapon = currentLeftWeapon;
+      this.player.stats = stats;
+      this.player.updateStats();
+    }
     this.player.currentLeftWeapon = 'fireBall';
 
-    this.boss = new Boss(this, 750, 200, 'boss').setScale(1);
+    this.boss = new Boss(this, 750, 200, 'boss')
+      .setScale(1)
+      .setSize(300, 290)
+      .setOffset(10, -10);
 
     // Make the groups
     this.enemiesGroup = this.physics.add.group({
       classType: Enemy,
+      runChildUpdate: true,
+    });
+
+    this.bossGroup = this.physics.add.group({
+      classType: Boss,
       runChildUpdate: true,
     });
 
@@ -106,12 +149,18 @@ export default class BossScene extends Phaser.Scene {
       runChildUpdate: true,
     });
 
+    this.itemsGroup = this.physics.add.group({
+      classType: Item,
+      runChildUpdate: true,
+    });
     // Add entities to groups
-    this.enemiesGroup.add(this.boss);
+    this.bossGroup.add(this.boss);
 
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
+    this.physics.add.collider(this.enemiesGroup, this.worldGround);
+    this.physics.add.collider(this.enemiesGroup, this.world);
 
     this.physics.add.overlap(
       this.shockwavesGroup,
@@ -146,14 +195,21 @@ export default class BossScene extends Phaser.Scene {
       this.player,
       this.enemiesGroup,
       (player, enemy) => {
-        player.takeDamage(enemy.damage, this.gg);
+        // TODO: Replace this with actual enemy damage numbers
+        player.takeDamage(10, this.gg);
       }
     );
 
+    this.physics.add.overlap(this.player, this.bossGroup, (player, enemy) => {
+      // TODO: Replace this with actual enemy damage numbers
+      player.takeDamage(15, this.gg);
+    });
+
     this.physics.add.overlap(
       this.playerProjectiles,
-      this.enemiesGroup,
+      this.bossGroup,
       (proj, enemy) => {
+        proj.lifespan -= 100;
         enemy.takeDamage(
           proj.damage,
           this.leftHand.health,
@@ -162,6 +218,29 @@ export default class BossScene extends Phaser.Scene {
         );
       }
     );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.enemiesGroup,
+      (proj, enemy) => {
+        proj.lifespan -= 600;
+        enemy.takeDamage(proj.damage);
+      }
+    );
+
+    this.physics.add.overlap(this.player, this.itemsGroup, (player, item) => {
+      // If player full on health, don't pick up potions.
+      if (
+        item.texture.key === 'potion' &&
+        this.player.health === this.player.maxHealth
+      ) {
+        return;
+      }
+      // Otherwise, pick up items
+      player.pickUpItem(item.texture.key);
+      // And make it disappear from screen.
+      item.lifespan = 0;
+    });
 
     // Init camera
     this.cameras.main.startFollow(this.player).setZoom(2);
@@ -211,24 +290,43 @@ export default class BossScene extends Phaser.Scene {
 
       this.leftHand.play('leftHand');
 
-      this.enemiesGroup.add(this.rightHand);
-      this.enemiesGroup.add(this.leftHand);
+      this.bossGroup.add(this.rightHand);
+      this.bossGroup.add(this.leftHand);
 
       this.leftHand.attack();
       this.rightHand.attack();
+      // this.boss.laser();
+    });
+
+    this.events.on('startBoss', () => {
+      this.time.delayedCall(1000, () => {
+        console.log(`Starting boss`);
+        this.boss.attack();
+      });
     });
 
     this.events.on('rip', ({ hand }) => {
-      if (hand === 'left') {
-        console.log(`Lefty noooo! Grr me angry`);
+      this.handsKilled++;
+      console.log(`${this.handsKilled} hands killed`);
+      if (hand === 'left' && this.handsKilled !== 2) {
+        console.log(`Lefty nooo!!`);
+        playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.rightHand.attackCD = 4000;
         this.rightHand.resetTime = 1500;
         this.rightHand.loadAttack = 500;
-      } else {
+      } else if (hand === 'right' && this.handsKilled !== 2) {
         console.log(`Righty nooo! Grr. Me angry!`);
+        playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.leftHand.attackCD = 4000;
         this.leftHand.resetTime = 1500;
         this.leftHand.loadAttack = 500;
+      }
+      if (this.handsKilled === 2) {
+        console.log(`Play body cinematic`);
+        playDialogue.call(this, this.boss, 'firstBossCutScene');
+        this.boss.setActive(true);
+        this.boss.setVisible(true);
+        this.boss.body.enable = true;
       }
     });
   }

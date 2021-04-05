@@ -29,10 +29,20 @@ export default class FgScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.allowUpgrade = false;
     this.sceneOver = false;
+    this.key = 'FgScene';
 
     // Bindings
     this.loadBullet = this.loadBullet.bind(this);
     this.damageEnemy = this.damageEnemy.bind(this);
+  }
+
+  initScene() {
+    this.finishedTutorial = false;
+    this.dialogueInProgress = false;
+    this.initTutorial = false;
+    this.upgradeOpened = false;
+    this.allowUpgrade = false;
+    this.sceneOver = false;
   }
 
   openInventory() {
@@ -75,9 +85,18 @@ export default class FgScene extends Phaser.Scene {
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
 
+    // If wrong texture, reset texture and size
+    if (bullet && bullet.texture.key !== sprite) {
+      const size = sprite === 'bullet' ? 9 : 20;
+      bullet.setTexture(sprite);
+      bullet.setSize(size, size);
+    }
+
     // If none found, create it.
     if (!bullet) {
-      bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
+      bullet = new Projectile(this, x, y, sprite, angle)
+        .setScale(0.5)
+        .setDepth(7);
       // Add to projectiles group.
       // TODO: Add logic for whether to add to player or enemy projectile group
       this.playerProjectiles.add(bullet);
@@ -95,7 +114,7 @@ export default class FgScene extends Phaser.Scene {
       returns null.
     */
 
-    enemy.takeDamage(source.damage / 60);
+    enemy.takeDamage(this.player.damage);
 
     // if (enemy.active === true && projectile.active === true) {
     //   projectile.destroy();
@@ -166,19 +185,46 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
+    // debugGraphics.setDepth(10);
+
+    // Load in audio
+    this.bite = this.sound.add('bite', { loop: false, volume: 0.3 });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.laser = this.sound.add('laser', { loop: false });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
+    this.scream = this.sound.add('scream', { loop: false });
+    this.TutorialSceneMusic = this.sound.add('TutorialSceneMusic', {
+      loop: true,
+      volume: 0.1,
     });
+
+    // Start playing scene music
+    this.TutorialSceneMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')
       .setScale(0.5)
       .setSize(10, 10);
 
-    this.player = new Player(this, 1400, 1300, 'player', this.loadBullet)
+    this.player = new Player(
+      this,
+      552,
+      496,
+      'player',
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
+    )
       .setScale(0.5)
       .setSize(30, 30)
       .setOffset(10, 12);
@@ -194,19 +240,15 @@ export default class FgScene extends Phaser.Scene {
 
     this.deadNPC = new NPC(this, 1700, 1280, 'mac').setScale(0.5).setDepth(7);
 
-    this.startingNPC = new NPC(this, 196, 155, 'tutorialNPC')
+    this.startingNPC = new NPC(this, 702, 515, 'tutorialNPC')
       .setScale(0.5)
       .setDepth(1);
 
-    this.questNPC = new NPC(this, 90, 30, 'player')
+    this.questNPC = new NPC(this, 1264, 992, 'bittenNPC')
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12)
       .setName('testQuest');
-
-    this.questNPC2 = new NPC(this, 150, 30, 'mac')
-      .setScale(0.5)
-      .setName('secondTestQuest');
 
     // Groups
     this.playerProjectiles = this.physics.add.group({
@@ -240,7 +282,6 @@ export default class FgScene extends Phaser.Scene {
     this.npcGroup.add(this.startingNPC);
     this.enemiesGroup.add(this.enemy);
     this.npcGroup.add(this.questNPC);
-    this.npcGroup.add(this.questNPC2);
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
@@ -249,6 +290,7 @@ export default class FgScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
+          this.TutorialSceneMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'RobotCityScene',
@@ -283,7 +325,7 @@ export default class FgScene extends Phaser.Scene {
       this.enemiesGroup,
       (player, enemy) => {
         if (enemy.isMelee === true) {
-          this.player.takeDamage(10, this.gg);
+          this.player.takeDamage(enemy.damage, this.gg);
         }
 
         if (
@@ -320,7 +362,7 @@ export default class FgScene extends Phaser.Scene {
             playDialogue.call(this, npc, npc.name);
 
             // and initialize the quest.
-            this[npc.name] = new Quest(this, npc.name, npc);
+            this[npc.name] = new Quest(this, npc.name, npc, this.bite);
 
             // Start quest when dialogue is over.
             this.events.on('startQuest', () => {
@@ -472,7 +514,6 @@ export default class FgScene extends Phaser.Scene {
     this.itemsGroup.setDepth(7);
     this.playerProjectiles.setDepth(7);
     this.worldCollision.setDepth(10);
-    debugGraphics.setDepth(10);
     this.upgradeStation.setDepth(7);
     this.sceneEnd.setDepth(12);
   }

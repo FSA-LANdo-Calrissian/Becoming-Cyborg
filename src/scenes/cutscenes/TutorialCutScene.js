@@ -20,11 +20,15 @@ export default class TutorialCutScene extends Phaser.Scene {
     if (!this.finalScene) {
       // If scene one is done playing, start scene 2
       if (this.sceneOne && !this.sceneTwo) {
+        this.time.delayedCall(500, () => {
+          this.laser.play();
+        });
         this.enemy.play('tutorial1', true);
         this.playSceneTwo();
         this.time.delayedCall(1000, () => {
           this.deadNPC.flipX = !this.deadNPC.flipX;
           this.deadNPC.play('MacRIP');
+          this.scream.play();
         });
         this.time.delayedCall(2000, () => {
           this.enemy.play('tutorial2', false);
@@ -47,6 +51,10 @@ export default class TutorialCutScene extends Phaser.Scene {
       if (this.finalPart1 && !this.finalPart2) {
         this.playFinalScenePart2();
       } else if (this.finalPart2) {
+        this.player.inventory.iron += 5;
+        this.player.inventory.oil += 5;
+        this.player.inventory.knifeAttachment += 1;
+        this.player.upgrade.points += 2;
         this.endCutScene();
       }
     }
@@ -202,13 +210,24 @@ export default class TutorialCutScene extends Phaser.Scene {
     this.scene.stop();
   }
 
-  create({ player, enemy, camera, deadNPC, finalScene, doctor }) {
+  create({
+    player,
+    enemy,
+    camera,
+    deadNPC,
+    finalScene,
+    doctor,
+    scream,
+    laser,
+  }) {
     this.player = player;
     this.enemy = enemy;
     this.deadNPC = deadNPC;
     this.camera = camera;
     this.finalScene = finalScene || false;
     this.doctor = doctor;
+    this.scream = scream;
+    this.laser = laser;
 
     // const mainGame = this.scene.get('FgScene');
 
