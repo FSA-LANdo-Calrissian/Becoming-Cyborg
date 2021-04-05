@@ -23,6 +23,9 @@ export default class RobotCityScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.initCutScene = false;
     this.lairAccess = false;
+    this.count = 0;
+    this.enemysArr = [];
+    this.enemyCount = 0;
     this.key = 'RobotCityScene';
 
     // Bindings
@@ -268,12 +271,6 @@ export default class RobotCityScene extends Phaser.Scene {
       this.player.stats = stats;
       this.player.updateStats();
     }
-    // this.player.inventory = inventory;
-    // this.player.upgrade = upgrade;
-    // this.player.health = health;
-    // this.player.currentLeftWeapon = currentLeftWeapon;
-    // this.player.stats = stats;
-    // this.player.updateStats();
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)
