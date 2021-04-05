@@ -9,6 +9,10 @@ export default class stacyQuest extends Phaser.Scene {
   }
 
   create({ player, npc, data }) {
+    this.robotPunch = this.sound.add('robotPunch', {
+      loop: false,
+      volume: 0.3,
+    });
     this.player = player;
     this.npc = npc;
 
@@ -24,7 +28,13 @@ export default class stacyQuest extends Phaser.Scene {
 
     if (!quests[npc.name].isStarted) {
       const mainGame = this.scene.get('RobotCityScene');
-      mainGame[npc.name] = new Quest(mainGame, npc.name, npc);
+      mainGame[npc.name] = new Quest(
+        mainGame,
+        npc.name,
+        npc,
+        null,
+        this.robotPunch
+      );
       mainGame[npc.name].startQuest();
       this.scene.stop();
     } else if (quests[npc.name].isStarted && !quests[npc.name].isCompleted) {

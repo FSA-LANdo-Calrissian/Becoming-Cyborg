@@ -1,6 +1,6 @@
 import Enemy from '../entity/Enemy';
 
-export function stacyQuestSetUp() {
+export function stacyQuestSetUp(bite, punch) {
   /*
     Setting up main quest for Robot City Scene. Will spawn 15 big robots in the city that will be tracked. Player will need to kill at least 10.
   */
@@ -14,7 +14,8 @@ export function stacyQuestSetUp() {
     1136,
     896,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot2 = new Enemy(
@@ -22,7 +23,8 @@ export function stacyQuestSetUp() {
     1104,
     1056,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot3 = new Enemy(
@@ -30,7 +32,8 @@ export function stacyQuestSetUp() {
     1456,
     864,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot4 = new Enemy(
@@ -38,7 +41,8 @@ export function stacyQuestSetUp() {
     1504,
     784,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot5 = new Enemy(
@@ -46,7 +50,8 @@ export function stacyQuestSetUp() {
     1232,
     720,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot6 = new Enemy(
@@ -54,7 +59,8 @@ export function stacyQuestSetUp() {
     1056,
     784,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot7 = new Enemy(
@@ -62,7 +68,8 @@ export function stacyQuestSetUp() {
     816,
     944,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot8 = new Enemy(
@@ -70,7 +77,8 @@ export function stacyQuestSetUp() {
     1216,
     1184,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot9 = new Enemy(
@@ -78,7 +86,8 @@ export function stacyQuestSetUp() {
     1552,
     1072,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot10 = new Enemy(
@@ -86,7 +95,8 @@ export function stacyQuestSetUp() {
     1408,
     960,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot11 = new Enemy(
@@ -94,7 +104,8 @@ export function stacyQuestSetUp() {
     1648,
     608,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot12 = new Enemy(
@@ -102,7 +113,8 @@ export function stacyQuestSetUp() {
     864,
     800,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   this.scene.robot13 = new Enemy(
@@ -110,7 +122,8 @@ export function stacyQuestSetUp() {
     816,
     1104,
     'meleeRobot',
-    'robot'
+    'robot',
+    punch
   ).setScale(0.6);
 
   //Adding to group
