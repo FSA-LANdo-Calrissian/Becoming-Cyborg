@@ -260,6 +260,8 @@ export default class FgScene extends Phaser.Scene {
       .setSize(38, 35)
       .setOffset(5);
 
+    this.enemy.isDead = true;
+
     this.doctor = new NPC(this, 1728, 1330, 'drDang').setScale(0.5).setDepth(7);
 
     this.deadNPC = new NPC(this, 1700, 1280, 'mac').setScale(0.5).setDepth(7);
@@ -517,6 +519,7 @@ export default class FgScene extends Phaser.Scene {
       this.player.canAttack = true;
       this.player.shooting = false;
       this.enemy.body.moves = true;
+      this.enemy.isDead = false;
       this.scene.resume();
     });
 
