@@ -23,8 +23,8 @@ export default class RobotCityScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.initCutScene = false;
     this.lairAccess = false;
-    this.count = 0;
-    this.enemysArr = [];
+    // this.count = 0;
+
     this.enemyCount = 0;
     this.key = 'RobotCityScene';
 
@@ -665,7 +665,7 @@ export default class RobotCityScene extends Phaser.Scene {
       //   console.log(`Current damage: ${this.player.damage}`);
       //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
       //   console.log(`Current player position: `, this.player.x, this.player.y);
-      //   console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+      //   // console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
       //   console.log(
       //     `Current camera position: `,
       //     this.cameras.main.scrollX,

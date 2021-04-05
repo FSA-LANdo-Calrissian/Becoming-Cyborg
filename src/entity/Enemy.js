@@ -187,68 +187,67 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   separate() {
-    this.scene.enemyCount++;
-
     this.enemyArr = this.scene.enemiesGroup
       .getChildren()
       .filter((enemy) => !enemy.isDead);
 
-    for (let i = 0; i < this.length; i++) {
-      for (let j = i + 1; j < this.length; j++) {
-        if (this.enemyArr[i] && this.enemyArr[j]) {
-          if (
-            Phaser.Math.Distance.Between(
-              this.enemyArr[i].x,
-              this.enemyArr[i].y,
-              this.enemyArr[j].x,
-              this.enemyArr[j].y
-            ) <= 40
-          ) {
-            this.needToSeparate = true;
+    for (let i = 0; i < this.enemyArr.length; i++) {
+      for (let j = i + 1; j < this.enemyArr.length; j++) {
+        // if (this.enemyArr[i] && this.enemyArr[j]) {
 
-            if (this.enemyArr[j].x < this.enemyArr[i].x) {
-              this.enemyArr[i].body.velocity.x = 35;
-              this.enemyArr[i].body.velocity.y = 0;
-              this.enemyArr[i].enemyMovement('right');
-              this.isMoving = true;
+        if (
+          Phaser.Math.Distance.Between(
+            this.enemyArr[i].x,
+            this.enemyArr[i].y,
+            this.enemyArr[j].x,
+            this.enemyArr[j].y
+          ) <= 40
+        ) {
+          this.needToSeparate = true;
 
-              this.enemyArr[j].body.velocity.x = -35;
-              this.enemyArr[j].body.velocity.y = 0;
-              this.enemyArr[j].enemyMovement('left');
-              this.isMoving = true;
-            } else if (this.enemyArr[j].y < this.enemyArr[i].y) {
-              this.enemyArr[i].body.velocity.y = 35;
-              this.enemyArr[i].body.velocity.x = 0;
-              this.enemyArr[i].enemyMovement('down');
-              this.isMoving = true;
+          if (this.enemyArr[j].x < this.enemyArr[i].x) {
+            this.enemyArr[i].body.velocity.x = 35;
+            this.enemyArr[i].body.velocity.y = 0;
+            this.enemyArr[i].enemyMovement('right');
+            this.isMoving = true;
 
-              this.enemyArr[j].body.velocity.y = -35;
-              this.enemyArr[j].body.velocity.x = 0;
-              this.enemyArr[j].enemyMovement('up');
-              this.isMoving = true;
-            } else if (this.enemyArr[j].x > this.enemyArr[i].x) {
-              this.enemyArr[i].body.velocity.x = -35;
-              this.enemyArr[i].body.velocity.y = 0;
-              this.enemyArr[i].enemyMovement('left');
+            this.enemyArr[j].body.velocity.x = -35;
+            this.enemyArr[j].body.velocity.y = 0;
+            this.enemyArr[j].enemyMovement('left');
+            this.isMoving = true;
+          } else if (this.enemyArr[j].y < this.enemyArr[i].y) {
+            this.enemyArr[i].body.velocity.y = 35;
+            this.enemyArr[i].body.velocity.x = 0;
+            this.enemyArr[i].enemyMovement('down');
+            this.isMoving = true;
 
-              this.enemyArr[j].body.velocity.x = 35;
-              this.enemyArr[j].body.velocity.y = 0;
-              this.enemyArr[j].enemyMovement('right');
-            } else {
-              // if (this.enemyArr[j].y > this.enemyArr[i].y) {
-              this.enemyArr[i].body.velocity.y = 35;
-              this.enemyArr[i].body.velocity.x = 0;
-              this.enemyArr[i].enemyMovement('down');
+            this.enemyArr[j].body.velocity.y = -35;
+            this.enemyArr[j].body.velocity.x = 0;
+            this.enemyArr[j].enemyMovement('up');
+            this.isMoving = true;
+          } else if (this.enemyArr[j].x > this.enemyArr[i].x) {
+            this.enemyArr[i].body.velocity.x = -35;
+            this.enemyArr[i].body.velocity.y = 0;
+            this.enemyArr[i].enemyMovement('left');
 
-              this.enemyArr[j].body.velocity.y = -35;
-              this.enemyArr[j].body.velocity.x = 0;
-              this.enemyArr[j].enemyMovement('up');
-            }
+            this.enemyArr[j].body.velocity.x = 35;
+            this.enemyArr[j].body.velocity.y = 0;
+            this.enemyArr[j].enemyMovement('right');
           } else {
-            this.needToSeparate = false;
-            return;
+            // if (this.enemyArr[j].y > this.enemyArr[i].y) {
+            this.enemyArr[i].body.velocity.y = 35;
+            this.enemyArr[i].body.velocity.x = 0;
+            this.enemyArr[i].enemyMovement('down');
+
+            this.enemyArr[j].body.velocity.y = -35;
+            this.enemyArr[j].body.velocity.x = 0;
+            this.enemyArr[j].enemyMovement('up');
           }
+        } else {
+          this.needToSeparate = false;
+          return;
         }
+        // }
       }
     }
   }
@@ -520,10 +519,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    this.separate();
     const player1 = this.scene.player;
     if (!this.isDead && !this.scene.dialogueInProgress) {
       this.updateEnemyMovement(player1);
+      this.separate();
     }
   }
 }
