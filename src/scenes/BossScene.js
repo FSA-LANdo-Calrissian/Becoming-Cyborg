@@ -309,29 +309,24 @@ export default class BossScene extends Phaser.Scene {
 
     this.events.on('startBoss', () => {
       this.time.delayedCall(1000, () => {
-        console.log(`Starting boss`);
         this.boss.attack();
       });
     });
 
     this.events.on('rip', ({ hand }) => {
       this.handsKilled++;
-      console.log(`${this.handsKilled} hands killed`);
       if (hand === 'left' && this.handsKilled !== 2) {
-        console.log(`Lefty nooo!!`);
         playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.rightHand.attackCD = 4000;
         this.rightHand.resetTime = 1500;
         this.rightHand.loadAttack = 500;
       } else if (hand === 'right' && this.handsKilled !== 2) {
-        console.log(`Righty nooo! Grr. Me angry!`);
         playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.leftHand.attackCD = 4000;
         this.leftHand.resetTime = 1500;
         this.leftHand.loadAttack = 500;
       }
       if (this.handsKilled === 2) {
-        console.log(`Play body cinematic`);
         playDialogue.call(this, this.boss, 'firstBossCutScene');
         this.boss.setActive(true);
         this.boss.setVisible(true);

@@ -54,7 +54,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
 
     // If projectile is out of life, remove it.
     if (this.lifespan <= 0) {
-      console.log(`Projectile life expired`);
       this.setVisible(false);
       this.setActive(false);
       this.body.enable = false;

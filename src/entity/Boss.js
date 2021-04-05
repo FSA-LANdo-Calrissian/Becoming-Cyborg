@@ -41,12 +41,10 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.setVisible(false);
     this.setActive(false);
     this.body.enable = false;
-    console.log(`Starting boss fight...`);
   }
 
   // Left hand skill
   leftHandSmash() {
-    console.log(`Left hand preparing to smash...`);
     const target = this.scene.add.sprite(925, 700, 'target').setScale(0.3);
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, 925, 700);
@@ -70,7 +68,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   // Right hand version
   rightHandSmash() {
-    console.log(`Right hand preparing to smash...`);
     const target = this.scene.add.sprite(500, 700, 'target').setScale(0.3);
 
     const angle = Phaser.Math.Angle.Between(this.x, this.y, 500, 700);
@@ -98,7 +95,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       let proj;
       proj = this.scene.shockwavesGroup.getFirstDead(false);
       if (!proj) {
-        console.log(`Creating new proj`);
         proj = new Projectile(this.scene, this.x, this.y, 'shockwave');
       }
       proj.reset();
@@ -124,7 +120,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   // Rocket punch
   punch() {
-    console.log(`Tracking player...preparing to punch with ${this.fist}`);
     this.tracking = true;
     this.setTint(0xff0000);
     this.scene.time.delayedCall(this.loadAttack * 3, () => {
@@ -197,14 +192,12 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         this.fightStarted = true;
       });
     } else if (this.fist === 'body') {
-      console.log(`Activating boss...`);
       this.bossAttacks = true;
     }
   }
 
   // Main body skills
   callBackup() {
-    console.log(`Reinforcements called`);
     for (let i = 0; i <= 5; i++) {
       const maxVal = 250;
       const minVal = -250;
@@ -223,7 +216,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   spawnPillars() {
-    console.log(`Fire!!!`);
     for (let i = 0; i <= 5; i++) {
       const maxVal = 150;
       const minVal = -150;
@@ -296,16 +288,13 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     if (this.bossAttacks) {
       if (time > this.nextAttack) {
-        console.log(`Boss activated. Preparing attack`);
         const attack = Math.floor(Math.random() * 101);
         if (attack > 80) {
-          console.log(`Calling for backup`);
           this.callBackup();
         } else {
-          console.log(`Making fire!`);
           this.spawnPillars();
         }
-        this.nextAttack = time + this.attackCD;
+        this.nextAttack = time + 2000;
       }
     }
 

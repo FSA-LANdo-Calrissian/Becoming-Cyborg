@@ -73,7 +73,6 @@ export default class firstBossCutScene extends Phaser.Scene {
     if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
       this.scene.get('BossScene').events.emit('startFight');
     } else if (this.thirdDialoguePlayed) {
-      console.log(`Emitting boss start`);
       this.scene.get('BossScene').events.emit('startBoss');
     }
     this.endCutScene();
@@ -86,7 +85,6 @@ export default class firstBossCutScene extends Phaser.Scene {
 
   create({ npc, player }) {
     this.handsKilled = this.scene.get('BossScene').handsKilled;
-    console.log(`hands Killed`, this.handsKilled);
     this.boss = npc;
     this.player = player;
     if (this.handsKilled === 0) {
