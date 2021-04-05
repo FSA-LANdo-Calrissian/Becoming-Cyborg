@@ -1,5 +1,5 @@
 {
-  "name": "I-Am-Robot",
+  "name": "Becoming-Cyborg",
   "version": "1.0.0",
   "description": "A survival/RPG game based on a small robot in a post-apocalyptic world.",
   "main": "index.js",
@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FSA-LANdo-Calrissian/I-Am-Robot.git"
+    "url": "git+https://github.com/FSA-LANdo-Calrissian/Becoming-Cyborg.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/FSA-LANdo-Calrissian/I-Am-Robot/issues"
+    "url": "https://github.com/FSA-LANdo-Calrissian/Becoming-Cyborg/issues"
   },
-  "homepage": "https://github.com/FSA-LANdo-Calrissian/I-Am-Robot#readme",
+  "homepage": "https://github.com/FSA-LANdo-Calrissian/Becoming-Cyborg#readme",
   "devDependencies": {
     "axios": "^0.21.1",
     "git-url-parse": "^11.4.4",
