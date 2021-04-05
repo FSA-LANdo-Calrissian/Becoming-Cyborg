@@ -69,13 +69,53 @@ export default class firstBossCutScene extends Phaser.Scene {
     this.thirdDialoguePlayed = true;
   }
 
+  finalDialogue() {
+    const textLines = [
+      'Noooo!!',
+      'How could I lose to a human?!',
+      "You haven't seen the last of me!!",
+    ];
+
+    const nameTextLines = Array(textLines.length).fill('Robot King');
+
+    dialogueHelper.call(this, textLines, nameTextLines);
+  }
+
+  gameEnd() {
+    const bossScene = this.scene.get('BossScene');
+    bossScene.cameras.main.fadeOut(1000);
+    this.scene.get('HUDScene').scene.stop();
+    let end;
+    bossScene.cameras.main.on('camerafadeoutcomplete', () => {
+      bossScene.scene.stop();
+      end = this.add.image(
+        this.cameras.main.midPoint.x,
+        this.cameras.main.midPoint.y,
+        'end'
+      );
+
+      this.time.delayedCall(4000, () => {
+        end.destroy();
+        this.add.image(
+          this.cameras.main.midPoint.x,
+          this.cameras.main.midPoint.y,
+          'ty'
+        );
+      });
+    });
+  }
+
   endScene() {
-    if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
-      this.scene.get('BossScene').events.emit('startFight');
-    } else if (this.thirdDialoguePlayed) {
-      this.scene.get('BossScene').events.emit('startBoss');
+    if (this.end) {
+      this.gameEnd();
+    } else {
+      if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
+        this.scene.get('BossScene').events.emit('startFight');
+      } else if (this.thirdDialoguePlayed) {
+        this.scene.get('BossScene').events.emit('startBoss');
+      }
+      this.endCutScene();
     }
-    this.endCutScene();
   }
 
   endCutScene() {
@@ -83,16 +123,21 @@ export default class firstBossCutScene extends Phaser.Scene {
     this.scene.stop();
   }
 
-  create({ npc, player }) {
+  create({ npc, player, data }) {
     this.handsKilled = this.scene.get('BossScene').handsKilled;
     this.boss = npc;
     this.player = player;
-    if (this.handsKilled === 0) {
-      this.firstDialogue();
-    } else if (this.handsKilled === 1) {
-      this.secondDialogue();
+    this.end = data.end || false;
+    if (this.end) {
+      this.finalDialogue();
     } else {
-      this.thirdDialogue();
+      if (this.handsKilled === 0) {
+        this.firstDialogue();
+      } else if (this.handsKilled === 1) {
+        this.secondDialogue();
+      } else {
+        this.thirdDialogue();
+      }
     }
   }
 }

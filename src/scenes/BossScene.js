@@ -263,8 +263,8 @@ export default class BossScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
-      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
-      hp: Phaser.Input.Keyboard.KeyCodes.H,
+      // upgrade: Phaser.Input.Keyboard.KeyCodes.U,
+      // hp: Phaser.Input.Keyboard.KeyCodes.H,
       sound: Phaser.Input.Keyboard.KeyCodes.P,
     });
 
@@ -326,6 +326,9 @@ export default class BossScene extends Phaser.Scene {
         this.leftHand.attackCD = 4000;
         this.leftHand.resetTime = 1500;
         this.leftHand.loadAttack = 500;
+      } else if (hand === 'body') {
+        playDialogue.call(this, this.boss, 'firstBossCutScene', { end: true });
+        return;
       }
       if (this.handsKilled === 2) {
         playDialogue.call(this, this.boss, 'firstBossCutScene');
@@ -360,35 +363,35 @@ export default class BossScene extends Phaser.Scene {
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
 
-      if (this.cursors.upgrade.isDown) {
-        // TODO: Remove this for production
-        this.player.upgradeStats('msUp');
-        this.player.damage += 60;
-      }
+      // if (this.cursors.upgrade.isDown) {
+      //   // TODO: Remove this for production
+      //   this.player.upgradeStats('msUp');
+      //   this.player.damage += 60;
+      // }
 
       if (this.cursors.sound.isDown) {
         this.BossSceneMusic.stop();
       }
 
-      if (this.cursors.hp.isDown) {
-        // Press h button to see stats.
-        // TODO: Remove this for production
-        console.log(
-          `Current health: ${this.player.health}/${this.player.maxHealth}`
-        );
-        console.log(`Current move speed: ${this.player.speed}`);
-        console.log(`Current armor: ${this.player.armor}`);
-        console.log(`Current regen: ${this.player.regen}`);
-        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
-        console.log(`Current damage: ${this.player.damage}`);
-        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
-        console.log(`Current player position: `, this.player.x, this.player.y);
-        console.log(
-          `Current camera position: `,
-          this.cameras.main.scrollX,
-          this.cameras.main.scrollY
-        );
-      }
+      // if (this.cursors.hp.isDown) {
+      //   // Press h button to see stats.
+      //   // TODO: Remove this for production
+      //   console.log(
+      //     `Current health: ${this.player.health}/${this.player.maxHealth}`
+      //   );
+      //   console.log(`Current move speed: ${this.player.speed}`);
+      //   console.log(`Current armor: ${this.player.armor}`);
+      //   console.log(`Current regen: ${this.player.regen}`);
+      //   console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      //   console.log(`Current damage: ${this.player.damage}`);
+      //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      //   console.log(`Current player position: `, this.player.x, this.player.y);
+      //   console.log(
+      //     `Current camera position: `,
+      //     this.cameras.main.scrollX,
+      //     this.cameras.main.scrollY
+      //   );
+      // }
     }
   }
 }
