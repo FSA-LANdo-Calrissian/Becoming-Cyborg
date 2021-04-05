@@ -280,7 +280,7 @@ export default class BossScene extends Phaser.Scene {
 
     this.events.on('startFight', () => {
       this.boss.startFight();
-      this.bossMusic.play();
+      this.BossSceneMusic.play();
       this.cameras.main.shake(2000, 0.005);
       this.rightHand = new Boss(
         this,
@@ -367,7 +367,7 @@ export default class BossScene extends Phaser.Scene {
       }
 
       if (this.cursors.sound.isDown) {
-        this.bossMusic.stop();
+        this.BossSceneMusic.stop();
       }
 
       if (this.cursors.hp.isDown) {
