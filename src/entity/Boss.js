@@ -211,6 +211,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         'robot'
       ).setSize(27, 30);
       backup.health = 100;
+      backup.speed = 65;
       this.scene.enemiesGroup.add(backup);
     }
   }
@@ -289,12 +290,14 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     if (this.bossAttacks) {
       if (time > this.nextAttack) {
         const attack = Math.floor(Math.random() * 101);
-        if (attack > 80) {
-          this.callBackup();
+        if (attack > 95) {
+          if (this.scene.enemiesGroup.getChildren().length <= 5) {
+            this.callBackup();
+          }
         } else {
           this.spawnPillars();
         }
-        this.nextAttack = time + 2000;
+        this.nextAttack = time + 5000;
       }
     }
 
