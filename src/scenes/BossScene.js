@@ -279,37 +279,56 @@ export default class BossScene extends Phaser.Scene {
     });
 
     this.events.on('startFight', () => {
-      this.boss.startFight();
+      this.cameras.main.stopFollow();
+      this.cameras.main.pan(720, 200, 1000);
+      this.cameras.main.on('camerapancomplete', () => {
+        this.boss.play('unarmed');
+        this.boss.on('animationcomplete-unarmed', () => {
+          console.log(`Creating boss hands... animation complete`);
+          this.rightHand = new Boss(
+            this,
+            this.boss.x - 100,
+            this.boss.y - 10,
+            'bossfistright'
+          ).setSize(50, 100);
+
+          this.rightHand.play('rightHand');
+
+          this.leftHand = new Boss(
+            this,
+            this.boss.x + 130,
+            this.boss.y - 10,
+            'bossfistleft'
+          ).setSize(50, 100);
+
+          this.leftHand.play('leftHand');
+
+          this.bossGroup.add(this.rightHand);
+          this.bossGroup.add(this.leftHand);
+
+          this.time.delayedCall(2000, () => {
+            this.cameras.main.shake(2000, 0.005);
+            this.boss.setVisible(false);
+            this.boss.setActive(false);
+            this.boss.body.enable = false;
+            this.cameras.main.startFollow(this.player);
+
+            this.time.delayedCall(1000, () => {
+              this.leftHand.attack();
+              this.rightHand.attack();
+            });
+          });
+          this.boss.removeAllListeners('animationcomplete-unarmed');
+        });
+        this.cameras.main.removeAllListeners('camerapancomplete');
+      });
+
       this.BossSceneMusic.play();
-      this.cameras.main.shake(2000, 0.005);
-      this.rightHand = new Boss(
-        this,
-        this.boss.x - 100,
-        this.boss.y - 10,
-        'bossfistright'
-      ).setSize(50, 100);
-
-      this.rightHand.play('rightHand');
-
-      this.leftHand = new Boss(
-        this,
-        this.boss.x + 130,
-        this.boss.y - 10,
-        'bossfistleft'
-      ).setSize(50, 100);
-
-      this.leftHand.play('leftHand');
-
-      this.bossGroup.add(this.rightHand);
-      this.bossGroup.add(this.leftHand);
-
-      this.leftHand.attack();
-      this.rightHand.attack();
-      // this.boss.laser();
     });
 
     this.events.on('startBoss', () => {
       this.time.delayedCall(1000, () => {
+        this.cameras.main.startFollow(this.player);
         this.boss.attack();
       });
     });
@@ -331,7 +350,12 @@ export default class BossScene extends Phaser.Scene {
         return;
       }
       if (this.handsKilled === 2) {
-        playDialogue.call(this, this.boss, 'firstBossCutScene');
+        this.cameras.main.shake(1000, 0.005);
+        this.cameras.main.stopFollow();
+        this.cameras.main.pan(720, 200, 1000);
+        this.time.delayedCall(1000, () => {
+          playDialogue.call(this, this.boss, 'firstBossCutScene');
+        });
         this.boss.setActive(true);
         this.boss.setVisible(true);
         this.boss.body.enable = true;
