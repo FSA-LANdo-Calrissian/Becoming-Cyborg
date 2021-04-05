@@ -71,7 +71,7 @@ export default class BossScene extends Phaser.Scene {
 
     // Load sounds
     this.gg = this.sound.add('gg');
-    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.1 });
+    this.BossSceneMusic = this.sound.add('bossTrack1', { volume: 0.1 });
     this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
     this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
     this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
