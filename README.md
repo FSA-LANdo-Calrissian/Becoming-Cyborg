@@ -1,4 +1,4 @@
-# I-Am-Robot
+# Becoming Cyborg
 
 A survival/RPG game based on a small robot in a post-apocalyptic world.
 
