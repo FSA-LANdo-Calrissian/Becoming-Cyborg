@@ -266,6 +266,8 @@ export function playCutScene(cutScene) {
     camera: this.cameras.main,
     deadNPC: this.deadNPC,
     doctor: this.doctor,
+    scream: this.scream,
+    laser: this.laser,
   });
 }
 

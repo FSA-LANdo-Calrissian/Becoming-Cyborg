@@ -1,13 +1,17 @@
 import Phaser from 'phaser';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, spriteKey, fireWeapon) {
+  constructor(scene, x, y, spriteKey, fireWeapon, punch, knife, gun, fireBall) {
     super(scene, x, y, spriteKey);
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
     this.body.setAllowGravity(false);
     this.currentLeftWeapon = 'none';
+    this.punchSound = punch;
+    this.knifeSound = knife;
+    this.gunSound = gun;
+    this.fireBallSound = fireBall;
 
     this.upgrade = {
       maxHealth: 0,
@@ -19,13 +23,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       points: 0,
     };
     this.inventory = {
-      iron: 100,
-      oil: 100,
+      iron: 0,
+      oil: 0,
       gunAttachment: 0,
-      knifeAttachment: 1,
+      knifeAttachment: 0,
       fireBallAttachment: 0,
       gun: 1,
-      knife: 0,
+      knife: 1,
       fireBall: 1,
       clearanceChip: 0,
     };
@@ -37,7 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
     this.health = 100;
     this.stats = {
-      kills: 50,
+      kills: 0,
     };
     this.facingRight = false;
     this.lastHurt = 0;
@@ -98,8 +102,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (time > this.nextAttack) {
           // We need to pass in the sprite to use here
           if (this.currentLeftWeapon === 'fireBall') {
+            this.fireBallSound.play();
             this.fireWeapon(this.x, this.y, 'bigBlast', angle);
           } else if (this.currentLeftWeapon === 'gun') {
+            this.gunSound.play();
             this.fireWeapon(this.x, this.y, 'bullet', angle);
           }
           // Calculates the cd between shots
@@ -146,7 +152,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.damage = 10 + this.upgrade.damage + damage;
     this.attackSpeed = 2000 - this.upgrade.attackSpeed - attackSpeed;
     this.armor = 0 + this.upgrade.armor;
-    this.regen = 0 + this.upgrade.regen;
+    this.regen = 1 + this.upgrade.regen;
   }
 
   upgradeStats(type) {
@@ -269,11 +275,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.canAttack) {
       this.isMelee = true;
 
+      // Check which weapon player has
+      const attack = this.currentLeftWeapon === 'knife' ? 'knife' : 'punch';
+
       // if player is facing right, melee in that direction else melee in other direction
+      this[`${attack}Sound`].play();
       if (this.facingRight) {
-        this.play('punchRight', true);
+        this.play(`${attack}Right`, true);
       } else {
-        this.play('punchLeft', true);
+        this.play(`${attack}Left`, true);
       }
       // since player is actively meleeing, sets canAttack to false so the player cannot melee while he is meleeing
       this.canAttack = false;

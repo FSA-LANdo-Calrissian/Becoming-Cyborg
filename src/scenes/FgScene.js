@@ -115,7 +115,6 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create(data) {
-    console.log(this.data);
     //Creating animations
     createWorldAnims.call(this);
     createPlayerAnims.call(this);
@@ -177,19 +176,46 @@ export default class FgScene extends Phaser.Scene {
     this.worldCollision.setCollisionByProperty({ collides: true });
 
     // Show debug collisions on the map.
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.worldCollision.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.worldCollision.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
+    // debugGraphics.setDepth(10);
+
+    // Load in audio
+    this.bite = this.sound.add('bite', { loop: false });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.laser = this.sound.add('laser', { loop: false });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
+    this.scream = this.sound.add('scream', { loop: false });
+    this.TutorialSceneMusic = this.sound.add('TutorialSceneMusic', {
+      loop: true,
+      volume: 0.1,
     });
+
+    // Start playing scene scene music
+    this.TutorialSceneMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')
       .setScale(0.5)
       .setSize(10, 10);
 
-    this.player = new Player(this, 1400, 1300, 'player', this.loadBullet)
+    this.player = new Player(
+      this,
+      1400,
+      1300,
+      'player',
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
+    )
       .setScale(0.5)
       .setSize(30, 30)
       .setOffset(10, 12);
@@ -478,7 +504,6 @@ export default class FgScene extends Phaser.Scene {
     this.itemsGroup.setDepth(7);
     this.playerProjectiles.setDepth(7);
     this.worldCollision.setDepth(10);
-    debugGraphics.setDepth(10);
     this.upgradeStation.setDepth(7);
     this.sceneEnd.setDepth(12);
   }

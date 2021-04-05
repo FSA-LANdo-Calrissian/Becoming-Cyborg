@@ -26,9 +26,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map', 'assets/backgrounds/RobotCityMap.json');
     this.load.tilemapTiledJSON('bossMap', 'assets/backgrounds/bossRoom.json');
 
-    this.load.spritesheet('player', 'assets/sprites/cyborg.png', {
-      frameWidth: 47.888,
-      frameHeight: 49,
+    this.load.spritesheet('player', 'assets/sprites/kick.png', {
+      frameWidth: 48,
+      frameHeight: 48,
     });
     this.load.spritesheet('meleeRobot', 'assets/sprites/Walk.png', {
       frameWidth: 46,
@@ -145,6 +145,17 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
     this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
     this.load.image('none', 'assets/sprites/robotArmClosed.png');
+
+    this.load.audio('bite', 'assets/audio/bite.wav');
+    this.load.audio('fireBall', 'assets/audio/fireBall.wav');
+    this.load.audio('gun', 'assets/audio/gun.wav');
+    this.load.audio('knife', 'assets/audio/knife.wav');
+    this.load.audio('laser', 'assets/audio/laser.wav');
+    this.load.audio('punch', 'assets/audio/punch.wav');
+    this.load.audio('RobotCityMusic', 'assets/audio/RobotCity.mp3');
+    this.load.audio('scream', 'assets/audio/scream.wav');
+    this.load.audio('TitleSceneMusic', 'assets/audio/TitleScene.mp3');
+    this.load.audio('TutorialSceneMusic', 'assets/audio/TutorialScene.mp3');
   }
 
   create() {
