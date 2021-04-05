@@ -4,6 +4,9 @@ import { dialogueHelper } from './cutscenes';
 export default class firstBossCutScene extends Phaser.Scene {
   constructor() {
     super('firstBossCutScene');
+    this.firstDialoguePlayed = false;
+    this.secondDialoguePlayed = false;
+    this.thirdDialoguePlayed = false;
   }
 
   firstDialogue() {
@@ -38,10 +41,40 @@ export default class firstBossCutScene extends Phaser.Scene {
     const nameTextLines = Array(textLines.length).fill('Robot King dude');
 
     dialogueHelper.call(this, textLines, nameTextLines);
+    this.firstDialoguePlayed = true;
+  }
+
+  secondDialogue() {
+    const textLines = [
+      'H-how were you able to destroy one of my hands??',
+      "It looks like I can't underestimate you",
+    ];
+
+    const nameTextLines = Array(textLines.length).fill('Robot King dude');
+
+    dialogueHelper.call(this, textLines, nameTextLines);
+    this.secondDialoguePlayed = true;
+  }
+
+  thirdDialogue() {
+    const textLines = [
+      'My hands!!',
+      "You're better than you look",
+      "But now here's my final form",
+    ];
+
+    const nameTextLines = Array(textLines.length).fill('Robot King dude');
+
+    dialogueHelper.call(this, textLines, nameTextLines);
+    this.thirdDialoguePlayed = true;
   }
 
   endScene() {
-    this.scene.get('BossScene').events.emit('startFight');
+    if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
+      this.scene.get('BossScene').events.emit('startFight');
+    } else if (this.thirdDialoguePlayed) {
+      this.scene.get('BossScene').events.emit('startBoss');
+    }
     this.endCutScene();
   }
 
@@ -53,6 +86,12 @@ export default class firstBossCutScene extends Phaser.Scene {
   create({ npc, player }) {
     this.boss = npc;
     this.player = player;
-    this.endScene();
+    if (!this.firstDialoguePlayed) {
+      this.firstDialogue();
+    } else if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
+      this.secondDialogue();
+    } else {
+      this.thirdDialogue();
+    }
   }
 }

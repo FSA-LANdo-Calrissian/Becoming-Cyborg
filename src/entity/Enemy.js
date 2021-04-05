@@ -63,7 +63,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           this.y + Math.random() * 20,
           itemKey
         )
-          .setScale(0.1)
+          .setScale(0.2)
           .setDepth(7);
         this.scene.itemsGroup.add(drop);
       }
