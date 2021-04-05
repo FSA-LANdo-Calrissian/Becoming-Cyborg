@@ -43,6 +43,12 @@ export default class BossScene extends Phaser.Scene {
     // Grab dead projectile from group if available.
     let bullet = this.playerProjectiles.getFirstDead(false, x, y, sprite);
 
+    if (bullet && bullet.texture.key !== sprite) {
+      const size = sprite === 'bullet' ? 9 : 20;
+      bullet.setTexture(sprite);
+      bullet.setSize(size, size);
+    }
+
     // If none found, create it.
     if (!bullet) {
       bullet = new Projectile(this, x, y, sprite, angle).setScale(0.5);
@@ -121,11 +127,6 @@ export default class BossScene extends Phaser.Scene {
       this.player.currentLeftWeapon = currentLeftWeapon;
       this.player.stats = stats;
     }
-    this.player.currentLeftWeapon = 'fireBall';
-    this.player.updateStats();
-
-    this.player.currentLeftWeapon = 'fireBall';
-    this.player.updateStats();
 
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)
@@ -181,7 +182,7 @@ export default class BossScene extends Phaser.Scene {
       this.playerProjectiles,
       this.shockwaveCollision,
       (proj, world) => {
-        proj.destroy();
+        proj.lifespan = 0;
       },
       (proj, world) => world.canCollide
     );

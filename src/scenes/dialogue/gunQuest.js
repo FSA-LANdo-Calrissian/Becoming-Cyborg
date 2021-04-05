@@ -13,7 +13,7 @@ export default class Dialogue extends Phaser.Scene {
       'Whoaaaaa, you look really cool!!!!',
       'Are you into disguising yourself as a robot as well?',
       'Last time I did  I was able to snag something off of them',
-      'But.....ofcourse they caught up to me and I had to toss the part',
+      'But.....of course they caught up to me and I had to toss the part',
       'Hmmm, you know what?',
       "You look like you've snagged a few parts in your day.",
       'How about we make a trade?',

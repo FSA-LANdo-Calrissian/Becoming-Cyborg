@@ -99,6 +99,7 @@ export default class RobotCityScene extends Phaser.Scene {
       this.playerProjectiles.add(bullet);
     }
     // Pew pew the bullet.
+    bullet.reset();
     bullet.shoot(x, y, angle);
   }
 
@@ -472,6 +473,15 @@ export default class RobotCityScene extends Phaser.Scene {
       this.enemiesGroup,
       this.playerProjectiles,
       this.damageEnemy
+    );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.worldCollision,
+      (proj, world) => {
+        proj.lifespan = 0;
+      },
+      (proj, world) => world.canCollide
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {

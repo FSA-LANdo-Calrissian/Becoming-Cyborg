@@ -39,7 +39,7 @@ export default class Dialogue extends Phaser.Scene {
       "Don't make me hop in this well again!",
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Sophie');
 
     dialogueHelper.call(this, textLines, nameTextLines);
   }
@@ -54,7 +54,7 @@ export default class Dialogue extends Phaser.Scene {
       'You seem like you need it more than me.',
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Little Piggy');
+    const nameTextLines = Array(textLines.length).fill('Sophie');
 
     dialogueHelper.call(this, textLines, nameTextLines);
   }
