@@ -9,7 +9,6 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   playPreDialogue() {
-    console.log('setting world');
     const textLines = [
       'Hey, uhhhh...',
       "I'm a little busy right now",
@@ -79,20 +78,14 @@ export default class Dialogue extends Phaser.Scene {
   }
 
   endScene() {
-    console.log('dialogue');
     // if (!quests[this.npc.name].isStarted) {
-    //   console.log('getting scene');
     //   this.world = this.scene.get('RobotCityScene');
-    //   console.log(this.world);
     //   // this.world.events.emit('startQuest');
-    //   console.log(this.world);
 
     //   this.endCutScene();
     //   this.world = this.scene.get('RobotCityScene');
     // } else if (
     if (quests[this.npc.name].isStarted && !quests[this.npc.name].isCompleted) {
-      console.log('quest started and not completed');
-
       this.endCutScene();
     } else {
       this.endCutScene();
@@ -129,11 +122,7 @@ export default class Dialogue extends Phaser.Scene {
 
       this.questStarted = true;
 
-      console.log('mission started');
-      console.log(this.world);
       if (this.world) {
-        console.log(quests[npc.name], 'quest[name]');
-        console.log('send in wolves');
         // this.world.sendInWolves = true;
         this.world.wolf1.visible = true;
         this.world.wolf1.setActive(true);
@@ -148,12 +137,10 @@ export default class Dialogue extends Phaser.Scene {
         this.world.alphaWolf.setActive(true);
 
         this.world.alphaWolf.on('animationcomplete-death', () => {
-          console.log('in update');
           this.world.events.emit('updateQuest-' + quests[npc.name].key);
           this.world.alphaWolf.removeAllListeners();
         });
       }
-      console.log('starting quest');
       this.world.events.emit('startQuest');
     } else if (!quests[npc.name].isCompleted && this.questStarted) {
       this.playIncomplete();

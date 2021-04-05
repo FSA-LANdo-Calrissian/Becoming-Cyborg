@@ -23,7 +23,6 @@ export default class stacyQuest extends Phaser.Scene {
     });
 
     if (!quests[npc.name].isStarted) {
-      console.log('Starting Robot City Quest');
       const mainGame = this.scene.get('RobotCityScene');
       mainGame[npc.name] = new Quest(mainGame, npc.name, npc);
       mainGame[npc.name].startQuest();

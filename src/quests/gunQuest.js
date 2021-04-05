@@ -2,7 +2,6 @@ import Item from '../entity/Item';
 import Enemy from '../entity/Enemy';
 
 export function gunQuestSetup(bite) {
-  console.log('wolves created');
   this.scene.alphaWolf = new Enemy(
     this.scene,
     1731.6386666666674,
@@ -70,7 +69,6 @@ export function gunQuestSetup(bite) {
   this.scene.alphaWolf.setActive(false);
 
   this.scene.alphaWolf.on('animationcomplete-death', () => {
-    console.log('in update');
     this.scene.events.emit('updateQuest-' + this.quest.key);
     this.scene.alphaWolf.removeAllListeners();
   });
