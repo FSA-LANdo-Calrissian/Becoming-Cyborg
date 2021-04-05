@@ -225,6 +225,10 @@ export default class RobotCityScene extends Phaser.Scene {
     this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
     this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
     this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
+    this.upgradeStationSound = this.sound.add('upgradeStation', {
+      loop: false,
+      volume: 0.5,
+    });
     this.RobotCityMusic = this.sound.add('RobotCityMusic', {
       loop: true,
       volume: 0.06,
@@ -464,9 +468,10 @@ export default class RobotCityScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
-      this.upgradeStation.playAnim();
       if (!this.upgradeOpened) {
         this.upgradeOpened = true;
+        this.upgradeStationSound.play();
+        this.upgradeStation.playAnim();
         this.time.delayedCall(4000, () => {
           this.openUpgrade();
         });
