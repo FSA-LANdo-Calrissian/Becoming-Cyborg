@@ -119,9 +119,12 @@ export default class BossScene extends Phaser.Scene {
       this.player.health = health;
       this.player.currentLeftWeapon = currentLeftWeapon;
       this.player.stats = stats;
-      this.player.updateStats();
     }
     this.player.currentLeftWeapon = 'fireBall';
+    this.player.updateStats();
+
+    this.player.currentLeftWeapon = 'fireBall';
+    this.player.updateStats();
 
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)
@@ -159,16 +162,16 @@ export default class BossScene extends Phaser.Scene {
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
-    this.physics.add.collider(this.enemiesGroup, this.worldGround);
-    this.physics.add.collider(this.enemiesGroup, this.world);
+    this.physics.add.collider(this.enemiesGroup, this.shockwaveCollision);
+    // this.physics.add.collider(this.enemiesGroup, this.world);
 
     this.physics.add.overlap(
       this.shockwavesGroup,
       this.shockwaveCollision,
       (proj, world) => {
-        // if (world.collides) {
-        proj.destroy();
-        // }
+        proj.setVisible(false);
+        proj.setActive(false);
+        proj.body.enable = false;
       },
       (proj, world) => world.canCollide
     );
@@ -186,7 +189,7 @@ export default class BossScene extends Phaser.Scene {
       this.player,
       this.shockwavesGroup,
       (player, proj) => {
-        proj.destroy();
+        proj.lifespan = 0;
         player.takeDamage(proj.damage, this.gg);
       }
     );
@@ -211,7 +214,7 @@ export default class BossScene extends Phaser.Scene {
       (proj, enemy) => {
         proj.lifespan -= 100;
         enemy.takeDamage(
-          proj.damage,
+          this.player.damage,
           this.leftHand.health,
           this.rightHand.health,
           this.boss.health
@@ -242,8 +245,15 @@ export default class BossScene extends Phaser.Scene {
       item.lifespan = 0;
     });
 
+    // Set world bounds
+    this.boundaryX = 1600;
+    this.boundaryY = 1600;
+    this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
+    this.player.setCollideWorldBounds();
+
     // Init camera
     this.cameras.main.startFollow(this.player).setZoom(2);
+    this.cameras.main.setBounds(0, 0, this.boundaryX, this.boundaryY);
 
     // Init cursors
     this.cursors = this.input.keyboard.addKeys({
@@ -300,29 +310,24 @@ export default class BossScene extends Phaser.Scene {
 
     this.events.on('startBoss', () => {
       this.time.delayedCall(1000, () => {
-        console.log(`Starting boss`);
         this.boss.attack();
       });
     });
 
     this.events.on('rip', ({ hand }) => {
       this.handsKilled++;
-      console.log(`${this.handsKilled} hands killed`);
       if (hand === 'left' && this.handsKilled !== 2) {
-        console.log(`Lefty nooo!!`);
         playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.rightHand.attackCD = 4000;
         this.rightHand.resetTime = 1500;
         this.rightHand.loadAttack = 500;
       } else if (hand === 'right' && this.handsKilled !== 2) {
-        console.log(`Righty nooo! Grr. Me angry!`);
         playDialogue.call(this, this.rightHand, 'firstBossCutScene');
         this.leftHand.attackCD = 4000;
         this.leftHand.resetTime = 1500;
         this.leftHand.loadAttack = 500;
       }
       if (this.handsKilled === 2) {
-        console.log(`Play body cinematic`);
         playDialogue.call(this, this.boss, 'firstBossCutScene');
         this.boss.setActive(true);
         this.boss.setVisible(true);
@@ -358,6 +363,7 @@ export default class BossScene extends Phaser.Scene {
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production
         this.player.upgradeStats('msUp');
+        this.player.damage += 60;
       }
 
       if (this.cursors.sound.isDown) {

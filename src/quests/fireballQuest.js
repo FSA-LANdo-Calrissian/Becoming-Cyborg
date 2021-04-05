@@ -1,6 +1,4 @@
 export function fireballQuestSetup() {
-  console.log(this.quest.key, 'quest key');
-
   this.alphaKilled = 0;
   // if ((this.scene.wolf1 && this.scene.sendInWolves) ) {
   //   this.quest.isStarted = true
@@ -17,7 +15,6 @@ export function fireballQuestSetup() {
   //   this.scene.alphaWolf.setActive(true);
 
   //   this.scene.alphaWolf.on('animationcomplete-death', () => {
-  //     console.log('in update');
   //     this.scene.events.emit('updateQuest-' + this.quest.key);
   //     this.scene.alphaWolf.removeAllListeners();
   //   });
@@ -28,10 +25,8 @@ export function fireballQuestSetup() {
 
 export function fireballQuestUpdate() {
   this.alphaKilled++;
-  console.log(this.alphaKilled, 'alpha killed');
 
   if (this.alphaKilled === 1) {
     this.quest.objectiveReqs.enemiesCleared = true;
-    console.log('the req', this.quest.objectiveReqs.enemiesCleared);
   }
 }

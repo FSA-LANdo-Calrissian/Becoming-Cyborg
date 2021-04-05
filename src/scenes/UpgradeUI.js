@@ -51,11 +51,27 @@ export default class UpgradeUI extends Phaser.Scene {
       this.leftEquipText.setActive(true).setVisible(true);
       this.leftCreateText.setActive(false).setVisible(false);
       this.leftUnequipText.setActive(false).setVisible(false);
-    } else {
+    } else if (this.canCreate()) {
       this.leftCreateText.setActive(true).setVisible(true);
       this.leftEquipText.setActive(false).setVisible(false);
       this.leftUnequipText.setActive(false).setVisible(false);
+    } else {
+      this.leftCreateText.setActive(false).setVisible(false);
+      this.leftEquipText.setActive(false).setVisible(false);
+      this.leftUnequipText.setActive(false).setVisible(false);
     }
+  }
+
+  canCreate() {
+    const currWeapon = this.weapons[this.leftWeaponIdx];
+    if (
+      this.player.inventory.iron >= this.currLeftIron &&
+      this.player.inventory.oil >= this.currLeftOil &&
+      this.player.inventory[`${currWeapon}Attachment`] >= this.currLeftPart
+    ) {
+      return true;
+    }
+    return false;
   }
 
   updateInventory(inventory) {
@@ -188,6 +204,7 @@ export default class UpgradeUI extends Phaser.Scene {
       default:
         throw new Error('Invalid upgrade type');
     }
+    this.player.updateStats();
   }
 
   create({ player, scene }) {

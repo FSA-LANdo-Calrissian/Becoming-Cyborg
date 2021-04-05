@@ -254,6 +254,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // On death logic
     if (this.health <= 0) {
+      this.scene[`${this.scene.key}Music`].stop();
       gg.play();
       const stats = this.stats;
       const scene = this.scene;
