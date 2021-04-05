@@ -8,6 +8,7 @@ export function gunQuestSetup(bite) {
     1989.4166666666633,
     'wolf',
     'animal',
+
     bite
   )
     .setScale(0.5)
@@ -20,6 +21,7 @@ export function gunQuestSetup(bite) {
     this.scene.alphaWolf.y + 30,
     'wolf',
     'animal',
+
     bite
   )
     .setScale(0.3)
@@ -32,6 +34,7 @@ export function gunQuestSetup(bite) {
     this.scene.alphaWolf.y - 30,
     'wolf',
     'animal',
+
     bite
   )
     .setScale(0.3)
@@ -44,6 +47,7 @@ export function gunQuestSetup(bite) {
     this.scene.alphaWolf.y + 60,
     'wolf',
     'animal',
+
     bite
   )
     .setScale(0.3)
@@ -74,27 +78,18 @@ export function gunQuestSetup(bite) {
   });
 
   this.questItem = 0;
-  // Spawning the enemies
-  // this.scene.item = new Item(
-  //   this.scene,
-  //   686.6386666666683,
-  //   902.25,
-  //   'robotPart'
-  // ).setScale(0.1);
 
   this.scene.item = new Item(
     this.scene,
-    this.scene.player.x,
-    this.scene.player.y + 5,
+    686.6386666666683,
+    902.25,
     'robotPart'
   ).setScale(0.1);
 
   this.scene.item.lifespan = 1200000;
-
-  // Adding event emitters on death for tracking purposes
-
   this.scene.itemsGroup.add(this.scene.item);
   this.scene.item.reset();
+  // Adding event emitters on death for tracking purposes
 
   this.scene.physics.add.overlap(
     this.scene.player,

@@ -281,6 +281,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
       // if player is facing right, melee in that direction else melee in other direction
       this[`${attack}Sound`].play();
+
       if (this.facingRight) {
         this.play(`${attack}Right`, true);
       } else {

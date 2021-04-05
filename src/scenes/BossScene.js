@@ -71,7 +71,7 @@ export default class BossScene extends Phaser.Scene {
 
     // Load sounds
     this.gg = this.sound.add('gg');
-    this.bossMusic = this.sound.add('bossTrack2', { volume: 0.1 });
+    this.BossSceneMusic = this.sound.add('bossTrack', { volume: 0.1 });
     this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
     this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
     this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
@@ -280,7 +280,7 @@ export default class BossScene extends Phaser.Scene {
 
     this.events.on('startFight', () => {
       this.boss.startFight();
-      this.bossMusic.play();
+      this.BossSceneMusic.play();
       this.cameras.main.shake(2000, 0.005);
       this.rightHand = new Boss(
         this,
@@ -367,7 +367,7 @@ export default class BossScene extends Phaser.Scene {
       }
 
       if (this.cursors.sound.isDown) {
-        this.bossMusic.stop();
+        this.BossSceneMusic.stop();
       }
 
       if (this.cursors.hp.isDown) {
