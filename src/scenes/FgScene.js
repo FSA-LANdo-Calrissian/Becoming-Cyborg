@@ -216,8 +216,8 @@ export default class FgScene extends Phaser.Scene {
 
     this.player = new Player(
       this,
-      1400,
-      1300,
+      552,
+      496,
       'player',
       this.loadBullet,
       this.punch,
@@ -290,6 +290,7 @@ export default class FgScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
+          this.TutorialSceneMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'RobotCityScene',

@@ -372,6 +372,7 @@ export default class RobotCityScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
+          this.RobotCityMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'BossScene',

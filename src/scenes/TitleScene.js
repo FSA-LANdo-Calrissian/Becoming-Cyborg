@@ -145,6 +145,10 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('bubble', 'assets/backgrounds/chatbubble.png');
     this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
     this.load.image('none', 'assets/sprites/robotArmClosed.png');
+    this.load.image(
+      'TitleSceneBackground',
+      'assets/backgrounds/TitleBackground.png'
+    );
 
     this.load.audio('bite', 'assets/audio/bite.wav');
     this.load.audio('fireBall', 'assets/audio/fireBall.wav');
@@ -159,6 +163,18 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    // Add Title Scene music
+    this.TitleSceneMusic = this.sound.add('TitleSceneMusic', {
+      loop: true,
+      volume: 0.1,
+    });
+    this.TitleSceneMusic.play();
+
+    // Background image
+    this.background = this.add
+      .image(300, 300, 'TitleSceneBackground')
+      .setDisplaySize(1067, 600);
+
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
       .text(350, 200, 'New Game', { fill: '#0f0' })
@@ -185,9 +201,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   startNewGame() {
+    this.TitleSceneMusic.stop();
     this.scene.start('PreGameScene');
   }
   startLoadGame() {
+    this.TitleSceneMusic.stop();
     this.scene.start('MainScene');
   }
 }
