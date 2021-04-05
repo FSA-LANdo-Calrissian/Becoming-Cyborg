@@ -19,6 +19,12 @@ export default class BossScene extends Phaser.Scene {
     this.loadBullet = this.loadBullet.bind(this);
   }
 
+  initScene() {
+    this.bossCinematic = false;
+    this.dialogueInProgress = false;
+    this.fightStarted = false;
+  }
+
   loadBullet(x, y, sprite, angle) {
     /*
       Function to pass into any entity that uses projectiles on creation.
@@ -63,6 +69,10 @@ export default class BossScene extends Phaser.Scene {
     // Load sounds
     this.gg = this.sound.add('gg');
     this.bossMusic = this.sound.add('bossTrack2', { volume: 0.1 });
+    this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
+    this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
+    this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
+    this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
 
     // Make the world
     this.map = this.make.tilemap({ key: 'bossMap' });
@@ -85,17 +95,29 @@ export default class BossScene extends Phaser.Scene {
     this.shockwaveCollision.setCollisionByProperty({ collides: true });
 
     // Create the entities
-    this.player = new Player(this, 658, 1455, 'player', this.loadBullet)
+    this.player = new Player(
+      this,
+      658,
+      1455,
+      'player',
+      this.loadBullet,
+      this.punch,
+      this.knife,
+      this.gun,
+      this.fireBall
+    )
       .setScale(0.5)
       .setSize(30, 35)
       .setOffset(10, 12);
-    const { inventory, upgrade, health, currentLeftWeapon, stats } = player;
-    this.player.inventory = inventory;
-    this.player.upgrade = upgrade;
-    this.player.health = health;
-    this.player.currentLeftWeapon = currentLeftWeapon;
-    this.player.stats = stats;
-    this.player.updateStats();
+    if (player) {
+      const { inventory, upgrade, health, currentLeftWeapon, stats } = player;
+      this.player.inventory = inventory;
+      this.player.upgrade = upgrade;
+      this.player.health = health;
+      this.player.currentLeftWeapon = currentLeftWeapon;
+      this.player.stats = stats;
+      this.player.updateStats();
+    }
 
     this.boss = new Boss(this, 750, 200, 'boss').setScale(1);
 

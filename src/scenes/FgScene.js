@@ -36,6 +36,15 @@ export default class FgScene extends Phaser.Scene {
     this.damageEnemy = this.damageEnemy.bind(this);
   }
 
+  initScene() {
+    this.finishedTutorial = false;
+    this.dialogueInProgress = false;
+    this.initTutorial = false;
+    this.upgradeOpened = false;
+    this.allowUpgrade = false;
+    this.sceneOver = false;
+  }
+
   openInventory() {
     this.dialogueInProgress = true;
     this.scene.transition({
@@ -185,7 +194,7 @@ export default class FgScene extends Phaser.Scene {
     // debugGraphics.setDepth(10);
 
     // Load in audio
-    this.bite = this.sound.add('bite', { loop: false });
+    this.bite = this.sound.add('bite', { loop: false, volume: 0.3 });
     this.fireBall = this.sound.add('fireBall', { loop: false, volume: 0.1 });
     this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
     this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
@@ -197,7 +206,7 @@ export default class FgScene extends Phaser.Scene {
       volume: 0.1,
     });
 
-    // Start playing scene scene music
+    // Start playing scene music
     this.TutorialSceneMusic.play();
 
     // Spawning the entities
@@ -352,7 +361,7 @@ export default class FgScene extends Phaser.Scene {
             playDialogue.call(this, npc, npc.name);
 
             // and initialize the quest.
-            this[npc.name] = new Quest(this, npc.name, npc);
+            this[npc.name] = new Quest(this, npc.name, npc, this.bite);
 
             // Start quest when dialogue is over.
             this.events.on('startQuest', () => {

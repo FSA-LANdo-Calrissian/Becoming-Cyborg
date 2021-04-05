@@ -1,14 +1,15 @@
 import Item from '../entity/Item';
 import Enemy from '../entity/Enemy';
 
-export function gunQuestSetup() {
+export function gunQuestSetup(bite) {
   console.log('wolves created');
   this.scene.alphaWolf = new Enemy(
     this.scene,
     1731.6386666666674,
     1989.4166666666633,
     'wolf',
-    'animal'
+    'animal',
+    bite
   )
     .setScale(0.5)
     .setSize(45, 45)
@@ -19,7 +20,8 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.x + 30,
     this.scene.alphaWolf.y + 30,
     'wolf',
-    'animal'
+    'animal',
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
@@ -30,7 +32,8 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.x - 30,
     this.scene.alphaWolf.y - 30,
     'wolf',
-    'animal'
+    'animal',
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
@@ -41,7 +44,8 @@ export function gunQuestSetup() {
     this.scene.alphaWolf.x + 60,
     this.scene.alphaWolf.y + 60,
     'wolf',
-    'animal'
+    'animal',
+    bite
   )
     .setScale(0.3)
     .setSize(45, 45)
