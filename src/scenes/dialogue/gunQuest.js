@@ -54,6 +54,7 @@ export default class Dialogue extends Phaser.Scene {
     const nameTextLines = Array(textLines.length).fill('Tech Geek');
 
     dialogueHelper.call(this, textLines, nameTextLines);
+    quests.fireballQuest.requirements = true;
   }
 
   endScene() {

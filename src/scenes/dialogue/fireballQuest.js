@@ -109,11 +109,10 @@ export default class Dialogue extends Phaser.Scene {
       cont: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
-    if (player.inventory.gunAttachment === 0 && this.questStarted === false) {
+    if (!quests[this.npc.name].requirements && this.questStarted === false) {
       this.playPreDialogue();
     } else if (
-      // !quests[npc.name].isStarted &&
-      player.inventory.gunAttachment === 1 &&
+      quests[this.npc.name].requirements &&
       this.questStarted === false
     ) {
       this.world = this.scene.get('RobotCityScene');
