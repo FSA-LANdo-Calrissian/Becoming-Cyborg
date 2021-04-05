@@ -43,4 +43,15 @@ export default function () {
     repeat: -1,
     yoyo: true,
   });
+
+  this.anims.create({
+    key: 'firePillar',
+    frames: this.anims.generateFrameNumbers('firePillar', {
+      start: 1,
+      end: 3,
+    }),
+    frameRate: 7,
+    repeat: -1,
+    yoyo: true,
+  });
 }

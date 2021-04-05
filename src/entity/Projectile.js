@@ -6,7 +6,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    this.lifespan = 2000;
+    this.lifespan = 1200;
 
     this.speed = Phaser.Math.GetSpeed(200, 1); // (distance in pixels, time (ms))
     this.damage = 25;
@@ -37,7 +37,8 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
 
     */
     this.setActive(true);
-    this.lifespan = 2000;
+    this.body.enable = true;
+    this.lifespan = 1200;
     this.setVisible(true);
   }
 
@@ -55,6 +56,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     if (this.lifespan <= 0) {
       this.setVisible(false);
       this.setActive(false);
+      this.body.enable = false;
     }
   }
 }
