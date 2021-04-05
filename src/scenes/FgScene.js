@@ -102,6 +102,7 @@ export default class FgScene extends Phaser.Scene {
       this.playerProjectiles.add(bullet);
     }
     // Pew pew the bullet.
+    bullet.reset();
     bullet.shoot(x, y, angle);
   }
 
@@ -137,6 +138,7 @@ export default class FgScene extends Phaser.Scene {
     this.initTutorial = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
+    this.macDead = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     this.gg = this.sound.add('gg');
 
@@ -201,6 +203,14 @@ export default class FgScene extends Phaser.Scene {
     this.laser = this.sound.add('laser', { loop: false });
     this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
     this.scream = this.sound.add('scream', { loop: false });
+    this.robotPunch = this.sound.add('robotPunch', {
+      loop: false,
+      volume: 0.3,
+    });
+    this.upgradeStationSound = this.sound.add('upgradeStation', {
+      loop: false,
+      volume: 0.5,
+    });
     this.FgSceneMusic = this.sound.add('TutorialSceneMusic', {
       loop: true,
       volume: 0.1,
@@ -231,7 +241,14 @@ export default class FgScene extends Phaser.Scene {
 
     this.sceneEnd = new Collision(this, 1836, 1328, 'blank').setSize(10, 110);
 
-    this.enemy = new Enemy(this, 1728, 1280, 'meleeRobot', 'robot')
+    this.enemy = new Enemy(
+      this,
+      1728,
+      1280,
+      'meleeRobot',
+      'robot',
+      this.robotPunch
+    )
       .setScale(0.6)
       .setSize(38, 35)
       .setOffset(5);
@@ -285,7 +302,6 @@ export default class FgScene extends Phaser.Scene {
 
     // Collision logic
     this.physics.add.collider(this.player, this.worldCollision);
-    this.physics.add.collider(this.enemiesGroup, this.enemiesGroup);
     this.physics.add.overlap(this.player, this.sceneEnd, () => {
       if (this.allowUpgrade && !this.sceneOver) {
         this.sceneOver = true;
@@ -395,9 +411,10 @@ export default class FgScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
       if (this.allowUpgrade) {
-        this.upgradeStation.playAnim();
         if (!this.upgradeOpened) {
           this.upgradeOpened = true;
+          this.upgradeStationSound.play();
+          this.upgradeStation.playAnim();
           this.time.delayedCall(4000, () => {
             this.openUpgrade();
           });
@@ -430,9 +447,9 @@ export default class FgScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       // TODO: Remove this
-      hp: Phaser.Input.Keyboard.KeyCodes.H,
-      speed: Phaser.Input.Keyboard.KeyCodes.I,
-      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
+      // hp: Phaser.Input.Keyboard.KeyCodes.H,
+      // speed: Phaser.Input.Keyboard.KeyCodes.I,
+      // upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
 
     // Event emitters
@@ -569,7 +586,8 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If player within 51 range, play tutorial scene.
-    if (this.tutorialHelper(100)) {
+    if (this.tutorialHelper(100) && !this.macDead) {
+      this.macDead = true;
       this.dialogueInProgress = true;
       // stop animations
       this.player.play(
@@ -584,30 +602,30 @@ export default class FgScene extends Phaser.Scene {
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
 
-      if (this.cursors.upgrade.isDown) {
-        // TODO: Remove this for production
-        this.openUpgrade();
-      }
-      if (this.cursors.hp.isDown) {
-        // Press h button to see stats.
-        // TODO: Remove this for production
-        console.log(
-          `Current health: ${this.player.health}/${this.player.maxHealth}`
-        );
-        console.log(`Current move speed: ${this.player.speed}`);
-        console.log(`Current armor: ${this.player.armor}`);
-        console.log(`Current regen: ${this.player.regen}`);
-        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
-        console.log(`Current damage: ${this.player.damage}`);
-        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
-        console.log(`Current player position: `, this.player.x, this.player.y);
-        console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
-        console.log(
-          `Current camera position: `,
-          this.cameras.main.scrollX,
-          this.cameras.main.scrollY
-        );
-      }
+      // if (this.cursors.upgrade.isDown) {
+      //   // TODO: Remove this for production
+      //   this.openUpgrade();
+      // }
+      // if (this.cursors.hp.isDown) {
+      //   // Press h button to see stats.
+      //   // TODO: Remove this for production
+      //   console.log(
+      //     `Current health: ${this.player.health}/${this.player.maxHealth}`
+      //   );
+      //   console.log(`Current move speed: ${this.player.speed}`);
+      //   console.log(`Current armor: ${this.player.armor}`);
+      //   console.log(`Current regen: ${this.player.regen}`);
+      //   console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      //   console.log(`Current damage: ${this.player.damage}`);
+      //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      //   console.log(`Current player position: `, this.player.x, this.player.y);
+      //   console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+      //   console.log(
+      //     `Current camera position: `,
+      //     this.cameras.main.scrollX,
+      //     this.cameras.main.scrollY
+      //   );
+      // }
     }
   }
 }

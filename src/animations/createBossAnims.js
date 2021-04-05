@@ -12,10 +12,9 @@ export default function () {
   this.anims.create({
     key: 'unarmed',
     frames: this.anims.generateFrameNumbers('bossattack', {
-      start: 5,
+      start: 1,
       end: 5,
     }),
-    repeat: -1,
   });
 
   this.anims.create({

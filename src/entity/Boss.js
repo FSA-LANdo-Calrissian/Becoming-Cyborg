@@ -36,13 +36,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         : 5000;
   }
 
-  startFight() {
-    this.play('unarmed');
-    this.setVisible(false);
-    this.setActive(false);
-    this.body.enable = false;
-  }
-
   // Left hand skill
   leftHandSmash() {
     const target = this.scene.add.sprite(925, 700, 'target').setScale(0.3);
@@ -62,6 +55,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
             this.resetPosition();
           });
         });
+      } else {
+        this.resetPosition();
       }
     });
   }
@@ -85,6 +80,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
             this.resetPosition();
           });
         });
+      } else {
+        this.resetPosition();
       }
     });
   }
@@ -138,6 +135,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       } else {
         this.tracking = false;
         this.clearTint();
+        this.resetPosition();
       }
     });
   }
@@ -168,6 +166,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     if (this.health <= 0) {
       this.health = 0;
+      if (this.target) {
+        this.target.destroy();
+      }
       this.on('animationcomplete-death', () => {
         this.setActive(false);
         this.setVisible(false);

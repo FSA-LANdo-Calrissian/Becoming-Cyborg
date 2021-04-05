@@ -367,8 +367,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     ) {
       console.log('aggro');
       if (
+
         Math.abs(Math.round(player.x) - Math.round(this.x)) <= 5 &&
         Math.abs(Math.round(player.y) - Math.round(this.y)) > 5
+
       ) {
         this.body.velocity.x = 0;
         if (Math.round(player.y) > Math.round(this.y)) {
@@ -381,8 +383,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           return;
         }
       } else if (
+
         Math.abs(Math.round(player.y) - Math.round(this.y)) <= 5 &&
         Math.abs(Math.round(player.x) - Math.round(this.x)) > 5
+
       ) {
         this.body.velocity.y = 0;
         if (Math.round(player.x) > Math.round(this.x)) {

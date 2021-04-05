@@ -228,13 +228,21 @@ export default class RobotCityScene extends Phaser.Scene {
     this.gun = this.sound.add('gun', { loop: false, volume: 0.03 });
     this.knife = this.sound.add('knife', { loop: false, volume: 0.2 });
     this.punch = this.sound.add('punch', { loop: false, volume: 1.5 });
-    this.RobotCityMusic = this.sound.add('RobotCityMusic', {
+    this.robotPunch = this.sound.add('robotPunch', {
+      loop: false,
+      volume: 0.3,
+    });
+    this.upgradeStationSound = this.sound.add('upgradeStation', {
+      loop: false,
+      volume: 0.5,
+    });
+    this.RobotCitySceneMusic = this.sound.add('RobotCityMusic', {
       loop: true,
       volume: 0.06,
     });
 
     // Start playing scene music
-    this.RobotCityMusic.play();
+    this.RobotCitySceneMusic.play();
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 1384, 1384, 'upgradeStation')
@@ -369,7 +377,7 @@ export default class RobotCityScene extends Phaser.Scene {
         this.sceneOver = true;
         this.cameras.main.fadeOut(1000);
         this.time.delayedCall(1000, () => {
-          this.RobotCityMusic.stop();
+          this.RobotCitySceneMusic.stop();
           this.scene.stop('HUDScene');
           this.scene.transition({
             target: 'BossScene',
@@ -437,7 +445,13 @@ export default class RobotCityScene extends Phaser.Scene {
           if (!quests[npc.name].isStarted) {
             playDialogue.call(this, npc, npc.name);
 
-            this[npc.name] = new Quest(this, npc.name, npc, this.bite);
+            this[npc.name] = new Quest(
+              this,
+              npc.name,
+              npc,
+              this.bite,
+              this.robotPunch
+            );
             this.events.on('startQuest', () => {
               this[npc.name].startQuest();
               this.events.removeListener('startQuest');
@@ -461,9 +475,10 @@ export default class RobotCityScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
-      this.upgradeStation.playAnim();
       if (!this.upgradeOpened) {
         this.upgradeOpened = true;
+        this.upgradeStationSound.play();
+        this.upgradeStation.playAnim();
         this.time.delayedCall(4000, () => {
           this.openUpgrade();
         });
@@ -494,9 +509,9 @@ export default class RobotCityScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       // TODO: Remove this
-      hp: Phaser.Input.Keyboard.KeyCodes.H,
+      // hp: Phaser.Input.Keyboard.KeyCodes.H,
       speed: Phaser.Input.Keyboard.KeyCodes.I,
-      upgrade: Phaser.Input.Keyboard.KeyCodes.U,
+      // upgrade: Phaser.Input.Keyboard.KeyCodes.U,
     });
 
     // Event emitters
@@ -623,30 +638,30 @@ export default class RobotCityScene extends Phaser.Scene {
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
 
-      if (this.cursors.upgrade.isDown) {
-        // TODO: Remove this for production
-        this.openUpgrade();
-      }
-      if (this.cursors.hp.isDown) {
-        // Press h button to see stats.
-        // TODO: Remove this for production
-        console.log(
-          `Current health: ${this.player.health}/${this.player.maxHealth}`
-        );
-        console.log(`Current move speed: ${this.player.speed}`);
-        console.log(`Current armor: ${this.player.armor}`);
-        console.log(`Current regen: ${this.player.regen}`);
-        console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
-        console.log(`Current damage: ${this.player.damage}`);
-        console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
-        console.log(`Current player position: `, this.player.x, this.player.y);
-        console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
-        console.log(
-          `Current camera position: `,
-          this.cameras.main.scrollX,
-          this.cameras.main.scrollY
-        );
-      }
+      // if (this.cursors.upgrade.isDown) {
+      //   // TODO: Remove this for production
+      //   this.openUpgrade();
+      // }
+      // if (this.cursors.hp.isDown) {
+      //   // Press h button to see stats.
+      //   // TODO: Remove this for production
+      //   console.log(
+      //     `Current health: ${this.player.health}/${this.player.maxHealth}`
+      //   );
+      //   console.log(`Current move speed: ${this.player.speed}`);
+      //   console.log(`Current armor: ${this.player.armor}`);
+      //   console.log(`Current regen: ${this.player.regen}`);
+      //   console.log(`Current weapon: ${this.player.currentLeftWeapon}`);
+      //   console.log(`Current damage: ${this.player.damage}`);
+      //   console.log(`Current attackSpeed: ${this.player.attackSpeed}`);
+      //   console.log(`Current player position: `, this.player.x, this.player.y);
+      //   console.log(`Current enemy position: `, this.enemy.x, this.enemy.y);
+      //   console.log(
+      //     `Current camera position: `,
+      //     this.cameras.main.scrollX,
+      //     this.cameras.main.scrollY
+      //   );
+      // }
     }
   }
 }
