@@ -72,7 +72,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene.itemsGroup.add(drop);
       } else {
         if (drop.texture.key !== itemKey) {
-          drop.texture.key = itemKey;
+          drop.setTexture(itemKey);
         }
       }
       // Reset base config for items in case grabbed from group
@@ -273,7 +273,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         attackRange &&
       this.needToSeparate === false
     ) {
-      console.log('attacking');
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
       this.isMoving = false;
@@ -365,12 +364,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         aggroRange &&
       this.needToSeparate === false
     ) {
-      console.log('aggro');
       if (
-
         Math.abs(Math.round(player.x) - Math.round(this.x)) <= 5 &&
         Math.abs(Math.round(player.y) - Math.round(this.y)) > 5
-
       ) {
         this.body.velocity.x = 0;
         if (Math.round(player.y) > Math.round(this.y)) {
@@ -383,10 +379,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           return;
         }
       } else if (
-
         Math.abs(Math.round(player.y) - Math.round(this.y)) <= 5 &&
         Math.abs(Math.round(player.x) - Math.round(this.x)) > 5
-
       ) {
         this.body.velocity.y = 0;
         if (Math.round(player.x) > Math.round(this.x)) {

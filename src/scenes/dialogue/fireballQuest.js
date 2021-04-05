@@ -13,7 +13,7 @@ export default class Dialogue extends Phaser.Scene {
       'Hey, uhhhh...',
       "I'm a little busy right now",
       'You should go talk to that lady over at that other red tent, I think she needed help with something.',
-      'But come back and see men when you are done, I may need your help with something.',
+      'But come back and see me when you are done, I may need your help with something.',
     ];
 
     const nameTextLines = Array(textLines.length).fill('Alpha');
