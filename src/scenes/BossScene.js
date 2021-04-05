@@ -122,6 +122,9 @@ export default class BossScene extends Phaser.Scene {
       this.player.updateStats();
     }
 
+    this.player.currentLeftWeapon = 'fireBall';
+    this.player.updateStats();
+
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)
       .setSize(300, 290)
@@ -158,16 +161,16 @@ export default class BossScene extends Phaser.Scene {
     // Add collisions
     this.physics.add.collider(this.player, this.worldGround);
     this.physics.add.collider(this.player, this.world);
-    this.physics.add.collider(this.enemiesGroup, this.worldGround);
-    this.physics.add.collider(this.enemiesGroup, this.world);
+    this.physics.add.collider(this.enemiesGroup, this.shockwaveCollision);
+    // this.physics.add.collider(this.enemiesGroup, this.world);
 
     this.physics.add.overlap(
       this.shockwavesGroup,
       this.shockwaveCollision,
       (proj, world) => {
-        // if (world.collides) {
-        proj.destroy();
-        // }
+        proj.setVisible(false);
+        proj.setActive(false);
+        proj.body.enable = false;
       },
       (proj, world) => world.canCollide
     );
@@ -185,7 +188,7 @@ export default class BossScene extends Phaser.Scene {
       this.player,
       this.shockwavesGroup,
       (player, proj) => {
-        proj.destroy();
+        proj.lifespan = 0;
         player.takeDamage(proj.damage, this.gg);
       }
     );
@@ -210,7 +213,7 @@ export default class BossScene extends Phaser.Scene {
       (proj, enemy) => {
         proj.lifespan -= 100;
         enemy.takeDamage(
-          proj.damage,
+          this.player.damage,
           this.leftHand.health,
           this.rightHand.health,
           this.boss.health
@@ -241,8 +244,15 @@ export default class BossScene extends Phaser.Scene {
       item.lifespan = 0;
     });
 
+    // Set world bounds
+    this.boundaryX = 1600;
+    this.boundaryY = 1600;
+    this.physics.world.setBounds(0, 0, this.boundaryX, this.boundaryY);
+    this.player.setCollideWorldBounds();
+
     // Init camera
     this.cameras.main.startFollow(this.player).setZoom(2);
+    this.cameras.main.setBounds(0, 0, this.boundaryX, this.boundaryY);
 
     // Init cursors
     this.cursors = this.input.keyboard.addKeys({
@@ -357,6 +367,7 @@ export default class BossScene extends Phaser.Scene {
       if (this.cursors.upgrade.isDown) {
         // TODO: Remove this for production
         this.player.upgradeStats('msUp');
+        this.player.damage += 60;
       }
 
       if (this.cursors.sound.isDown) {

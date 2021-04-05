@@ -38,7 +38,7 @@ export default class firstBossCutScene extends Phaser.Scene {
       'Then die like all the other fools who come here.',
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Robot King dude');
+    const nameTextLines = Array(textLines.length).fill('Robot King');
 
     dialogueHelper.call(this, textLines, nameTextLines);
     this.firstDialoguePlayed = true;
@@ -50,7 +50,7 @@ export default class firstBossCutScene extends Phaser.Scene {
       "It looks like I can't underestimate you",
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Robot King dude');
+    const nameTextLines = Array(textLines.length).fill('Robot King');
 
     dialogueHelper.call(this, textLines, nameTextLines);
     this.secondDialoguePlayed = true;
@@ -63,7 +63,7 @@ export default class firstBossCutScene extends Phaser.Scene {
       "But now here's my final form",
     ];
 
-    const nameTextLines = Array(textLines.length).fill('Robot King dude');
+    const nameTextLines = Array(textLines.length).fill('Robot King');
 
     dialogueHelper.call(this, textLines, nameTextLines);
     this.thirdDialoguePlayed = true;
@@ -73,6 +73,7 @@ export default class firstBossCutScene extends Phaser.Scene {
     if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
       this.scene.get('BossScene').events.emit('startFight');
     } else if (this.thirdDialoguePlayed) {
+      console.log(`Emitting boss start`);
       this.scene.get('BossScene').events.emit('startBoss');
     }
     this.endCutScene();
@@ -84,11 +85,13 @@ export default class firstBossCutScene extends Phaser.Scene {
   }
 
   create({ npc, player }) {
+    this.handsKilled = this.scene.get('BossScene').handsKilled;
+    console.log(`hands Killed`, this.handsKilled);
     this.boss = npc;
     this.player = player;
-    if (!this.firstDialoguePlayed) {
+    if (this.handsKilled === 0) {
       this.firstDialogue();
-    } else if (this.firstDialoguePlayed && !this.secondDialoguePlayed) {
+    } else if (this.handsKilled === 1) {
       this.secondDialogue();
     } else {
       this.thirdDialogue();

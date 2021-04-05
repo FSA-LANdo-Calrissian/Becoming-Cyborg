@@ -95,10 +95,20 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   // Helper function for smash skills
   releaseShockwaves() {
     for (let i = 0; i < 360; i++) {
-      const proj = new Projectile(this.scene, this.x, this.y, 'shockwave');
+      let proj;
+      proj = this.scene.shockwavesGroup.getFirstDead(false);
+      if (!proj) {
+        console.log(`Creating new proj`);
+        proj = new Projectile(this.scene, this.x, this.y, 'shockwave');
+      }
+      proj.reset();
+      proj.lifespan = 10000;
       proj.play('shockwave');
       proj.damage = 15;
-      proj.lifespan = 10000;
+      console.log(
+        `Projectile made with a lifespan of ${proj.lifespan}. Firing now...`,
+        proj
+      );
       proj.shoot(this.x, this.y, i);
       this.scene.shockwavesGroup.add(proj);
     }
@@ -190,7 +200,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.time.delayedCall(3000, () => {
         this.fightStarted = true;
       });
-    } else if (this.fist === 'boss') {
+    } else if (this.fist === 'body') {
+      console.log(`Activating boss...`);
       this.bossAttacks = true;
     }
   }
@@ -289,6 +300,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     if (this.bossAttacks) {
       if (time > this.nextAttack) {
+        console.log(`Boss activated. Preparing attack`);
         const attack = Math.floor(Math.random() * 101);
         if (attack > 80) {
           console.log(`Calling for backup`);
