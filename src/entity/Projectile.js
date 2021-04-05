@@ -23,7 +23,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
       returns null.
     */
     // When we grab a dead bullet, we need to reset it before we can shoot it.
-    this.reset();
+
     this.rotation = angle;
     this.setPosition(x, y);
     // SOH CAH TOA -> y is sin/x is cos

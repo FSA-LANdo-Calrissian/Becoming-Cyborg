@@ -105,10 +105,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       proj.lifespan = 10000;
       proj.play('shockwave');
       proj.damage = 15;
-      console.log(
-        `Projectile made with a lifespan of ${proj.lifespan}. Firing now...`,
-        proj
-      );
       proj.shoot(this.x, this.y, i);
       this.scene.shockwavesGroup.add(proj);
     }
