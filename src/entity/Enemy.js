@@ -72,7 +72,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene.itemsGroup.add(drop);
       } else {
         if (drop.texture.key !== itemKey) {
-          drop.texture.key = itemKey;
+          drop.setTexture(itemKey);
         }
       }
       // Reset base config for items in case grabbed from group

@@ -139,6 +139,13 @@ export default class FgScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.allowUpgrade = false;
     this.macDead = false;
+    const tutorialCutScene = this.scene.get('TutorialCutScene');
+    tutorialCutScene.sceneOne = false;
+    tutorialCutScene.sceneTwo = false;
+    tutorialCutScene.sceneThree = false;
+    tutorialCutScene.finalScene = false;
+    tutorialCutScene.finalPart1 = false;
+    tutorialCutScene.finalPart2 = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     this.gg = this.sound.add('gg');
 
@@ -407,6 +414,15 @@ export default class FgScene extends Phaser.Scene {
       this.enemiesGroup,
       this.playerProjectiles,
       this.damageEnemy
+    );
+
+    this.physics.add.overlap(
+      this.playerProjectiles,
+      this.worldCollision,
+      (proj, world) => {
+        proj.lifespan = 0;
+      },
+      (proj, world) => world.canCollide
     );
 
     this.physics.add.overlap(this.player, this.upgradeStation, () => {
