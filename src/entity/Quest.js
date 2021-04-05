@@ -88,7 +88,7 @@ export default class Quest {
       } else if (item === 'clearanceChip') {
         player.inventory.clearanceChip += 1;
       } else if (item === 'fireballAttachment') {
-        player.inventory.fireballAttachment += 1;
+        player.inventory.fireBallAttachment += 1;
         this.quest.isCompleted = true;
       } else if (item === 'gunAttachment') {
         player.inventory.gunAttachment += 1;

@@ -79,14 +79,11 @@ export function gunQuestSetup(bite) {
 
   this.questItem = 0;
 
-  this.scene.item = new Item(
-    this.scene,
-    686.6386666666683,
-    902.25,
-    'robotPart'
-  ).setScale(0.1);
+  this.scene.item = new Item(this.scene, 686.6386666666683, 902.25, 'robotPart')
+    .setScale(0.3)
+    .setDepth(7);
 
-  this.scene.item.lifespan = 1200000;
+  this.scene.item.lifespan = Infinity;
   this.scene.itemsGroup.add(this.scene.item);
   this.scene.item.reset();
   // Adding event emitters on death for tracking purposes

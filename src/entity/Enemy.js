@@ -187,6 +187,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   separate() {
+    console.log('separate');
     this.enemyArr = this.scene.enemiesGroup
       .getChildren()
       .filter((enemy) => !enemy.isDead);
@@ -203,8 +204,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.enemyArr[j].y
           ) <= 40
         ) {
-          console.log(this.enemyArr[i], this.enemyArr[j]);
           this.needToSeparate = true;
+          console.log('hello');
 
           if (this.enemyArr[j].x < this.enemyArr[i].x) {
             this.enemyArr[i].body.velocity.x = 35;
@@ -520,6 +521,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    console.log('update');
     const player1 = this.scene.player;
     if (!this.isDead && !this.scene.dialogueInProgress) {
       this.updateEnemyMovement(player1);
