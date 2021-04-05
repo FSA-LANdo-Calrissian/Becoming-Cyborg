@@ -29,7 +29,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       knifeAttachment: 0,
       fireBallAttachment: 0,
       gun: 1,
-      knife: 1,
+      knife: 0,
       fireBall: 1,
       clearanceChip: 0,
     };

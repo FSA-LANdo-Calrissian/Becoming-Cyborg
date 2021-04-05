@@ -252,6 +252,7 @@ export default class RobotCityScene extends Phaser.Scene {
       .setScale(0.5)
       .setSize(30, 32)
       .setOffset(10, 12);
+
     if (data.player) {
       const {
         inventory,
@@ -267,6 +268,12 @@ export default class RobotCityScene extends Phaser.Scene {
       this.player.stats = stats;
       this.player.updateStats();
     }
+    // this.player.inventory = inventory;
+    // this.player.upgrade = upgrade;
+    // this.player.health = health;
+    // this.player.currentLeftWeapon = currentLeftWeapon;
+    // this.player.stats = stats;
+    // this.player.updateStats();
 
     this.doctor = new NPC(this, 1168, 1552, 'stacy')
       .setScale(0.5)
