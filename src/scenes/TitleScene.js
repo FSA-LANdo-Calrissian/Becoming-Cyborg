@@ -9,16 +9,6 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //Preloading all game assets
-    this.load.image('terrain', 'assets/backgrounds/terrain.png');
-    this.load.image('worldTileset', 'assets/backgrounds/worldTileset.png');
-    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
-    this.load.image('fireBall', 'assets/sprites/fireBallArm.png');
-    this.load.image('gun', 'assets/sprites/gunArm.png');
-    this.load.image('knife', 'assets/sprites/knifeArm.png');
-    this.load.image('button', 'assets/sprites/button.png');
-    this.load.image('bullet', 'assets/sprites/bullet.png');
-    this.load.image('blank', 'assets/sprites/blank.png');
-
     this.load.tilemapTiledJSON(
       'tutorialMap',
       'assets/backgrounds/TutorialMap.json'
@@ -131,9 +121,15 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 191,
     });
 
-    this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
-    this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
-    this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
+    this.load.image('terrain', 'assets/backgrounds/terrain.png');
+    this.load.image('worldTileset', 'assets/backgrounds/worldTileset.png');
+    this.load.image('bigBlast', 'assets/sprites/bigBlast.png');
+    this.load.image('fireBall', 'assets/sprites/fireBallArm.png');
+    this.load.image('gun', 'assets/sprites/gunArm.png');
+    this.load.image('knife', 'assets/sprites/knifeArm.png');
+    this.load.image('button', 'assets/sprites/button.png');
+    this.load.image('bullet', 'assets/sprites/bullet.png');
+    this.load.image('blank', 'assets/sprites/blank.png');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
     this.load.image('robotPart', 'assets/items/iron.png');
@@ -152,7 +148,14 @@ export default class MainScene extends Phaser.Scene {
       'TitleSceneBackground',
       'assets/backgrounds/TitleBackground.png'
     );
+    this.load.image('ty', 'assets/backgrounds/thanks.png');
+    this.load.image('end', 'assets/backgrounds/ending.png');
+    this.load.image('target', 'assets/sprites/target.png');
+    this.load.image('laser', 'assets/sprites/laz0r.png');
 
+    this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
+    this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
+    this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
     this.load.audio('bite', 'assets/audio/bite.wav');
     this.load.audio('fireBall', 'assets/audio/fireBall.wav');
     this.load.audio('gun', 'assets/audio/gun.wav');
@@ -163,8 +166,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('scream', 'assets/audio/scream.wav');
     this.load.audio('TitleSceneMusic', 'assets/audio/TitleScene.mp3');
     this.load.audio('TutorialSceneMusic', 'assets/audio/TutorialScene.mp3');
-    this.load.image('target', 'assets/sprites/target.png');
-    this.load.image('laser', 'assets/sprites/laz0r.png');
   }
 
   create() {

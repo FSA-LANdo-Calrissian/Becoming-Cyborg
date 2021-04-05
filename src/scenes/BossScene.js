@@ -326,6 +326,9 @@ export default class BossScene extends Phaser.Scene {
         this.leftHand.attackCD = 4000;
         this.leftHand.resetTime = 1500;
         this.leftHand.loadAttack = 500;
+      } else if (hand === 'body') {
+        playDialogue.call(this, this.boss, 'firstBossCutScene', { end: true });
+        return;
       }
       if (this.handsKilled === 2) {
         playDialogue.call(this, this.boss, 'firstBossCutScene');

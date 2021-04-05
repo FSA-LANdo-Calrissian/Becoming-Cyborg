@@ -21,7 +21,6 @@ import fireballQuest from './scenes/dialogue/fireballQuest';
 import gunQuest from './scenes/dialogue/gunQuest';
 import firstBossCutScene from './scenes/cutscenes/firstBossCutScene';
 
-
 export default class Game extends Phaser.Game {
   constructor() {
     super(config);
