@@ -137,6 +137,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         });
       } else {
         this.tracking = false;
+        this.clearTint();
       }
     });
   }
@@ -290,10 +291,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     if (this.bossAttacks) {
       if (time > this.nextAttack) {
         const attack = Math.floor(Math.random() * 101);
-        if (attack > 95) {
-          if (this.scene.enemiesGroup.getChildren().length <= 5) {
-            this.callBackup();
-          }
+        if (attack > 85) {
+          this.callBackup();
         } else {
           this.spawnPillars();
         }
