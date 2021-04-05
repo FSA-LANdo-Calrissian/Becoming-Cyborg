@@ -48,7 +48,7 @@ const quests = {
   gunQuest: {
     key: 'gunQuest',
     title: "I'm gun-a need a hand",
-    reward: ['gunAttachment'],
+    reward: ['gunAttachment', 'iron', 'oil', 'potion'],
     description: 'Idk. Just testing',
     objectiveReqs: {
       itemFetched: false,
@@ -81,7 +81,7 @@ const quests = {
   fireballQuest: {
     key: 'fireballQuest',
     title: 'Where-Wolf',
-    reward: ['fireballAttachment'],
+    reward: ['fireballAttachment', 'iron', 'potion', 'oil'],
     description: 'Idk. Just testing',
     objectiveReqs: {
       enemiesCleared: false,

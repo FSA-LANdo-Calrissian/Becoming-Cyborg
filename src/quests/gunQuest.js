@@ -85,7 +85,7 @@ export function gunQuestSetup(bite) {
 
   this.scene.item.lifespan = Infinity;
   this.scene.itemsGroup.add(this.scene.item);
-  this.scene.item.reset();
+
   // Adding event emitters on death for tracking purposes
 
   this.scene.physics.add.overlap(
