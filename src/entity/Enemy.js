@@ -273,6 +273,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         attackRange &&
       this.needToSeparate === false
     ) {
+      console.log('attacking');
       this.body.velocity.x = 0;
       this.body.velocity.y = 0;
       this.isMoving = false;
@@ -359,16 +360,15 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           return;
         }
       }
-    }
-
-    if (
+    } else if (
       Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y) <=
         aggroRange &&
       this.needToSeparate === false
     ) {
+      console.log('aggro');
       if (
-        Math.abs(Math.round(player.x) - Math.round(this.x)) <= 1.5 &&
-        Math.abs(Math.round(player.y) - Math.round(this.y)) > 1.5
+        Math.abs(Math.round(player.x) - Math.round(this.x)) <= 5 &&
+        Math.abs(Math.round(player.y) - Math.round(this.y)) > 5
       ) {
         this.body.velocity.x = 0;
         if (Math.round(player.y) > Math.round(this.y)) {
@@ -381,8 +381,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
           return;
         }
       } else if (
-        Math.abs(Math.round(player.y) - Math.round(this.y)) <= 1.5 &&
-        Math.abs(Math.round(player.x) - Math.round(this.x)) > 1.5
+        Math.abs(Math.round(player.y) - Math.round(this.y)) <= 5 &&
+        Math.abs(Math.round(player.x) - Math.round(this.x)) > 5
       ) {
         this.body.velocity.y = 0;
         if (Math.round(player.x) > Math.round(this.x)) {
