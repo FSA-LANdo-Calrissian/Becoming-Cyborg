@@ -25,8 +25,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.preppingAttack = false;
     this.resetting = false;
     this.loadAttack = 1000;
+    this.firingLaser = false;
+    this.turnRate = 12 / 1000;
     this.resetTime = 3000;
     this.tracking = false;
+    this.bossAttacks = false;
     this.health =
       spriteKey === 'bossfistleft' || spriteKey === 'bossfistright'
         ? 2500
@@ -50,16 +53,18 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.angle = angle * Phaser.Math.RAD_TO_DEG;
 
     this.scene.time.delayedCall(this.loadAttack, () => {
-      this.scene.physics.moveTo(this, 925, 700, 700, 1000);
-      this.scene.time.delayedCall(1000, () => {
-        this.body.stop();
-        target.destroy();
-        this.scene.cameras.main.shake(300, 0.006);
-        this.releaseShockwaves();
-        this.scene.time.delayedCall(this.resetTime, () => {
-          this.resetPosition();
+      if (!this.scene.dialogueInProgress) {
+        this.scene.physics.moveTo(this, 925, 700, 700, 1000);
+        this.scene.time.delayedCall(1000, () => {
+          target.destroy();
+          this.body.stop();
+          this.scene.cameras.main.shake(300, 0.006);
+          this.releaseShockwaves();
+          this.scene.time.delayedCall(this.resetTime, () => {
+            this.resetPosition();
+          });
         });
-      });
+      }
     });
   }
 
@@ -72,16 +77,18 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.angle = angle * Phaser.Math.RAD_TO_DEG;
 
     this.scene.time.delayedCall(this.loadAttack, () => {
-      this.scene.physics.moveTo(this, 500, 700, 700, 1000);
-      this.scene.time.delayedCall(1000, () => {
-        this.body.stop();
-        this.scene.cameras.main.shake(300, 0.006);
-        target.destroy();
-        this.releaseShockwaves();
-        this.scene.time.delayedCall(this.resetTime, () => {
-          this.resetPosition();
+      if (!this.scene.dialogueInProgress) {
+        this.scene.physics.moveTo(this, 500, 700, 700, 1000);
+        this.scene.time.delayedCall(1000, () => {
+          this.body.stop();
+          target.destroy();
+          this.scene.cameras.main.shake(300, 0.006);
+          this.releaseShockwaves();
+          this.scene.time.delayedCall(this.resetTime, () => {
+            this.resetPosition();
+          });
         });
-      });
+      }
     });
   }
 
@@ -115,17 +122,19 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.tracking = true;
     this.setTint(0xff0000);
     this.scene.time.delayedCall(this.loadAttack * 3, () => {
-      this.tracking = false;
-      const targetX = this.player.x;
-      const targetY = this.player.y;
-      this.scene.physics.moveTo(this, targetX, targetY, 5500, 700);
-      this.scene.time.delayedCall(925, () => {
-        this.body.stop();
-        this.clearTint();
-        this.scene.time.delayedCall(this.resetTime, () => {
-          this.resetPosition();
+      if (!this.scene.dialogueInProgress) {
+        this.tracking = false;
+        const targetX = this.player.x;
+        const targetY = this.player.y;
+        this.scene.physics.moveTo(this, targetX, targetY, 5500, 700);
+        this.scene.time.delayedCall(925, () => {
+          this.body.stop();
+          this.clearTint();
+          this.scene.time.delayedCall(this.resetTime, () => {
+            this.resetPosition();
+          });
         });
-      });
+      }
     });
   }
 
@@ -175,15 +184,18 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.scene.time.delayedCall(1000, () => {
         this.fightStarted = true;
       });
-    } else {
+    } else if (this.fist === 'right') {
       this.scene.time.delayedCall(3000, () => {
         this.fightStarted = true;
       });
+    } else if (this.fist === 'boss') {
+      this.bossAttacks = true;
     }
   }
 
   // Main body skills
   callBackup() {
+    console.log(`Reinforcements called`);
     for (let i = 0; i <= 5; i++) {
       const maxVal = 250;
       const minVal = -250;
@@ -202,6 +214,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   spawnPillars() {
+    console.log(`Fire!!!`);
     for (let i = 0; i <= 5; i++) {
       const maxVal = 150;
       const minVal = -150;
@@ -216,12 +229,35 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       )
         .setScale(0.2)
         .setSize(60, 180);
+
       pillar.health = Infinity;
       pillar.isDead = true;
       this.scene.time.delayedCall(5000, () => {
         this.scene.enemiesGroup.add(pillar);
         pillar.play('firePillar', true);
+        this.scene.time.delayedCall(20000, () => {
+          pillar.destroy();
+        });
       });
+    }
+  }
+
+  // laser() {
+  //   this.firingLaser = true;
+  //   this.laser = this.scene.add
+  //     .sprite(this.x - 10, this.y + 50, 'laser')
+  //     .setScale(3, 1)
+  //     .setOrigin(0.05, 0.5);
+  //   this.scene.physics.world.enable(this.laser);
+  //   this.laser.angle = 90;
+  // }
+
+  updateLaser(i) {
+    // If player to left of boss
+    if (this.scene.player.x < this.x) {
+      this.laser.angle += i;
+    } else {
+      this.laser.angle -= i;
     }
   }
 
@@ -240,11 +276,35 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       if (this.target) this.target.destroy();
     }
 
+    // if (this.firingLaser) {
+    //   const addedAngle = delta * this.turnRate;
+    //   this.updateLaser(addedAngle);
+    // }
+
+    if (this.scene.dialogueInProgress && this.target) {
+      this.target.destroy();
+    }
+
+    if (this.bossAttacks) {
+      if (time > this.nextAttack) {
+        const attack = Math.floor(Math.random() * 101);
+        if (attack > 80) {
+          console.log(`Calling for backup`);
+          this.callBackup();
+        } else {
+          console.log(`Making fire!`);
+          this.spawnPillars();
+        }
+        this.nextAttack = time + this.attackCD;
+      }
+    }
+
     if (
       this.fightStarted &&
       !this.isDead &&
       !this.resetting &&
-      !this.preppingAttack
+      !this.preppingAttack &&
+      !this.scene.dialogueInProgress
     ) {
       if (time > this.nextAttack) {
         const attack = Math.floor(Math.random() * 101);

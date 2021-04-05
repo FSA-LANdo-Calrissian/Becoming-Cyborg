@@ -132,7 +132,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('bossTrack2', 'assets/audio/bossTrack2.mp3');
     this.load.image('potion', 'assets/items/potion.png');
     this.load.image('iron', 'assets/items/iron.png');
-
     this.load.image('robotPart', 'assets/items/iron.png');
     this.load.image('oil', 'assets/items/oil.png');
     this.load.image('textBox', 'assets/sprites/PngItem_5053532.png');
@@ -146,6 +145,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('weaponHUD', 'assets/backgrounds/weaponHUD.png');
     this.load.image('none', 'assets/sprites/robotArmClosed.png');
     this.load.image('target', 'assets/sprites/target.png');
+    this.load.image('laser', 'assets/sprites/laz0r.png');
   }
 
   create() {
