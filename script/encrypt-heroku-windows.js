@@ -139,7 +139,7 @@ const main = async () => {
   const v3URL = fullName.split('/').join('%2f');
   console.log(`FullName: ${fullName}\nv3URL: ${v3URL}`);
   // const travisURLv3 = `https://api.travis-ci.com/repos/${v3URL}/key_pair/generated`
-  const travisURLv1 = `https://api.travis-ci.com/repos/FSA-LANdo-Calrissian/I-Am-Robot/key`;
+  const travisURLv1 = `https://api.travis-ci.com/repos/FSA-LANdo-Calrissian/Becoming-Cyborg/key`;
   const travisResponse = await axios.get(travisURLv1, {
     headers: {
       Authorization: 'token ' + travisToken,

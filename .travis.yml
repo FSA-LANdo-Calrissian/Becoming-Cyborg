@@ -19,7 +19,7 @@ deploy: # see README for details on these keys
   skip_cleanup: true
   provider: heroku
   # app should be your heroku app name; see README
-  app: i-am-robot
+  app: becoming-cyborg
   on:
     branch: main
   # the secure key indicates an encrypted value; see README

@@ -4,7 +4,7 @@ A survival/RPG game based on a small robot in a post-apocalyptic world.
 
 # App link:
 
-## [Play me!](https://i-am-robot.herokuapp.com/)
+## [Play me!](https://becoming-cyborg.herokuapp.com/)
 
 # Story
 
