@@ -16,6 +16,7 @@ export default class BossScene extends Phaser.Scene {
     this.dialogueInProgress = false;
     this.fightStarted = false;
     this.handsKilled = 0;
+
     this.key = 'BossScene';
 
     this.loadBullet = this.loadBullet.bind(this);

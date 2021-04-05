@@ -23,8 +23,8 @@ export default class RobotCityScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.initCutScene = false;
     this.lairAccess = false;
-    this.count = 0;
-    this.enemysArr = [];
+    // this.count = 0;
+
     this.enemyCount = 0;
     this.key = 'RobotCityScene';
 
