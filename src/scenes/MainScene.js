@@ -8,9 +8,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-
     this.scene.launch('FgScene');
     this.scene.launch('HUDScene', { mainScene: 'FgScene' });
-
   }
 }

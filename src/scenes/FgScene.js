@@ -29,6 +29,7 @@ export default class FgScene extends Phaser.Scene {
     this.upgradeOpened = false;
     this.allowUpgrade = false;
     this.sceneOver = false;
+
     this.key = 'FgScene';
 
     // Bindings

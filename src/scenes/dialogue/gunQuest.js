@@ -20,6 +20,7 @@ export default class Dialogue extends Phaser.Scene {
       "You find me that part I lost and I'll give you one of my older parts.",
       'I dropped it in Robot City, in the cemetery',
       'Be careful though, there are some Bots that patrol the area.',
+      'I would stay on the the outskirts of the city and avoid all of the Bots if possible.',
       "I don't care what you have to do to get it",
       'Just make sure you dont get caught, OK?',
     ];
