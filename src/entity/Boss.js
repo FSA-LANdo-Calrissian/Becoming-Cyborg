@@ -134,6 +134,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
             this.resetPosition();
           });
         });
+      } else {
+        this.tracking = false;
       }
     });
   }
