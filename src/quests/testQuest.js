@@ -10,15 +10,15 @@ export function testFunc(bite) {
 
   // Spawning the enemies
   this.scene.wolf1 = new Enemy(this.scene, 1152, 1039, 'wolf', 'animal', bite)
-    .setScale(0.4)
+    .setScale(0.3)
     .setSize(45, 45);
 
   this.scene.wolf2 = new Enemy(this.scene, 1168, 927, 'wolf', 'animal', bite)
-    .setScale(0.4)
+    .setScale(0.3)
     .setSize(45, 45);
 
   this.scene.wolf3 = new Enemy(this.scene, 1337, 1049, 'wolf', 'animal', bite)
-    .setScale(0.4)
+    .setScale(0.3)
     .setSize(45, 45);
 
   // Adding to group
