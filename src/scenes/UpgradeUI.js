@@ -335,7 +335,7 @@ export default class UpgradeUI extends Phaser.Scene {
     topRightUp.setName('topRightUp');
     topRightUp.setInteractive({ useHandCursor: true });
     topRightDown.setInteractive({ useHandCursor: true });
-    this.topRightText = this.add.text(585, 235, `UpgradeTextHere`);
+    this.topRightText = this.add.text(555, 235, `Not yet implemented`);
 
     // For move speed upgrades
     const msUp = this.add.sprite(627, 315, 'arrow').setScale(0.8);

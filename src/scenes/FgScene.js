@@ -138,6 +138,7 @@ export default class FgScene extends Phaser.Scene {
     this.initTutorial = false;
     this.upgradeOpened = false;
     this.allowUpgrade = false;
+    this.macDead = false;
     this.cameras.main.fadeIn(2000, 0, 0, 0);
     this.gg = this.sound.add('gg');
 
@@ -585,7 +586,8 @@ export default class FgScene extends Phaser.Scene {
     }
 
     // If player within 51 range, play tutorial scene.
-    if (this.tutorialHelper(100)) {
+    if (this.tutorialHelper(100) && !this.macDead) {
+      this.macDead = true;
       this.dialogueInProgress = true;
       // stop animations
       this.player.play(
