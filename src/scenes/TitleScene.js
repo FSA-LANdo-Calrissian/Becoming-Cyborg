@@ -152,6 +152,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('end', 'assets/backgrounds/ending.png');
     this.load.image('target', 'assets/sprites/target.png');
     this.load.image('laser', 'assets/sprites/laz0r.png');
+    this.load.image('title', 'assets/backgrounds/BecomingCyborg.png');
 
     this.load.audio('gg', 'assets/audio/SadTrombone.mp3');
     this.load.audio('bossTrack', 'assets/audio/bossTrack.mp3');
@@ -183,32 +184,55 @@ export default class MainScene extends Phaser.Scene {
       .image(300, 300, 'TitleSceneBackground')
       .setDisplaySize(1067, 600);
 
-    this.title = this.add.text(325, 100, 'Becoming Cyborg', {
-      fill: '#EFFD5F',
-    });
+    this.title = this.add
+      .image(400, 100, 'title')
+      .setOrigin(0.5)
+      .setScale(0.85);
 
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
-      .text(350, 200, 'Play Intro', { fill: '#0f0' })
+      .text(400, 230, 'Play Intro', {
+        fill: '#000000',
+        strokeThickness: 6,
+        stroke: '#19FBFB',
+      })
+      .setFontSize(30)
+      .setOrigin(0.5)
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startNewGame());
 
     // Load game button. This just skips the pre-game scene for now.
     this.loadGame = this.add
-      .text(350, 300, 'Skip Intro', { fill: '#0f0' })
+      .text(400, 350, 'Skip Intro', {
+        fill: '#000000',
+        strokeThickness: 6,
+        stroke: '#19FBFB',
+      })
+      .setFontSize(30)
+      .setOrigin(0.5)
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startLoadGame());
 
-    this.controls = this.add.text(350, 350, 'Controls: ', { fill: '#f00' });
-    this.wasd = this.add.text(338, 375, 'WASD to move', { fill: '#f00' });
+    this.controls = this.add.text(350, 500, 'Controls: ', {
+      fill: '#19FBFB',
+      strokeThickness: 6,
+      stroke: '#000000',
+    });
+    this.wasd = this.add.text(338, 525, 'WASD to move', {
+      fill: '#19FBFB',
+      strokeThickness: 6,
+      stroke: '#000000',
+    });
     this.spacebar = this.add.text(
       220,
-      400,
+      550,
       'Spacebar to interact/advance dialogue',
-      { fill: '#f00' }
+      { fill: '#19FBFB', strokeThickness: 6, stroke: '#000000' }
     );
-    this.rightClick = this.add.text(300, 425, 'Left click to attack', {
-      fill: '#f00',
+    this.rightClick = this.add.text(300, 575, 'Left click to attack', {
+      fill: '#19FBFB',
+      strokeThickness: 6,
+      stroke: '#000000',
     });
   }
 
