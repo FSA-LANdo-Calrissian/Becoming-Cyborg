@@ -225,7 +225,9 @@ export default class FgScene extends Phaser.Scene {
     });
 
     // Start playing scene music
-    this.FgSceneMusic.play();
+    this.time.delayedCall(1000, () => {
+      this.FgSceneMusic.play();
+    });
 
     // Spawning the entities
     this.upgradeStation = new UpgradeStation(this, 456, 936, 'upgradeStation')

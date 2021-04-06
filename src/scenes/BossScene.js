@@ -61,6 +61,20 @@ export default class BossScene extends Phaser.Scene {
     bullet.shoot(x, y, angle);
   }
 
+  openInventory() {
+    this.dialogueInProgress = true;
+    this.scene.transition({
+      target: 'Inventory',
+      sleep: true,
+      duration: 10,
+      data: {
+        player: this.player,
+        camera: this.camera,
+        scene: 'BossScene',
+      },
+    });
+  }
+
   create({ player }) {
     // Saving initial player to pass to scene restart on game over
     this.restartData = player;
@@ -390,6 +404,10 @@ export default class BossScene extends Phaser.Scene {
 
     if (!this.dialogueInProgress) {
       this.player.update(this.cursors, time);
+
+      if (this.cursors.inventory.isDown) {
+        this.openInventory();
+      }
 
       // if (this.cursors.upgrade.isDown) {
       //   // TODO: Remove this for production
