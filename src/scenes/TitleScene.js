@@ -183,15 +183,19 @@ export default class MainScene extends Phaser.Scene {
       .image(300, 300, 'TitleSceneBackground')
       .setDisplaySize(1067, 600);
 
+    this.title = this.add.text(325, 100, 'Becoming Cyborg', {
+      fill: '#EFFD5F',
+    });
+
     // New game button - this is to see the pre-game scene
     this.newGame = this.add
-      .text(350, 200, 'New Game', { fill: '#0f0' })
+      .text(350, 200, 'Play Intro', { fill: '#0f0' })
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startNewGame());
 
     // Load game button. This just skips the pre-game scene for now.
     this.loadGame = this.add
-      .text(350, 300, 'Load Game', { fill: '#0f0' })
+      .text(350, 300, 'Skip Intro', { fill: '#0f0' })
       .setInteractive({ useHandCursor: true })
       .on('pointerup', () => this.startLoadGame());
 
