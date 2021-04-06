@@ -236,7 +236,7 @@ export default class FgScene extends Phaser.Scene {
     )
       .setScale(0.5)
       .setSize(30, 30)
-      .setOffset(10, 12);
+      .setOffset(10, 18);
 
     this.sceneEnd = new Collision(this, 1836, 1328, 'blank').setSize(10, 110);
 
