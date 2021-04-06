@@ -128,6 +128,8 @@ export default class BossScene extends Phaser.Scene {
       this.player.stats = stats;
     }
 
+    this.player.updateStats();
+
     this.boss = new Boss(this, 750, 200, 'boss')
       .setScale(1)
       .setSize(300, 290)
