@@ -18,11 +18,8 @@ export default class PreGameScene extends Phaser.Scene {
       "I wish you could recover more, but we're running out of time.",
       "You need to deliver these notes to the robot's leader.",
       "If you don't, we'll be dead before the end of the week.",
-      "I'd go, but I'm confined to this damn wheelechair as you can see.",
-      "I don't know how to get there, but there is a town near here.",
-      'Go there and ask the robots for directions.',
-      "I'm sure nothing could go wrong.",
-      'Oh by the way, the robots are our overlords.',
+      'Just follow the road to the east and it should take you to the city.',
+      'The robots are our overlords. Be careful not to anger them',
     ];
     this.textIdx = 0;
     this.typewriteTextWrapped.bind(this);
@@ -75,7 +72,7 @@ export default class PreGameScene extends Phaser.Scene {
         //if end of sentence, move to next sentence and repeat
         if (i === length && this.textIdx !== this.introText.length - 1) {
           this.time.delayedCall(
-            1000,
+            600,
             () => {
               this.intro.text = '';
               this.typewriteTextWrapped(this.introText[++this.textIdx]);
@@ -97,7 +94,7 @@ export default class PreGameScene extends Phaser.Scene {
         }
       },
       repeat: length - 1,
-      delay: 100,
+      delay: 50,
     });
   }
 
